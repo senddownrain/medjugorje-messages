@@ -1,0 +1,34 @@
+name: Research messages (manual only)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install requirements
+        run: pip install -r requirements.txt
+      - name: Parser unit tests
+        run: python -m unittest discover -s tests -v
+      - name: Research source pages (no publication)
+        id: scrape
+        continue-on-error: true
+        run: python scripts/sync_messages.py --output research-output
+      - name: Upload private research archive and diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: medjugorje-research
+          path: research-output/
+          retention-days: 14
+          if-no-files-found: warn
+      - name: Warn if source parsing is incomplete
+        if: steps.scrape.outcome != 'success'
+        run: |
+          echo "::warning::Research data may be incomplete or scraping blocked. Examine report.json in the artifact."
