@@ -2,15 +2,29 @@
 
 This is **not** a public app or an approved collection of translations.
 
+## Current blocking observation
+
+On 22 October 2026, manual workflow run [#39862437372](https://github.com/senddownrain/medjugorje-messages/actions/runs/39862437372) ran all five parser tests successfully, but requests from GitHub Actions to all three full-list pages received **HTTP 403 Forbidden**:
+
+- `https://www.medjugorje.ws/ru/messages/all`
+- `https://www.medjugorje.ws/be/messages/all`
+- `https://www.medjugorje.ws/uk/messages/all`
+
+**Zero messages were retrieved.** The original workflow was incorrectly green because of `continue-on-error: true`; that setting has now been removed. The HTTP 403 could be an IP restriction, hosting rule, or another access policy. Do not assume its precise cause and do not bypass a denied request with rotating IPs, proxies, or impersonating browsers.
+
+**Next step:** Ask the webmaster for permission to reuse the translations, a bulk export in RU / BE / UK (CSV, JSON or HTML), and an authorized way to check for updates (e.g. feed/API or permission for a specific client). They ask for technical requests to be written in English, Czech or Slovak: https://www.medjugorje.ws/en/about/contact
+
+## Operation after source access is confirmed
+
 1. Open **Actions → Research messages (manual only) → Run workflow**.
-2. Wait for the run to finish, and download **medjugorje-research** from its Artifacts section.
-3. Inspect research-output/report.json, including warnings and missing_ids; compare samples with the source manually.
-4. Only after verification should any data be committed or added to a PWA.
+2. The job will now clearly be **red** if a source refuses access or a required archive is missing. This is intentional and does not mean the unit tests failed.
+3. Download the `medjugorje-research` artifact, inspect `report.json` and compare real samples with source pages.
+4. Only after validation should the archive be committed or integrated with PWA.
 
-No secrets, Firebase project, hosting, scheduled scraping or server are needed for this test. The job is manual, read-only and saves temporary GitHub Actions artifacts for 14 days. Output language JSONs are explicitly marked verified=false.
+The job is manual, read-only and saves temporary GitHub Actions artifacts for 14 days. Output language JSONs are explicitly marked `verified=false`.
 
-The importer visits the public RU, BE and UK archive and category pages, respects robots.txt, uses at least a 1.5-second delay, and stops on denials or rate limits. It does **not** fill in missing translations, fabricate attributions, or automatically publish texts. Some HTML structures or message types may not yet be supported; the first run is designed to expose those gaps.
+The importer respects robots.txt and server denials; it does **not** invent translations or automatically publish texts. HTML parsing must be checked against real exports once available.
 
 ## Before public redistribution
 
-Check each translation's licensing and get relevant authorization for reproducing full texts. Consider the Holy See's 19 September 2024 Note *The Queen of Peace* and ecclesiastical review before launching a public archive. A PR and manual review process will be added after validating source extraction.
+Get the necessary permissions for redistribution of each language's translations and relevant ecclesiastical review. Consider the Holy See's 19 September 2024 Note *The Queen of Peace* before launching a public archive.
