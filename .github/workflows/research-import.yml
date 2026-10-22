@@ -17,9 +17,31 @@ jobs:
       - name: Parser unit tests
         run: python -m unittest discover -s tests -v
       - name: Research source pages (no publication)
-        id: scrape
-        continue-on-error: true
         run: python scripts/sync_messages.py --output research-output
+      - name: Summarize research findings
+        if: always()
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          report_path = Path("research-output/report.json")
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as out:
+              if not report_path.exists():
+                  out.write("## Import did not produce a report\nNo texts were published.\n")
+              else:
+                  report = json.loads(report_path.read_text(encoding="utf-8"))
+                  out.write("## Medjugorje import diagnostics\n")
+                  out.write("**Status: UNVERIFIED RESEARCH, NOT FOR PUBLICATION**\n\n")
+                  out.write("| Language | Records | Missing linked IDs |\n|---|---:|---:|\n")
+                  for lang, data in report["languages"].items():
+                      out.write(f'| {lang} | {data["unique_messages"]} | {len(data["missing_ids"])} |\n')
+                  for lang, data in report["languages"].items():
+                      for message in data["warnings"]:
+                          out.write(f'\n- **{lang}**: {message}\n')
+                  if report["warnings"]:
+                      out.write("\n**The importer failed validation. Do not treat the archive as complete.**\n")
+          PY
       - name: Upload private research archive and diagnostics
         if: always()
         uses: actions/upload-artifact@v4
@@ -28,7 +50,3 @@ jobs:
           path: research-output/
           retention-days: 14
           if-no-files-found: warn
-      - name: Warn if source parsing is incomplete
-        if: steps.scrape.outcome != 'success'
-        run: |
-          echo "::warning::Research data may be incomplete or scraping blocked. Examine report.json in the artifact."
