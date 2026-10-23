@@ -7,7 +7,10 @@ from datetime import datetime, timezone
 import json
 from pathlib import Path
 
-from scripts.import_mhtml import load_html, parse_page, LANGS
+from scripts.import_mhtml import load_html, parse_page
+
+# This legacy utility intentionally merges only RU/BE/UK. For seven use assemble_seven.py.
+LANGS = ("ru", "be", "uk")
 
 def write_json(path, data):
     path.parent.mkdir(parents=True, exist_ok=True)
