@@ -1,0 +1,28 @@
+name: PWA preview build (private)
+on:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate-and-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Validate archive index and text checksums
+        run: npm run check:data
+      - name: Compile Vue PWA with offline JSON archive
+        run: npm run build
+      - name: Upload private build for inspection
+        uses: actions/upload-artifact@v4
+        with:
+          name: medjugorje-pwa-preview
+          path: dist/
+          retention-days: 14
+          if-no-files-found: error
