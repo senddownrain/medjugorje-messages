@@ -2,6 +2,17 @@
 
 Status: **READ-ONLY FINDINGS; no original messages edited; editorial audit incomplete**.
 
+Дополнение этапа A: [актуальный отчёт](AUDIT_STAGE_A_2026-10-23.md) выявил ещё
+пять кандидатов по контексту, включая прямое свидетельство Вицки в `850114w`.
+Нулевой счётчик Вицки в индексе не подтверждает отсутствие исходных записей.
+Из 159 неизвестных weekly пять имеют индивидуальные свидетельства;
+остальные 154 не получают атрибуции автоматически. Семь оригинальных MHTML `/all`
+сверены: 4 351 запись, ноль расхождений; все восемь предложений подтверждены
+оригиналами. EN/HR annual/special также получены и сверены: 476 экземпляров,
+все группы, ноль расхождений. Технический статус — VERIFIED_SOURCE_SNAPSHOT_COVERAGE;
+редакционный — PENDING_EDITORIAL_ATTRIBUTION. Четыре ID вне EN/HR-категорий
+сохранены; актуальное заключение и условия перехода B — в отчёте этапа A.
+
 ## Inputs and integrity
 
 The original seven-language package was parsed locally and compared against its index. All 899 canonical IDs are unique; each per-language text SHA-256 matches; concatenated message segments reproduce the stored message text; date, type, translation presence and source-language URLs agree with the union index. **Zero structural violations** in these checks. These results do NOT prove source completeness, proper ecclesiastical authorization, or authoritative attribution.
