@@ -34,7 +34,9 @@ def summarize_rss(data: bytes):
             found = el.find(field)
             return (found.text or "").strip() if found is not None else ""
         return [{"title": get(p, "title"), "link": get(p, "link"),
-                 "published": get(p, "pubDate")} for p in posts[:5]], len(posts)
+                 "published": get(p, "pubDate"),
+                 "categories": [(c.text or "").strip() for c in p.findall("category")]}
+                for p in posts[:5]], len(posts)
     if name == "feed":
         atom = "{http://www.w3.org/2005/Atom}"
         posts = root.findall(atom + "entry")
@@ -42,7 +44,8 @@ def summarize_rss(data: bytes):
             "title": (p.findtext(atom + "title") or "").strip(),
             "link": next((a.get("href", "") for a in p.findall(atom + "link")
                           if a.get("rel", "alternate") == "alternate"), ""),
-            "published": (p.findtext(atom + "updated") or "").strip()
+            "published": (p.findtext(atom + "updated") or "").strip(),
+            "categories": [(c.get("term") or "").strip() for c in p.findall(atom + "category")]
         } for p in posts[:5]], len(posts)
     raise ValueError("Not an RSS/Atom feed")
 
