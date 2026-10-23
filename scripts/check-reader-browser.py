@@ -2,6 +2,7 @@
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 import shutil
 import subprocess
@@ -15,6 +16,7 @@ parser=argparse.ArgumentParser()
 parser.add_argument('--phase', choices=['filters','languages','reader','regression'], default='regression')
 parser.add_argument('--output',type=Path,default=ROOT/'reports/stage-c-polish')
 parser.add_argument('--port',type=int,default=5176)
+parser.add_argument('--base',default='/medjugorje-messages/')
 args=parser.parse_args()
 args.output.mkdir(parents=True,exist_ok=True)
 shots=args.output/'screenshots';shots.mkdir(exist_ok=True)
@@ -22,7 +24,7 @@ model=json.loads((ROOT/'derived/search-metadata.json').read_text())
 rows=sorted(model['messages'],key=lambda r:(r['date'],r['id']),reverse=True)
 archives={l:json.loads((ROOT/f'data/{l}.json').read_text()) for l in ['ru','be','uk','hr','en','sk','lv']}
 checks=[];screenshots=[];matrix=[];errors=[]
-url=f'http://127.0.0.1:{args.port}/medjugorje-messages/'
+url=f'http://127.0.0.1:{args.port}'+args.base
 
 def shot(page,name,full=False):
     page.screenshot(path=str(shots/(name+'.png')),full_page=full,animations='disabled')
@@ -225,7 +227,7 @@ def regression(browser):
 
 with tempfile.TemporaryDirectory() as temp:
     with (Path(temp)/'preview.log').open('w+') as log:
-        server=subprocess.Popen(['node','node_modules/vite/bin/vite.js','preview','--host','127.0.0.1','--port',str(args.port),'--strictPort'],cwd=ROOT,stdout=log,stderr=subprocess.STDOUT)
+        server=subprocess.Popen(['node','node_modules/vite/bin/vite.js','preview','--host','127.0.0.1','--port',str(args.port),'--strictPort'],cwd=ROOT,env={**os.environ, 'SITE_BASE':args.base},stdout=log,stderr=subprocess.STDOUT)
         try:
             deadline=time.monotonic()+25
             while True:

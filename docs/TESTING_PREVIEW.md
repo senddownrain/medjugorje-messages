@@ -1,29 +1,75 @@
-# Private mobile testing through GitHub Codespaces
+> Новое C-превью подготовлено, но **не развёрнуто**. Актуальная инструкция: [PREVIEW_CURRENT_READER.md](PREVIEW_CURRENT_READER.md). Ниже — историческая версия #15.
 
-This is a **preview of Draft PR #6**, not a public deployment.
+# Приватное превью с Android
 
-1. Open https://github.com/senddownrain/medjugorje-messages/pull/6
-2. From the repository's **Code → Codespaces** menu, create a codespace using the `feat/pwa-first-screen` branch. On small mobile screens, creating a codespace may be easier in desktop-mode browser or on a computer.
-3. The devcontainer installs Node dependencies and starts Vite on port `5173`.
-4. In Codespaces open the **PORTS** tab. Keep port 5173 set to **Private**, then open its forwarded HTTPS link.
-5. Append `/medjugorje-messages/` to the forwarded URL if it is not already present. On the phone, sign in to the **same GitHub account** that owns the codespace.
-6. Test the reading view, filters, seven interface languages, independent message-language selection and light/dark settings.
+Адрес: https://medjugorje-messages-private.merlinkarusel.chatgpt.site/
 
-**Important:** only RU/BE/UK texts are in the current JSON files. Selecting HR/EN/SK/LV must show a clear "archive being prepared" message, never invented translations. The code has seven language interface labels now; source texts for four more languages must still be imported.
+1. Откройте ссылку в Chrome на телефоне.
+2. Если появится вход, войдите в тот же аккаунт ChatGPT, из которого создан сайт.
+3. Через ⚙ выберите **Язык интерфейса** и отдельно **Язык посланий**.
+4. В «Архиве» попробуйте поиск, год, дату, тип и визионера. Кнопка «Сбросить фильтры» очищает их.
+5. Через ⚙ выберите светлое или тёмное оформление.
 
-This development preview uses a local Vite server, and its service worker is not enabled in dev mode. Full offline installation tests will be performed after a separate HTTPS production-style preview, before public release.
+Codespaces, VS Code и запуск сервера не нужны. Политика Sites: только владелец,
+без приглашённых пользователей и групп. Публичный доступ не включать.
+Сайт использует существующий аккаунт ChatGPT; отдельные платные услуги не подключались.
+Снимок базы содержит 899 уникальных записей и семь языковых архивов. Наличие записи
+не гарантирует текст на каждом языке: пропуски показаны явно. Это исследовательские
+данные, ожидающие редакторской проверки. Тексты не меняются при сборке.
 
-To stop cloud resource usage, **Stop codespace** in GitHub when finished. Codespaces availability and quotas depend on your GitHub plan and settings.
+## Обновление
 
-Fallback on a computer:
+GitHub Actions автоматически проверяет PR и `main`, затем сохраняет **приватный**
+архив production-сборки. Успешная сборка сама по себе не обновляет Sites.
+Для обновления ссылки поручите Codex: «Обнови существующее приватное превью
+из актуального main, сохрани доступ только мне, проверь сборку и опубликуй
+приватную версию». Использовать ID из `.openai/hosting.json`, не создавать новый сайт.
 
-    npm install
-    npm run dev
+В этой среде нет установленного пакета вспомогательных скриптов Sites; первый
+деплой подготовлен как статическая production-сборка и передан штатному приватному
+инструменту Sites. Исходники синхронизируются с закрытым репозиторием Sites.
+Секреты и временные права записи не сохраняются в проекте.
 
-Open http://localhost:5173/medjugorje-messages/ on your computer; to test on the phone on the same Wi-Fi, use the computer's LAN IP and port 5173. This is a UI test, not an install/offline test.
+Постоянная автоматическая доставка из GitHub пока **не настроена**: нет проверенного
+постоянного CI-доступа к Sites. Краткоживущий токен сессии нельзя сохранять как
+постоянный GitHub secret. Возможные альтернативы требуют отдельного решения владельца:
 
-## If Codespaces opens only the VS Code editor
+| Вариант | Ограничение |
+| --- | --- |
+| Sites, только владелец | Готовое приватное HTTPS-превью; обновление по поручению Codex |
+| Cloudflare Access + Pages/Workers | Нужны аккаунт, настройка авторизации до загрузки базы и CI-доступ; тариф/домены проверяются отдельно |
+| Tailscale Serve на постоянном сервере | Нужны tailnet, сервер и приложение Tailscale на Android |
+| Приватный GitHub Pages | Доступность зависит от Enterprise и настроек организации; приватный репозиторий сам по себе не закрывает Pages |
 
-A `*.github.dev` URL is the Codespaces **editor**, not the website. In its terminal, check `git branch --show-current` and ensure this PWA branch is selected. Then run `npm install` if needed and `npm run dev`; open **PORTS → 5173 → Open in Browser**. The forwarded site URL uses a different `*-5173.app.github.dev` hostname; visit `/medjugorje-messages/` on that site. Port visibility may remain **Private**; log into the same GitHub account in the phone browser. A localhost link from the terminal will not work directly in a different device.
+Ни один альтернативный сервис не активирован. Открытые Pages/туннели не используются.
 
-While this is a draft, the branch may not contain data merged later into `main`. PWA preview and public hosting are separate operations.
+## Приватность и офлайн
+
+Вход ограничивает загрузку приложения и файлов с хостинга. PWA сохраняет архив
+на устройстве после авторизованной загрузки: это нужно для офлайн-чтения.
+Выход из ChatGPT не стирает ранее сохранённые данные браузера. На чужом телефоне
+не включайте офлайн-чтение; чтобы удалить копию, очистите данные этого сайта в Chrome
+и удалите установленную PWA. Мгновенное удаление офлайн-копий после отзыва доступа
+эта архитектура не обеспечивает.
+
+Установка на Android, офлайн на реальном Android и поведение после истечения
+авторизации хостинга: **NOT TESTED**. Для проверки после входа найдите в меню Chrome
+«Добавить на главный экран»/«Установить», дождитесь загрузки, включите авиарежим
+и проверьте чтение. Затем включите сеть. Наличие пункта установки зависит от браузера.
+
+## Повторить браузерные проверки локально
+
+```sh
+python3 -m pip install -r requirements.txt
+python3 -m pip install playwright
+npm run build:private
+SITE_BASE=/ npm run preview -- --host 127.0.0.1 --port 4174
+# В другом терминале, с установленным Chromium:
+python3 scripts/check-preview.py --chromium /usr/bin/chromium --output /tmp/medjugorje-preview
+```
+
+Скрипт разрешает только loopback URL, не публикует данные и сохраняет PNG локально.
+Он проверяет реальные клики в Chromium при 320 и 390 px, все языки, независимость
+настроек, точные абзацы из JSON, поиск, фильтры, пагинацию, обе темы, отсутствие
+горизонтальной прокрутки и офлайн-перезагрузку локальной production PWA.
+Эмуляция Chromium не равна проверке на физическом Android.

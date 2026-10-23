@@ -26,8 +26,8 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Validate all seven language files and text checksums
         run: npm run check:data
-      - name: Compile Vue PWA with offline seven-language archive
-        run: npm run build
+      - name: Compile current reader for owner-private HTTPS preview
+        run: npm run build:private
       - name: Upload private build for inspection
         uses: actions/upload-artifact@v4
         with:
