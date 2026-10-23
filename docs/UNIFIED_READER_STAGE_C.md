@@ -4,6 +4,10 @@
 коммит `3c2d6678bb5f13a9408c922eae7800b4a767dd0f`.
 Цепочка сохранена: main → #16 → #17 → #18 → C.
 Отдельный PR #15 с конфигурацией приватного превью не переносился и не объединялся.
+Симуляция `git merge-tree` с его текущей головой прошла без конфликтов;
+`test:ui:browser`, `build:private` и hosting blob сохраняются. Ветки не менялись,
+merge-коммит не создавался. Это проверка совместимости, не деплоя:
+[протокол](../reports/stage-c/branch-compatibility.json).
 
 Прочитаны [основное ревью #18](https://github.com/senddownrain/medjugorje-messages/pull/18#issuecomment-6370429638)
 и [его последнее обновление](https://github.com/senddownrain/medjugorje-messages/pull/18#issuecomment-6370460598).
