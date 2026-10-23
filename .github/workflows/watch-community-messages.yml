@@ -1,0 +1,100 @@
+name: Watch community translations (review only)
+
+on:
+  schedule:
+    - cron: '23 10,22 * * *'
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - scripts/watch_community_messages.py
+      - tests/test_watch_community_messages.py
+      - .github/workflows/watch-community-messages.yml
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  watch-translations:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install parser dependencies
+        run: pip install -r requirements.txt
+      - name: Unit tests — ignore news and daily posts
+        run: python -m unittest discover -s tests -p test_watch_community_messages.py -v
+      - name: Check authorized community RSS metadata
+        run: python -m scripts.watch_community_messages --since "2026-10-23T00:00:00+00:00"
+      - name: Report status
+        if: always()
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          p = Path("research-output/community-watch.json")
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf8") as f:
+              f.write("## Language-by-language translation watch\n\n")
+              if not p.exists():
+                  f.write("**FAILED** — no report produced.\n")
+              else:
+                  report=json.loads(p.read_text(encoding="utf8"))
+                  f.write("**State: "+report["status"]+"**\n\n")
+                  f.write("| Language | Site status | Candidate posts |\n|---|---|---:|\n")
+                  for lang,item in report["sites"].items():
+                      f.write("| "+lang+" | "+item["state"]+" | "+str(item.get("candidate_count","?"))+" |\n")
+                  f.write("\nCandidates are unverified and must be reviewed before importing texts.\n")
+          PY
+      - name: Upload audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: community-translation-watch
+          path: research-output/community-watch.json
+          retention-days: 14
+          if-no-files-found: warn
+      - name: Create review Issues for new message candidates
+        if: success() && github.event_name != 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const data = JSON.parse(fs.readFileSync('research-output/community-watch.json', 'utf8'));
+            if (data.status !== 'ok') {
+              core.warning('One or more sources unavailable; do not claim no updates');
+              return;
+            }
+            const {owner,repo} = context.repo;
+            const issues = await github.paginate(github.rest.issues.listForRepo,
+              {owner,repo,state:'all',per_page:100});
+            for (const post of data.candidates) {
+              const marker = '<!-- message-watch ' + post.language + ' ' + post.url + ' -->';
+              if (issues.some(x => (x.body || '').includes(marker))) {
+                core.info('Already reported: ' + post.url);
+                continue;
+              }
+              const title = 'Проверить перевод [' + post.language.toUpperCase() + ']: ' +
+                post.title.slice(0, 130);
+              const body = [
+                'RSS общины содержит **возможную публикацию послания**. Это не подтверждённый импорт.',
+                '',
+                'Язык: ' + post.language,
+                'Заголовок: ' + post.title,
+                'Публикация: ' + post.published,
+                'Источник: ' + post.url,
+                'Категории: ' + (post.categories || []).join(', '),
+                '',
+                '- [ ] Проверить, что это действительно отдельный текст послания Богородицы',
+                '- [ ] Определить дату явления, визионера и тип',
+                '- [ ] Сверить перевод с утверждённым текстом общины',
+                '- [ ] Добавить в соответствующий JSON и индекс',
+                '- [ ] Провести тесты и редакционную проверку',
+                '',
+                'Автоматического изменения базы или публикации PWA нет.',
+                marker
+              ].join('\n');
+              await github.rest.issues.create({owner,repo,title,body,assignees:[owner]});
+            }
