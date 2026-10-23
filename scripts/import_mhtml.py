@@ -18,8 +18,8 @@ from urllib.parse import urlparse
 from bs4 import BeautifulSoup, UnicodeDammit
 
 TYPES = {"m": "monthly", "w": "weekly", "s": "special", "a": "annual"}
-LANGS = ("ru", "be", "uk")
-PATH = re.compile(r"^/(ru|be|uk)/messages/(\d{6}[a-z][a-z0-9_-]*)/?$", re.I)
+LANGS = ("ru", "be", "uk", "hr", "en", "sk", "lv")
+PATH = re.compile(r"^/(ru|be|uk|hr|en|sk|lv)/messages/(\d{6}[a-z][a-z0-9_-]*)/?$", re.I)
 DATE = re.compile(r"^(\d{4}-\d{2}-\d{2})_")
 VISIONARIES = {
     "mirjana": r"mirjan|мирьян|мір.?ян",
@@ -44,7 +44,7 @@ def load_html(path):
             data = part.get_payload(decode=True)
             url = part.get("Content-Location")
             if data:
-                priority = bool(url and re.search(r"medjugorje\.ws/(ru|be|uk)/messages/all/?$", url))
+                priority = bool(url and re.search(r"medjugorje\.ws/(ru|be|uk|hr|en|sk|lv)/messages/all/?$", url))
                 candidates.append((int(priority), len(data), data, url))
         if not candidates:
             raise ValueError("No HTML part in MHTML")
