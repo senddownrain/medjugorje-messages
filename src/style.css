@@ -175,3 +175,54 @@ a:hover { text-decoration: underline; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
 }
+
+
+/* A restrained Marian tone: pale-blue accents, almost-white canvas, quiet gold detail. */
+:root {
+  --bg: #f8f9fa;
+  --paper: #fffefa;
+  --ink: #293746;
+  --secondary: #768593;
+  --line: #e2e7eb;
+  --soft: #eff3f6;
+  --accent: #6f8eaa;
+  --accent-ink: #fff;
+  --gold: #b69b6c;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #151c24; --paper: #202a35; --ink: #eaf0f5;
+    --secondary: #a8b5bf; --line: #344553; --soft: #263542;
+    --accent: #a5c9e9; --accent-ink: #132333; --gold: #d5bc86;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #151c24; --paper: #202a35; --ink: #eaf0f5;
+  --secondary: #a8b5bf; --line: #344553; --soft: #263542;
+  --accent: #a5c9e9; --accent-ink: #132333; --gold: #d5bc86;
+}
+.v-application { background: var(--bg) !important; color: var(--ink) !important; font-family: inherit !important; }
+.brand-symbol, .footer-mark, .ornament, .reading-divider span { color: var(--gold); }
+.reading-kicker, .eyebrow { color: var(--accent); }
+.brand-copy strong { font-family: Georgia, "Times New Roman", serif; }
+.language-shortcut {
+  border: 1px solid var(--line); background: var(--paper); color: var(--accent);
+  font-weight: 650; border-radius: 30px; padding: 0 13px; min-width: 48px; height: 35px;
+}
+.settings-button.v-btn { color: var(--secondary); min-width: 36px; padding: 0 5px; font-size: 20px; }
+.settings-dialog.v-card { background: var(--paper); color: var(--ink); border-radius: 18px !important; }
+.dialog-title { font-family: Georgia, "Times New Roman", serif; font-size: 25px !important; padding: 24px 24px 12px !important; font-weight: normal !important; }
+.settings-dialog .v-card-text { padding: 18px 24px 12px !important; }
+.setting-control { margin-bottom: 17px; }
+.settings-hint {
+  border-left: 2px solid var(--gold); padding: 8px 12px;
+  font-size: 12px; color: var(--secondary); margin: -4px 0 20px; line-height: 1.65;
+}
+.settings-dialog .v-card-actions { padding: 8px 24px 18px; }
+.settings-dialog .v-field, .settings-dialog .v-list { color: var(--ink); }
+@media (max-width: 600px) {
+  .language-shortcut { min-width: 42px; height: 33px; padding: 0 9px; font-size: 12px; }
+  .settings-button.v-btn { min-width: 29px; }
+  .settings-dialog .v-card-text { padding: 12px 18px !important; }
+  .dialog-title { padding: 21px 18px 10px !important; }
+}
