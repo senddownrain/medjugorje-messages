@@ -1,0 +1,53 @@
+name: Diagnostic - official website update access
+on:
+  pull_request:
+    paths:
+      - 'scripts/probe_site.py'
+      - 'tests/test_probe_site.py'
+      - '.github/workflows/source-access-probe.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  official-site-access:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install parser dependencies
+        run: pip install -r requirements.txt
+      - name: Verify diagnostics parser
+        run: python -m unittest tests.test_probe_site -v
+      - name: Probe published public sources (single request per origin)
+        run: python scripts/probe_site.py
+      - name: Explain access status
+        if: always()
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json, os
+          p=Path('research-output/access-probe.json')
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as f:
+              f.write('## Official site access — diagnostic only\n\n')
+              if not p.exists():
+                  f.write('No report was produced; diagnostic execution failed.\n')
+              else:
+                  data=json.loads(p.read_text())
+                  f.write('**' + data['source_status'] + '**\n\n')
+                  for item in data['probes']:
+                      f.write('- ' + item['origin'] + ': ' + item['state'] +
+                              ' (' + str(item.get('http_status', item.get('ids_found', '?'))) + ')\n')
+                  if data['source_status'] != 'access_available':
+                      f.write('\n**BLOCKED: this is NOT a successful update check.**\n')
+          PY
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: medjugorje-access-probe
+          path: research-output/access-probe.json
+          retention-days: 7
+          if-no-files-found: warn
