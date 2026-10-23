@@ -1,0 +1,17 @@
+{
+  "status": "NOT_PROVIDED",
+  "sources": [],
+  "missing_required": [
+    "ru/all",
+    "be/all",
+    "uk/all",
+    "hr/all",
+    "en/all",
+    "sk/all",
+    "lv/all",
+    "en/annual",
+    "en/special",
+    "hr/annual",
+    "hr/special"
+  ]
+}
