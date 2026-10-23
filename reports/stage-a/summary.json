@@ -250,5 +250,7 @@
     "840315w",
     "840308w",
     "840301w"
-  ]
+  ],
+  "source_snapshot_status": "SEVEN_ALL_SNAPSHOTS_MATCH_JSON_PENDING_CATEGORY_REVIEW",
+  "source_records_compared": 4351
 }

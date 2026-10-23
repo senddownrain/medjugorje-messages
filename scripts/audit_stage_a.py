@@ -12,6 +12,7 @@ from urllib.parse import urlparse
 
 from bs4 import BeautifulSoup
 from scripts.import_mhtml import LANGS, TYPES, load_html, parse_page
+from scripts.audit_source_snapshots import attach_source_evidence
 
 
 def digest(raw):
@@ -248,10 +249,20 @@ def write_reports(report, out):
             writer.writerow({**row, "before": json.dumps(row["before"]), "evidence": json.dumps(row["evidence"], ensure_ascii=False)})
 
 
+def build_report(folder, source_zip=None, manifest=None):
+    report = audit_data(folder)
+    if source_zip:
+        return attach_source_evidence(report, source_zip, folder)
+    report["sources"] = audit_sources(manifest, folder)
+    return report
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data", type=Path, default=Path("data"))
-    parser.add_argument("--sources", type=Path, help="Local JSON manifest of saved source MHTML files")
+    source_args = parser.add_mutually_exclusive_group()
+    source_args.add_argument("--sources", type=Path, help="Local JSON manifest of saved source MHTML files")
+    source_args.add_argument("--source-zip", type=Path, help="Original seven-source ZIP, verified independently")
     parser.add_argument("--out", type=Path, default=Path("reports/stage-a"))
     args = parser.parse_args()
     # Prevent an accidental report destination from touching original inputs.
@@ -264,13 +275,15 @@ def main():
         inputs = [args.sources, *[args.sources.parent / s["path"] for s in manifest["sources"]]]
         if any(out == p.resolve() or out in p.resolve().parents for p in inputs):
             parser.error("Output must not contain source inputs or their manifest")
-    report = audit_data(args.data)
-    report["sources"] = audit_sources(args.sources, args.data)
+    if args.source_zip and (out == args.source_zip.resolve() or out in args.source_zip.resolve().parents):
+        parser.error("Output must not contain the source ZIP")
+    report = build_report(args.data, args.source_zip, args.sources)
     write_reports(report, out)
     print(json.dumps({k: v for k, v in report["summary"].items() if k not in
                       ("file_sha256", "unattributed_weekly_ids")}, ensure_ascii=False, indent=2))
     # Exit 2 means source audit pending; it must never be mistaken for completion.
-    return 1 if report["violations"] else 2
+    return 1 if report["violations"] or report["sources"]["status"] in (
+        "SAVED_SOURCE_DIFFERENCES_REQUIRE_REVIEW", "SOURCE_BLOCKS_REQUIRE_REVIEW") else 2
 
 
 if __name__ == "__main__":

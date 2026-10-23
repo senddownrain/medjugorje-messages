@@ -6,8 +6,10 @@ import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
+import zipfile
 
-from scripts.audit_stage_a import audit_data, audit_sources, compare_saved_source, digest
+from scripts.audit_stage_a import audit_data, audit_sources, build_report, compare_saved_source, digest
+from scripts.audit_source_snapshots import extract_original, read_heading_date
 from scripts.import_mhtml import parse_page
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -33,10 +35,76 @@ def save_mhtml(path, html, location):
 class StageAAuditTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.report = audit_data(ROOT / "data")
+        cls.report = build_report(ROOT / "data", ROOT / "research-sources/medjugorje_original_sources_seven.zip")
 
     def test_current_snapshot_has_no_integrity_violations(self):
         self.assertEqual(self.report["violations"], [])
+
+    def test_all_seven_original_snapshots_match_without_proving_category_coverage(self):
+        sources = self.report["sources"]
+        self.assertEqual(sources["status"], "SEVEN_ALL_SNAPSHOTS_MATCH_JSON_PENDING_CATEGORY_REVIEW")
+        self.assertEqual(len(sources["sources"]), 7)
+        self.assertEqual(sources["source_records_compared"], sum(s["records"] for s in self.report["summary"]["languages"].values()))
+        self.assertEqual(sources["source_missing_count"], 0)
+        self.assertEqual(sources["record_difference_count"], 0)
+        self.assertEqual(sources["heading_date_issue_count"], 0)
+        self.assertEqual(sources["unclassified_source_block_count"], 0)
+        self.assertEqual(sources["non_message_navigation_count"], 286)
+        self.assertEqual(sources["json_records_absent_from_saved_sources"], 0)
+        self.assertEqual(set(sources["missing_required"]), {"en/annual", "en/special", "hr/annual", "hr/special"})
+        self.assertEqual(set().union(*(set(s["source_ids"]) for s in sources["sources"])),
+                         {r["id"] for r in self.report["inventory"]})
+        self.assertTrue(all(s["supplied_manifest_sha_and_size_and_count_match"] for s in sources["sources"]))
+
+    def test_heading_date_reader_does_not_guess_unknown_names_or_invalid_calendar_dates(self):
+        self.assertEqual(read_heading_date("Medjugorje Message, August 12, 2014 - Ivan", "en"), "2014-08-12")
+        self.assertEqual(read_heading_date("Vēstījums, 2005.g. 2. Aprīlis", "lv"), "2005-04-02")
+        self.assertIsNone(read_heading_date("Message, February 30, 2014", "en"))
+        self.assertIsNone(read_heading_date("Message, UnknownMonth 12, 2014", "en"))
+
+    def test_proposals_cite_exact_original_zip_members_and_keep_editorial_review_pending(self):
+        source_path = ROOT / "research-sources/medjugorje_original_sources_seven.zip"
+        self.assertEqual(self.report["sources"]["proposals_confirmed_in_original_all"], len(self.report["proposals"]))
+        with zipfile.ZipFile(source_path) as archive:
+            for proposal in self.report["proposals"]:
+                self.assertEqual(proposal["review_status"], "original_all_snapshot_confirmed_pending_category_and_editorial_review")
+                self.assertFalse(proposal["applied"])
+                for evidence in proposal["evidence"]:
+                    snapshot = evidence["original_snapshot"]
+                    self.assertEqual(snapshot["archive_sha256"], digest(source_path.read_bytes()))
+                    self.assertEqual(snapshot["source_sha256"], digest(archive.read(snapshot["zip_member"])))
+                    self.assertEqual(snapshot["quote_sha256"], digest(evidence["quote"].encode()))
+                    self.assertIsInstance(snapshot["heading_position"], int)
+
+    def test_independent_reader_ignores_navigation_and_preserves_context_and_inline_text(self):
+        html = ('<a href="https://www.medjugorje.ws/en/messages/111111s/">Navigation</a>'
+                '<div class="messages">' + html_record(text='<span class="bq">“</span>A<b>B</b><br>C<span class="eq">”</span><!-- not content -->')
+                .replace('<div class="mmm-footer">', '<div class="poselstvi">Editorial context</div><div class="mmm-footer">')
+                + '</div>')
+        with TemporaryDirectory() as tmp:
+            path = Path(tmp) / "source.mht"
+            save_mhtml(path, html, "https://www.medjugorje.ws/en/messages/all")
+            rows, positions, location = extract_original(path.read_bytes(), "en")
+            save_mhtml(path, html.replace('</div><div class="mmm-footer">', '</div><p>Unexpected body</p><div class="mmm-footer">'), "https://www.medjugorje.ws/en/messages/all")
+            _, with_unknown, _ = extract_original(path.read_bytes(), "en")
+            self.assertEqual(with_unknown["060908s"]["unclassified_source_blocks"][0]["excerpt"], "Unexpected body")
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["text"], "AB\nC")
+        self.assertEqual(rows[0]["segments"][-1], {"kind": "context", "text": "Editorial context"})
+        self.assertEqual(positions["060908s"]["heading_position"], 0)
+
+    def test_independent_reader_keeps_reused_urls_and_refuses_duplicate_canonical_ids(self):
+        def wrapper(day):
+            return '<div class="messages">' + html_record(day=day) + '</div>'
+        with TemporaryDirectory() as tmp:
+            path = Path(tmp) / "source.mht"
+            save_mhtml(path, wrapper("2006-09-08") + wrapper("2006-09-09"), "https://www.medjugorje.ws/en/messages/all")
+            rows, _, _ = extract_original(path.read_bytes(), "en")
+            self.assertEqual([r["id"] for r in rows], ["060908s", "060909s"])
+            self.assertEqual(rows[0]["source_url"], rows[1]["source_url"])
+            save_mhtml(path, wrapper("2006-09-08") * 2, "https://www.medjugorje.ws/en/messages/all")
+            with self.assertRaisesRegex(ValueError, "Duplicate original canonical ID"):
+                extract_original(path.read_bytes(), "en")
 
     def test_audit_leaves_all_input_bytes_unchanged(self):
         paths = sorted((ROOT / "data").glob("*.json"))
