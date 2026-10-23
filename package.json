@@ -4,6 +4,12 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "build:search-metadata": "node scripts/build-search-metadata.mjs",
+    "check:search-metadata": "node scripts/build-search-metadata.mjs --check",
+    "test:search": "node --test tests/search/*.test.mjs",
+    "test:search:browser": "python3 scripts/check-search-browser.py --output /tmp/medjugorje-search-browser.json",
+    "benchmark:search": "node --expose-gc scripts/benchmark-search.mjs",
+    "benchmark:search:browser": "python3 scripts/check-search-browser.py --benchmark",
     "predev": "node scripts/stage-data.mjs",
     "dev": "vite --host 0.0.0.0",
     "prebuild": "node scripts/stage-data.mjs",

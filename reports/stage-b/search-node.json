@@ -1,0 +1,807 @@
+{
+  "runtime": "v24.19.0",
+  "platform": "linux",
+  "arch": "x64",
+  "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+  "date_utc": "2026-10-23T16:28:44.119Z",
+  "corpus_ids": 899,
+  "source_inputs": {
+    "data/ru.json": "d878a69ddef832adb729e83ad2ff4e4813dc2b9e1ac47d10d3af42ccf600b1ec",
+    "data/be.json": "4bb87770b6514192cc0bfe52b664dcac36c1ac6dc63e8a815d6651153dec4f05",
+    "data/uk.json": "b3f3290e4d5074e530028aaae69fc864fd0b99d3e2f4a2d719d56bd8a494049d",
+    "data/hr.json": "26c5132acb3ac4128869e29f1fef9b8b4a183049624f4efc225d406bc84f65ce",
+    "data/en.json": "f769b260506c67a83cfb5f034b0238682fb2adea83895d42dfca1586665a1a2a",
+    "data/sk.json": "42936b7804aaba198bc1a03b2cedff4887015383be580b8ffb66b5546bfe8b28",
+    "data/lv.json": "90fd9d035663d5644e24620a310e661a1b2f78ed172e7a45de1af20ca410001a",
+    "data/index.json": "5ea11d808d0eb59cd37cd1ceb95f2071e460449fa5c854d43b60cdd6fb0cd131",
+    "reports/stage-a/summary.json": "77bf98e72f929acbf952b8c82f8fac77e276fd6b3a9df57cd09f4172161295c6",
+    "reports/stage-a/sources.json": "76440a61a9e9c6064c23921784a4286ba1eeacf33e214e421188c915c97ddfcf",
+    "reports/stage-a/thematic.json": "f007f9fdde7f5ebcbc75271638595529526862ca09f05bc3aba40b9542e1d497",
+    "reports/stage-a/proposals.json": "e4c9a12b6ed95ce8fd75c18973f618414b9a611ad1bd4174a4638c4634583aec"
+  },
+  "metadata_bytes": 907433,
+  "metadata_gzip_bytes": 40339,
+  "metadata_heap_delta_bytes": 1609456,
+  "catalog_heap_delta_bytes": 541472,
+  "catalog_array_buffers_delta_bytes": 62632,
+  "methodology": "Local Node CPU, one cold index per language, 5 warmups + 100 timed calls per case; explicit GC deltas. Per-index heap/ArrayBuffer deltas exclude already-loaded corpus, metadata and catalog. RSS is allocator-dependent and may decrease. Not Android.",
+  "results": [
+    {
+      "language": "ru",
+      "cold_ms": 56.85970400000002,
+      "index": {
+        "documents": 787,
+        "vocabulary": 5865,
+        "postingEntries": 55803,
+        "normalizedCharacters": 443321,
+        "payloadBytesLowerBound": 1199648
+      },
+      "cases": [
+        {
+          "name": "phrase",
+          "query": "Дорогие дети",
+          "filters": {
+            "availability": "present"
+          },
+          "indexed_count": 762,
+          "legacy_count": 762,
+          "equivalent_result_ids": true,
+          "indexed": {
+            "p50_ms": 0.5755469999999718,
+            "p95_ms": 1.075130999999999,
+            "max_ms": 2.515474999999981,
+            "iterations": 100
+          },
+          "legacy": {
+            "p50_ms": 3.8615100000000666,
+            "p95_ms": 4.537159999999972,
+            "max_ms": 5.689567000000011,
+            "iterations": 100
+          },
+          "p95_speedup": 4.220099690177268
+        },
+        {
+          "name": "missing-word",
+          "query": "definitelyabsentzz",
+          "filters": {
+            "availability": "present"
+          },
+          "indexed_count": 0,
+          "legacy_count": 0,
+          "equivalent_result_ids": true,
+          "indexed": {
+            "p50_ms": 0.003735000000006039,
+            "p95_ms": 0.010201000000051863,
+            "max_ms": 0.21346500000004198,
+            "iterations": 100
+          },
+          "legacy": {
+            "p50_ms": 3.814922000000024,
+            "p95_ms": 4.750606000000062,
+            "max_ms": 9.334843999999975,
+            "iterations": 100
+          },
+          "p95_speedup": 465.70002940651983
+        },
+        {
+          "name": "type-year",
+          "query": "",
+          "filters": {
+            "type": "monthly",
+            "year": 2026,
+            "availability": "present"
+          },
+          "indexed_count": 9,
+          "legacy_count": 9,
+          "equivalent_result_ids": true,
+          "indexed": {
+            "p50_ms": 0.006904000000076849,
+            "p95_ms": 0.026078000000097745,
+            "max_ms": 0.05625000000009095,
+            "iterations": 100
+          },
+          "legacy": {
+            "p50_ms": 0.027117999999973108,
+            "p95_ms": 0.06899599999997008,
+            "max_ms": 0.12140199999998913,
+            "iterations": 100
+          },
+          "p95_speedup": 2.64575504255355
+        },
+        {
+          "name": "phrase-year",
+          "query": "Дорогие дети",
+          "filters": {
+            "year": 2020,
+            "availability": "present"
+          },
+          "indexed_count": 17,
+          "legacy_count": 17,
+          "equivalent_result_ids": true,
+          "indexed": {
+            "p50_ms": 0.021501999999827603,
+            "p95_ms": 0.02571899999998095,
+            "max_ms": 0.04727499999989959,
+            "iterations": 100
+          },
+          "legacy": {
+            "p50_ms": 0.11090699999999742,
+            "p95_ms": 0.1830849999998918,
+            "max_ms": 0.39784499999996115,
+            "iterations": 100
+          },
+          "p95_speedup": 7.118667133248859
+        }
+      ],
+      "retained_heap_delta_bytes": 3185584,
+      "retained_array_buffers_delta_bytes": 166808,
+      "rss_delta_bytes": 67383296
+    },
+    {
+      "language": "be",
+      "cold_ms": 11.541437000000087,
+      "index": {
+        "documents": 153,
+        "vocabulary": 2419,
+        "postingEntries": 11809,
+        "normalizedCharacters": 94733,
+        "payloadBytesLowerBound": 271552
+      },
+      "cases": [
+        {
+          "name": "phrase",
+          "query": "Дарагія дзеці",
+          "filters": {
+            "availability": "present"
+          },
+          "indexed_count": 125,
+          "legacy_count": 125,
+          "equivalent_result_ids": true,
+          "indexed": {
+            "p50_ms": 0.11021800000003168,
+            "p95_ms": 0.18730800000003,
+            "max_ms": 0.36560199999985343,
+            "iterations": 100
+          },
+          "legacy": {
+            "p50_ms": 0.6848589999999604,
+            "p95_ms": 0.8742710000001352,
+            "max_ms": 1.279149999999845,
+            "iterations": 100
+          },
+          "p95_speedup": 4.667558246310863
+        },
+        {
+          "name": "missing-word",
+          "query": "definitelyabsentzz",
+          "filters": {
+            "availability": "present"
+          },
+          "indexed_count": 0,
+          "legacy_count": 0,
+          "equivalent_result_ids": true,
+          "indexed": {
+            "p50_ms": 0.0029239999998935673,
+            "p95_ms": 0.004098000000112734,
+            "max_ms": 0.0707199999999375,
+            "iterations": 100
+          },
+          "legacy": {
+            "p50_ms": 0.611803000000009,
+            "p95_ms": 0.8374969999999848,
+            "max_ms": 1.437488999999914,
+            "iterations": 100
+          },
+          "p95_speedup": 204.36725231257827
+        },
+        {
+          "name": "type-year",
+          "query": "",
+          "filters": {
+            "type": "monthly",
+            "year": 2026,
+            "availability": "present"
+          },
+          "indexed_count": 9,
+          "legacy_count": 9,
+          "equivalent_result_ids": true,
+          "indexed": {
+            "p50_ms": 0.004259000000047308,
+            "p95_ms": 0.005779999999958818,
+            "max_ms": 0.04266100000018014,
+            "iterations": 100
+          },
+          "legacy": {
+            "p50_ms": 0.020727000000078988,
+            "p95_ms": 0.03440000000000509,
+            "max_ms": 0.0787000000000262,
+            "iterations": 100
+          },
+          "p95_speedup": 5.951557093468891
+        },
+        {
+          "name": "phrase-year",
+          "query": "Дарагія дзеці",
+          "filters": {
+            "year": 2020,
+            "availability": "present"
+          },
+          "indexed_count": 14,
+          "legacy_count": 14,
+          "equivalent_result_ids": true,
+          "indexed": {
+            "p50_ms": 0.01534300000002986,
+            "p95_ms": 0.016415999999935593,
+            "max_ms": 0.038812000000007174,
+            "iterations": 100
+          },
+          "legacy": {
+            "p50_ms": 0.0594220000000405,
+            "p95_ms": 0.07857500000000073,
+            "max_ms": 0.10475199999996221,
+            "iterations": 100
+          },
+          "p95_speedup": 4.786488791441825
+        }
+      ],
+      "retained_heap_delta_bytes": 1059144,
+      "retained_array_buffers_delta_bytes": 25148,
+      "rss_delta_bytes": -135168
+    },
+    {
+      "language": "uk",
+      "cold_ms": 12.696799000000055,
+      "index": {
+        "documents": 205,
+        "vocabulary": 2862,
+        "postingEntries": 15912,
+        "normalizedCharacters": 124312,
+        "payloadBytesLowerBound": 352818
+      },
+      "cases": [
+        {
+          "name": "phrase",
+          "query": "Дорогі діти",
+          "filters": {
+            "availability": "present"
+          },
+          "indexed_count": 188,
+          "legacy_count": 187,
+          "equivalent_result_ids": false,
+          "indexed": {
+            "p50_ms": 0.1618349999998827,
+            "p95_ms": 0.25703900000007707,
+            "max_ms": 0.9005050000000665,
+            "iterations": 100
+          },
+          "legacy": {
+            "p50_ms": 1.0412450000001172,
+            "p95_ms": 1.343022000000019,
+            "max_ms": 1.6406010000000606,
+            "iterations": 100
+          },
+          "p95_speedup": null
+        },
+        {
+          "name": "missing-word",
+          "query": "definitelyabsentzz",
+          "filters": {
+            "availability": "present"
+          },
+          "indexed_count": 0,
+          "legacy_count": 0,
+          "equivalent_result_ids": true,
+          "indexed": {
+            "p50_ms": 0.002933000000211905,
+            "p95_ms": 0.003609999999980573,
+            "max_ms": 0.005419000000074448,
+            "iterations": 100
+          },
+          "legacy": {
+            "p50_ms": 1.005572999999913,
+            "p95_ms": 1.5954589999998916,
+            "max_ms": 3.3571979999999257,
+            "iterations": 100
+          },
+          "p95_speedup": 441.95540166439815
+        },
+        {
+          "name": "type-year",
+          "query": "",
+          "filters": {
+            "type": "monthly",
+            "year": 2026,
+            "availability": "present"
+          },
+          "indexed_count": 9,
+          "legacy_count": 9,
+          "equivalent_result_ids": true,
+          "indexed": {
+            "p50_ms": 0.00695199999995566,
+            "p95_ms": 0.0076509999998961575,
+            "max_ms": 0.03880099999992126,
+            "iterations": 100
+          },
+          "legacy": {
+            "p50_ms": 0.018709999999828142,
+            "p95_ms": 0.04961199999979726,
+            "max_ms": 0.11826199999995879,
+            "iterations": 100
+          },
+          "p95_speedup": 6.484381126711622
+        },
+        {
+          "name": "phrase-year",
+          "query": "Дорогі діти",
+          "filters": {
+            "year": 2020,
+            "availability": "present"
+          },
+          "indexed_count": 17,
+          "legacy_count": 17,
+          "equivalent_result_ids": true,
+          "indexed": {
+            "p50_ms": 0.02025499999990643,
+            "p95_ms": 0.02931399999988571,
+            "max_ms": 0.11178300000005947,
+            "iterations": 100
+          },
+          "legacy": {
+            "p50_ms": 0.09182999999984531,
+            "p95_ms": 0.14531099999999242,
+            "max_ms": 0.16664799999989555,
+            "iterations": 100
+          },
+          "p95_speedup": 4.957051238335231
+        }
+      ],
+      "retained_heap_delta_bytes": 1220824,
+      "retained_array_buffers_delta_bytes": 28068,
+      "rss_delta_bytes": -266240
+    },
+    {
+      "language": "hr",
+      "cold_ms": 71.96387400000003,
+      "index": {
+        "documents": 853,
+        "vocabulary": 5263,
+        "postingEntries": 59232,
+        "normalizedCharacters": 448300,
+        "payloadBytesLowerBound": 1208170
+      },
+      "cases": [
+        {
+          "name": "phrase",
+          "query": "Draga djeco",
+          "filters": {
+            "availability": "present"
+          },
+          "indexed_count": 821,
+          "legacy_count": 821,
+          "equivalent_result_ids": true,
+          "indexed": {
+            "p50_ms": 0.42878700000005665,
+            "p95_ms": 0.6150259999999435,
+            "max_ms": 1.734288000000106,
+            "iterations": 100
+          },
+          "legacy": {
+            "p50_ms": 0.8692029999999704,
+            "p95_ms": 1.1619779999998627,
+            "max_ms": 1.7553960000000188,
+            "iterations": 100
+          },
+          "p95_speedup": 1.8893152484609912
+        },
+        {
+          "name": "missing-word",
+          "query": "definitelyabsentzz",
+          "filters": {
+            "availability": "present"
+          },
+          "indexed_count": 0,
+          "legacy_count": 0,
+          "equivalent_result_ids": true,
+          "indexed": {
+            "p50_ms": 0.0023330000001351436,
+            "p95_ms": 0.0025979999998071435,
+            "max_ms": 0.0031959999998889543,
+            "iterations": 100
+          },
+          "legacy": {
+            "p50_ms": 1.1294239999999718,
+            "p95_ms": 1.5436299999998937,
+            "max_ms": 1.9916940000000523,
+            "iterations": 100
+          },
+          "p95_speedup": 594.1608930386765
+        },
+        {
+          "name": "type-year",
+          "query": "",
+          "filters": {
+            "type": "monthly",
+            "year": 2026,
+            "availability": "present"
+          },
+          "indexed_count": 9,
+          "legacy_count": 9,
+          "equivalent_result_ids": true,
+          "indexed": {
+            "p50_ms": 0.0031779999999344,
+            "p95_ms": 0.0036150000000816362,
+            "max_ms": 0.0041959999998653075,
+            "iterations": 100
+          },
+          "legacy": {
+            "p50_ms": 0.03061600000000908,
+            "p95_ms": 0.03234999999995125,
+            "max_ms": 0.07169900000008056,
+            "iterations": 100
+          },
+          "p95_speedup": 8.948824342799641
+        },
+        {
+          "name": "phrase-year",
+          "query": "Draga djeco",
+          "filters": {
+            "year": 2020,
+            "availability": "present"
+          },
+          "indexed_count": 17,
+          "legacy_count": 17,
+          "equivalent_result_ids": true,
+          "indexed": {
+            "p50_ms": 0.011814999999842257,
+            "p95_ms": 0.02223199999980352,
+            "max_ms": 0.45315500000015163,
+            "iterations": 100
+          },
+          "legacy": {
+            "p50_ms": 0.049680999999964115,
+            "p95_ms": 0.07111100000020087,
+            "max_ms": 0.20239399999991292,
+            "iterations": 100
+          },
+          "p95_speedup": 3.198587621483867
+        }
+      ],
+      "retained_heap_delta_bytes": 2460664,
+      "retained_array_buffers_delta_bytes": 154988,
+      "rss_delta_bytes": 778240
+    },
+    {
+      "language": "en",
+      "cold_ms": 65.71006399999987,
+      "index": {
+        "documents": 894,
+        "vocabulary": 2689,
+        "postingEntries": 60114,
+        "normalizedCharacters": 537233,
+        "payloadBytesLowerBound": 1350938
+      },
+      "cases": [
+        {
+          "name": "phrase",
+          "query": "Dear children",
+          "filters": {
+            "availability": "present"
+          },
+          "indexed_count": 856,
+          "legacy_count": 856,
+          "equivalent_result_ids": true,
+          "indexed": {
+            "p50_ms": 0.5626689999999144,
+            "p95_ms": 1.1290520000002289,
+            "max_ms": 1.7251820000001317,
+            "iterations": 100
+          },
+          "legacy": {
+            "p50_ms": 0.46307500000011714,
+            "p95_ms": 0.7975540000002184,
+            "max_ms": 0.9828969999998662,
+            "iterations": 100
+          },
+          "p95_speedup": 0.7063926196491009
+        },
+        {
+          "name": "missing-word",
+          "query": "definitelyabsentzz",
+          "filters": {
+            "availability": "present"
+          },
+          "indexed_count": 0,
+          "legacy_count": 0,
+          "equivalent_result_ids": true,
+          "indexed": {
+            "p50_ms": 0.0032559999999648426,
+            "p95_ms": 0.0038890000000719738,
+            "max_ms": 0.04509599999983038,
+            "iterations": 100
+          },
+          "legacy": {
+            "p50_ms": 0.6613649999999325,
+            "p95_ms": 0.8253679999997985,
+            "max_ms": 0.9965889999998581,
+            "iterations": 100
+          },
+          "p95_speedup": 212.23142195539302
+        },
+        {
+          "name": "type-year",
+          "query": "",
+          "filters": {
+            "type": "monthly",
+            "year": 2026,
+            "availability": "present"
+          },
+          "indexed_count": 9,
+          "legacy_count": 9,
+          "equivalent_result_ids": true,
+          "indexed": {
+            "p50_ms": 0.005830000000059954,
+            "p95_ms": 0.07014900000012858,
+            "max_ms": 0.10122099999989587,
+            "iterations": 100
+          },
+          "legacy": {
+            "p50_ms": 0.027982999999949243,
+            "p95_ms": 0.07263100000000122,
+            "max_ms": 0.10486700000001292,
+            "iterations": 100
+          },
+          "p95_speedup": 1.0353818301026114
+        },
+        {
+          "name": "phrase-year",
+          "query": "Dear children",
+          "filters": {
+            "year": 2020,
+            "availability": "present"
+          },
+          "indexed_count": 17,
+          "legacy_count": 17,
+          "equivalent_result_ids": true,
+          "indexed": {
+            "p50_ms": 0.01628400000026886,
+            "p95_ms": 0.02013200000010329,
+            "max_ms": 0.045384999999896536,
+            "iterations": 100
+          },
+          "legacy": {
+            "p50_ms": 0.03951699999970515,
+            "p95_ms": 0.05950200000006589,
+            "max_ms": 0.10265800000024683,
+            "iterations": 100
+          },
+          "p95_speedup": 2.9555930856229193
+        }
+      ],
+      "retained_heap_delta_bytes": 1729056,
+      "retained_array_buffers_delta_bytes": 211292,
+      "rss_delta_bytes": -655360
+    },
+    {
+      "language": "sk",
+      "cold_ms": 71.30921699999999,
+      "index": {
+        "documents": 831,
+        "vocabulary": 5555,
+        "postingEntries": 58301,
+        "normalizedCharacters": 459452,
+        "payloadBytesLowerBound": 1232634
+      },
+      "cases": [
+        {
+          "name": "phrase",
+          "query": "Drahé deti",
+          "filters": {
+            "availability": "present"
+          },
+          "indexed_count": 812,
+          "legacy_count": 808,
+          "equivalent_result_ids": false,
+          "indexed": {
+            "p50_ms": 0.47455700000000434,
+            "p95_ms": 0.8022509999996146,
+            "max_ms": 3.8547309999999015,
+            "iterations": 100
+          },
+          "legacy": {
+            "p50_ms": 1.180699999999888,
+            "p95_ms": 1.4477019999999357,
+            "max_ms": 3.0097359999999753,
+            "iterations": 100
+          },
+          "p95_speedup": null
+        },
+        {
+          "name": "missing-word",
+          "query": "definitelyabsentzz",
+          "filters": {
+            "availability": "present"
+          },
+          "indexed_count": 0,
+          "legacy_count": 0,
+          "equivalent_result_ids": true,
+          "indexed": {
+            "p50_ms": 0.0021440000000438886,
+            "p95_ms": 0.0037330000000110886,
+            "max_ms": 0.03161999999974796,
+            "iterations": 100
+          },
+          "legacy": {
+            "p50_ms": 1.1502329999998437,
+            "p95_ms": 1.3624800000002324,
+            "max_ms": 3.38966100000016,
+            "iterations": 100
+          },
+          "p95_speedup": 364.9825877300255
+        },
+        {
+          "name": "type-year",
+          "query": "",
+          "filters": {
+            "type": "monthly",
+            "year": 2026,
+            "availability": "present"
+          },
+          "indexed_count": 9,
+          "legacy_count": 9,
+          "equivalent_result_ids": true,
+          "indexed": {
+            "p50_ms": 0.0030239999996410916,
+            "p95_ms": 0.0036019999997733976,
+            "max_ms": 0.004155999999966298,
+            "iterations": 100
+          },
+          "legacy": {
+            "p50_ms": 0.026561000000128843,
+            "p95_ms": 0.08646600000020044,
+            "max_ms": 0.14003999999977168,
+            "iterations": 100
+          },
+          "p95_speedup": 24.00499722533038
+        },
+        {
+          "name": "phrase-year",
+          "query": "Drahé deti",
+          "filters": {
+            "year": 2020,
+            "availability": "present"
+          },
+          "indexed_count": 17,
+          "legacy_count": 17,
+          "equivalent_result_ids": true,
+          "indexed": {
+            "p50_ms": 0.010860000000320724,
+            "p95_ms": 0.013315999999576889,
+            "max_ms": 0.03412299999990864,
+            "iterations": 100
+          },
+          "legacy": {
+            "p50_ms": 0.04645699999991848,
+            "p95_ms": 0.06185800000002928,
+            "max_ms": 0.09357799999997951,
+            "iterations": 100
+          },
+          "p95_speedup": 4.645389005857224
+        }
+      ],
+      "retained_heap_delta_bytes": 2564544,
+      "retained_array_buffers_delta_bytes": 119704,
+      "rss_delta_bytes": 67477504
+    },
+    {
+      "language": "lv",
+      "cold_ms": 60.65199100000018,
+      "index": {
+        "documents": 628,
+        "vocabulary": 5098,
+        "postingEntries": 43366,
+        "normalizedCharacters": 368661,
+        "payloadBytesLowerBound": 986494
+      },
+      "cases": [
+        {
+          "name": "phrase",
+          "query": "Dārgie bērni",
+          "filters": {
+            "availability": "present"
+          },
+          "indexed_count": 455,
+          "legacy_count": 454,
+          "equivalent_result_ids": false,
+          "indexed": {
+            "p50_ms": 0.35412600000017846,
+            "p95_ms": 0.48709099999996397,
+            "max_ms": 1.2402889999998479,
+            "iterations": 100
+          },
+          "legacy": {
+            "p50_ms": 0.8556189999999333,
+            "p95_ms": 1.0858250000001135,
+            "max_ms": 1.9361840000001393,
+            "iterations": 100
+          },
+          "p95_speedup": null
+        },
+        {
+          "name": "missing-word",
+          "query": "definitelyabsentzz",
+          "filters": {
+            "availability": "present"
+          },
+          "indexed_count": 0,
+          "legacy_count": 0,
+          "equivalent_result_ids": true,
+          "indexed": {
+            "p50_ms": 0.0032519999999749416,
+            "p95_ms": 0.003857000000152766,
+            "max_ms": 0.03214099999968312,
+            "iterations": 100
+          },
+          "legacy": {
+            "p50_ms": 0.9204239999999118,
+            "p95_ms": 1.1104420000001483,
+            "max_ms": 1.3151470000002519,
+            "iterations": 100
+          },
+          "p95_speedup": 287.9030334343185
+        },
+        {
+          "name": "type-year",
+          "query": "",
+          "filters": {
+            "type": "monthly",
+            "year": 2026,
+            "availability": "present"
+          },
+          "indexed_count": 0,
+          "legacy_count": 0,
+          "equivalent_result_ids": true,
+          "indexed": {
+            "p50_ms": 0.003865000000132568,
+            "p95_ms": 0.004509000000325614,
+            "max_ms": 0.044210000000020955,
+            "iterations": 100
+          },
+          "legacy": {
+            "p50_ms": 0.025716999999986,
+            "p95_ms": 0.04412400000001071,
+            "max_ms": 0.05372299999999086,
+            "iterations": 100
+          },
+          "p95_speedup": 9.78576180900961
+        },
+        {
+          "name": "phrase-year",
+          "query": "Dārgie bērni",
+          "filters": {
+            "year": 2020,
+            "availability": "present"
+          },
+          "indexed_count": 0,
+          "legacy_count": 0,
+          "equivalent_result_ids": true,
+          "indexed": {
+            "p50_ms": 0.006252999999560416,
+            "p95_ms": 0.006941999999980908,
+            "max_ms": 0.02863100000013219,
+            "iterations": 100
+          },
+          "legacy": {
+            "p50_ms": 0.023453999999674124,
+            "p95_ms": 0.048004000000219094,
+            "max_ms": 0.1620069999999032,
+            "iterations": 100
+          },
+          "p95_speedup": 6.915010083599988
+        }
+      ],
+      "retained_heap_delta_bytes": 2300464,
+      "retained_array_buffers_delta_bytes": 61852,
+      "rss_delta_bytes": -241664
+    }
+  ]
+}
