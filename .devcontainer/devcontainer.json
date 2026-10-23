@@ -1,0 +1,14 @@
+{
+  "name": "Medjugorje private PWA preview",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:1-22-bookworm",
+  "forwardPorts": [5173],
+  "portsAttributes": {
+    "5173": {
+      "label": "Medjugorje PWA (private preview)",
+      "onAutoForward": "openBrowser",
+      "visibility": "private"
+    }
+  },
+  "postCreateCommand": "npm install --no-audit --no-fund",
+  "postStartCommand": "nohup npm run dev > /tmp/medjugorje-vite.log 2>&1 &"
+}
