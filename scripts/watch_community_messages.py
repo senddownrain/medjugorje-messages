@@ -62,7 +62,8 @@ def parse_feed(content):
         except (TypeError, ValueError):
             continue
         posts.append({"title":title, "url":link, "published":dt.astimezone(timezone.utc).isoformat(),
-                      "categories":[(x.text or "").strip() for x in item.findall("category")]})
+                      "categories":[(x.text or "").strip() for x in item.findall("category")],
+                      "guid":value("guid"), "summary":value("description")})
     if not posts:
         raise ValueError("No usable RSS entries; cannot infer no updates")
     return posts
@@ -83,7 +84,7 @@ def is_message_candidate(lang, item, origin):
 
 def load_feed(session, origin):
     target = origin + "feed/"
-    robots = session.get(origin + "robots.txt", timeout=15)
+    robots = session.get(origin + "robots.txt", timeout=15, allow_redirects=False)
     if robots.status_code in (401,403,429):
         raise PermissionError(f"robots HTTP {robots.status_code}")
     if robots.status_code not in (200,404):
@@ -92,9 +93,11 @@ def load_feed(session, origin):
     rules.parse(robots.text.splitlines() if robots.status_code == 200 else [])
     if not rules.can_fetch(USER_AGENT,target):
         raise PermissionError("robots policy forbids feed")
-    response = session.get(target,timeout=25)
+    response = session.get(target,timeout=25, allow_redirects=False)
     if response.status_code in (401,403,429):
         raise PermissionError(f"feed HTTP {response.status_code}")
+    if 300 <= response.status_code < 400:
+        raise ValueError("Unapproved source redirect; review documented URL")
     response.raise_for_status()
     return parse_feed(response.content)
 
@@ -108,13 +111,12 @@ def inspect_all(since):
     for lang, origin in SITES.items():
         try:
             posts = load_feed(session,origin)
-            candidates = [dict(language=lang,**p) for p in posts
-                          if datetime.fromisoformat(p["published"]) >= since
-                          and is_message_candidate(lang,p,origin)]
+            candidates = [dict(language=lang, notify_new=datetime.fromisoformat(p['published']) >= since, **p) for p in posts
+                          if is_message_candidate(lang,p,origin)]
             result["sites"][lang] = {"state":"accessible","items":len(posts),
                                      "candidate_count":len(candidates)}
             result["candidates"].extend(candidates)
-        except (requests.RequestException, ValueError, PermissionError, ET.ParseError) as error:
+        except (requests.RequestException, ConnectionError, ValueError, PermissionError, ET.ParseError) as error:
             result["sites"][lang] = {"state":"failed","error_type":type(error).__name__,
                                      "detail":str(error)[:180]}
             result["status"]="incomplete"

@@ -1,100 +1,103 @@
 name: Watch community translations (review only)
-
 on:
   schedule:
-    - cron: '23 10,22 * * *'
+    # 08:00 and 20:00 Europe/Minsk (UTC+3). GitHub may start late.
+    - cron: '0 5,17 * * *'
   workflow_dispatch:
   pull_request:
     paths:
-      - scripts/watch_community_messages.py
-      - tests/test_watch_community_messages.py
+      - scripts/watch_*.py
+      - scripts/notify-watch.cjs
+      - tests/test_watch*.py
+      - tests/test-notify-watch.cjs
       - .github/workflows/watch-community-messages.yml
-
 permissions:
   contents: read
-  issues: write
-
+concurrency:
+  group: message-watch-community-${{ github.ref }}
+  cancel-in-progress: false
 jobs:
-  watch-translations:
+  check:
     runs-on: ubuntu-latest
     timeout-minutes: 12
+    outputs:
+      review: ${{ steps.compare.outputs.review }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Install parser dependencies
-        run: pip install -r requirements.txt
-      - name: Unit tests — ignore news and daily posts
-        run: python -m unittest discover -s tests -p test_watch_community_messages.py -v
-      - name: Check authorized community RSS metadata
+      - run: pip install -r requirements.txt
+      - run: node --test tests/test-notify-watch.cjs
+      - run: python -m unittest discover -s tests -p 'test_watch*.py' -v
+      - name: Restore previous observations (read only)
+        if: github.event_name != 'pull_request'
+        uses: actions/cache/restore@v4
+        with:
+          path: watch-state/community.json
+          key: message-observations-community-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: message-observations-community-
+      - name: Check documented source
+        id: source
+        if: github.event_name != 'pull_request'
+        continue-on-error: true
         run: python -m scripts.watch_community_messages --since "2026-10-23T00:00:00+00:00"
-      - name: Report status
-        if: always()
+      - name: Compare provenance and observations; never edit originals
+        id: compare
+        if: always() && github.event_name != 'pull_request'
         run: |
-          python - <<'PY'
+          python -m scripts.watch_review --kind community --report research-output/community-watch.json --state watch-state/community.json --output research-output/review.json
+          echo "review=true" >> "$GITHUB_OUTPUT"
+      - name: Summary
+        if: always() && github.event_name != 'pull_request'
+        run: |
+          python - <<'PYCODE'
           import json, os
           from pathlib import Path
-          p = Path("research-output/community-watch.json")
-          with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf8") as f:
-              f.write("## Language-by-language translation watch\n\n")
-              if not p.exists():
-                  f.write("**FAILED** — no report produced.\n")
+          path = Path('research-output/review.json')
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as out:
+              if not path.exists():
+                  out.write('**FAIL: no review report. This is not absence of changes.**\n')
               else:
-                  report=json.loads(p.read_text(encoding="utf8"))
-                  f.write("**State: "+report["status"]+"**\n\n")
-                  f.write("| Language | Site status | Candidate posts |\n|---|---|---:|\n")
-                  for lang,item in report["sites"].items():
-                      f.write("| "+lang+" | "+item["state"]+" | "+str(item.get("candidate_count","?"))+" |\n")
-                  f.write("\nCandidates are unverified and must be reviewed before importing texts.\n")
-          PY
-      - name: Upload audit report
-        if: always()
-        uses: actions/upload-artifact@v4
+                  report=json.loads(path.read_text())
+                  out.write('Source status: '+report['source_status']+'\n\nReview events: '+str(len(report['events']))+'\n')
+                  out.write('New cache initializes an observation baseline; historical corrections before it cannot be detected. No JSON import, approval or deployment.\n')
+          PYCODE
+      - uses: actions/upload-artifact@v4
+        if: always() && github.event_name != 'pull_request'
         with:
-          name: community-translation-watch
-          path: research-output/community-watch.json
-          retention-days: 14
-          if-no-files-found: warn
-      - name: Create review Issues for new message candidates
-        if: success() && github.event_name != 'pull_request'
-        uses: actions/github-script@v7
+          name: community-review-input
+          path: |
+            research-output/
+            watch-state/
+          retention-days: 30
+          if-no-files-found: error
+      - name: Source error is a failed check, never no changes
+        if: steps.source.outcome == 'failure'
+        run: exit 1
+  notify:
+    needs: check
+    if: always() && needs.check.outputs.review == 'true' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: community-review-input
+          path: review-input
+      - uses: actions/github-script@v7
         with:
           script: |
-            const fs = require('fs');
-            const data = JSON.parse(fs.readFileSync('research-output/community-watch.json', 'utf8'));
-            if (data.status !== 'ok') {
-              core.warning('One or more sources unavailable; do not claim no updates');
-              return;
-            }
-            const {owner,repo} = context.repo;
-            const issues = await github.paginate(github.rest.issues.listForRepo,
-              {owner,repo,state:'all',per_page:100});
-            for (const post of data.candidates) {
-              const marker = '<!-- message-watch ' + post.language + ' ' + post.url + ' -->';
-              if (issues.some(x => (x.body || '').includes(marker))) {
-                core.info('Already reported: ' + post.url);
-                continue;
-              }
-              const title = 'Проверить перевод [' + post.language.toUpperCase() + ']: ' +
-                post.title.slice(0, 130);
-              const body = [
-                'RSS общины содержит **возможную публикацию послания**. Это не подтверждённый импорт.',
-                '',
-                'Язык: ' + post.language,
-                'Заголовок: ' + post.title,
-                'Публикация: ' + post.published,
-                'Источник: ' + post.url,
-                'Категории: ' + (post.categories || []).join(', '),
-                '',
-                '- [ ] Проверить, что это действительно отдельный текст послания Богородицы',
-                '- [ ] Определить дату явления, визионера и тип',
-                '- [ ] Сверить перевод с утверждённым текстом общины',
-                '- [ ] Добавить в соответствующий JSON и индекс',
-                '- [ ] Провести тесты и редакционную проверку',
-                '',
-                'Автоматического изменения базы или публикации PWA нет.',
-                marker
-              ].join('\n');
-              await github.rest.issues.create({owner,repo,title,body,assignees:[owner]});
-            }
+            const notify = require('./scripts/notify-watch.cjs');
+            await notify({github, context, core, path:'review-input/research-output/review.json'});
+      # Commit comparison state only after successful notifications. API failure retries
+      # the same event next run; issue fingerprint markers prevent duplicate notices.
+      - run: mkdir -p watch-state && cp review-input/watch-state/community.json watch-state/community.json
+      - uses: actions/cache/save@v4
+        with:
+          path: watch-state/community.json
+          key: message-observations-community-${{ github.run_id }}-${{ github.run_attempt }}

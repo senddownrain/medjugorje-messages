@@ -43,10 +43,32 @@ def compare(official_dates, index):
         }
     }
 
-def fetch_dates():
+def extract_observations(html):
+    soup = BeautifulSoup(html, "html.parser")
+    for unsafe in soup.select('script, style, noscript'):
+        unsafe.decompose()
+    groups = {}
+    for heading in soup.select('h2'):
+        title = " ".join(heading.get_text(" ", strip=True).split())
+        if not DATE_RE.fullmatch(title):
+            continue
+        date = datetime.strptime(title, "%B %d, %Y").date().isoformat()
+        body = []
+        for sibling in heading.next_siblings:
+            if getattr(sibling, 'name', None) == 'h2':
+                break
+            text = sibling.get_text("\n", strip=True) if hasattr(sibling, 'get_text') else str(sibling).strip()
+            if text:
+                body.append(text)
+        groups.setdefault(date, []).append("\n".join(body))
+    if not groups:
+        raise ValueError("Official archive has no recognizable date headings")
+    return [{'date':date, 'sections':sections} for date, sections in sorted(groups.items(), reverse=True)]
+
+def fetch_archive():
     session = requests.Session()
     session.headers["User-Agent"] = USER_AGENT
-    robots_response = session.get("https://www.medjugorje.hr/robots.txt", timeout=15)
+    robots_response = session.get("https://www.medjugorje.hr/robots.txt", timeout=15, allow_redirects=False)
     if robots_response.status_code in (401, 403, 429):
         raise PermissionError("robots.txt HTTP " + str(robots_response.status_code))
     if robots_response.status_code not in (200, 404):
@@ -55,13 +77,15 @@ def fetch_dates():
     robot.parse(robots_response.text.splitlines() if robots_response.status_code == 200 else [])
     if not robot.can_fetch(USER_AGENT, URL):
         raise PermissionError("robots.txt disallows messages archive")
-    response = session.get(URL, timeout=25)
+    response = session.get(URL, timeout=25, allow_redirects=False)
     if response.status_code in (401, 403, 429):
         raise PermissionError("archive HTTP " + str(response.status_code))
+    if 300 <= response.status_code < 400:
+        raise ValueError("Unapproved source redirect; review documented URL")
     response.raise_for_status()
     if "html" not in response.headers.get("content-type", "").lower():
         raise ValueError("Unexpected source content type")
-    return extract_dates(response.text)
+    return response.text
 
 def main():
     p = argparse.ArgumentParser()
@@ -70,7 +94,9 @@ def main():
     args = p.parse_args()
     report = {"source": URL, "checked_at_utc": datetime.now(timezone.utc).isoformat()}
     try:
-        dates = fetch_dates()
+        html = fetch_archive()
+        dates = extract_dates(html)
+        report["observations"] = extract_observations(html)
         report.update(compare(dates, json.loads(args.index.read_text(encoding="utf-8"))))
     except Exception as exc:
         report.update({"status": "blocked_or_failed", "error": str(exc), "new_dates": None,

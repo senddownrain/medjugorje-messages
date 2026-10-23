@@ -1,96 +1,103 @@
 name: Watch official Medjugorje publication dates
 on:
   schedule:
-    - cron: '17 9,21 * * *'
+    # 08:00 and 20:00 Europe/Minsk (UTC+3). GitHub may start late.
+    - cron: '0 5,17 * * *'
   workflow_dispatch:
   pull_request:
     paths:
-      - 'scripts/watch_official_updates.py'
-      - 'tests/test_watch_official_updates.py'
-      - '.github/workflows/watch-official-messages.yml'
+      - scripts/watch_*.py
+      - scripts/notify-watch.cjs
+      - tests/test_watch*.py
+      - tests/test-notify-watch.cjs
+      - .github/workflows/watch-official-messages.yml
 permissions:
   contents: read
-  issues: write
+concurrency:
+  group: message-watch-official-${{ github.ref }}
+  cancel-in-progress: false
 jobs:
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 12
+    outputs:
+      review: ${{ steps.compare.outputs.review }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-      - name: Validate date parser
-        run: python -m unittest discover -s tests -p test_watch_official_updates.py -v
-      - name: Check official dates
+      - run: pip install -r requirements.txt
+      - run: node --test tests/test-notify-watch.cjs
+      - run: python -m unittest discover -s tests -p 'test_watch*.py' -v
+      - name: Restore previous observations (read only)
+        if: github.event_name != 'pull_request'
+        uses: actions/cache/restore@v4
+        with:
+          path: watch-state/official.json
+          key: message-observations-official-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: message-observations-official-
+      - name: Check documented source
+        id: source
+        if: github.event_name != 'pull_request'
+        continue-on-error: true
         run: python scripts/watch_official_updates.py
-      - name: Summarize outcome
-        if: always()
+      - name: Compare provenance and observations; never edit originals
+        id: compare
+        if: always() && github.event_name != 'pull_request'
         run: |
-          python - <<'PY'
+          python -m scripts.watch_review --kind official --report research-output/official-watch.json --state watch-state/official.json --output research-output/review.json
+          echo "review=true" >> "$GITHUB_OUTPUT"
+      - name: Summary
+        if: always() && github.event_name != 'pull_request'
+        run: |
+          python - <<'PYCODE'
           import json, os
           from pathlib import Path
-          p = Path("research-output/official-watch.json")
-          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as summary:
-              summary.write("## Official message publication watch\n\n")
-              if not p.exists():
-                  summary.write("FAILED: report not produced.\n")
+          path = Path('research-output/review.json')
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as out:
+              if not path.exists():
+                  out.write('**FAIL: no review report. This is not absence of changes.**\n')
               else:
-                  data = json.loads(p.read_text(encoding="utf-8"))
-                  summary.write("**Status:** " + data["status"] + "\n\n")
-                  if data["status"] == "blocked_or_failed":
-                      summary.write("**FAILED (not no updates):** " + data["error"] + "\n")
-                  else:
-                      summary.write("Latest official: " + data["latest_official"] + "\n\n")
-                      summary.write("Latest local: " + data["latest_local"] + "\n\n")
-                      summary.write("Newer dates: " + ", ".join(data["new_dates"] or ["none"]) + "\n\n")
-                      summary.write("**Seven translation languages have NOT been checked against the source.**\n")
-          PY
-      - name: Upload monitor report
-        if: always()
-        uses: actions/upload-artifact@v4
+                  report=json.loads(path.read_text())
+                  out.write('Source status: '+report['source_status']+'\n\nReview events: '+str(len(report['events']))+'\n')
+                  out.write('New cache initializes an observation baseline; historical corrections before it cannot be detected. No JSON import, approval or deployment.\n')
+          PYCODE
+      - uses: actions/upload-artifact@v4
+        if: always() && github.event_name != 'pull_request'
         with:
-          name: official-date-watch
-          path: research-output/official-watch.json
-          retention-days: 14
-          if-no-files-found: warn
-      - name: Create issue only for new dates
-        if: success() && github.event_name != 'pull_request'
-        uses: actions/github-script@v7
+          name: official-review-input
+          path: |
+            research-output/
+            watch-state/
+          retention-days: 30
+          if-no-files-found: error
+      - name: Source error is a failed check, never no changes
+        if: steps.source.outcome == 'failure'
+        run: exit 1
+  notify:
+    needs: check
+    if: always() && needs.check.outputs.review == 'true' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: official-review-input
+          path: review-input
+      - uses: actions/github-script@v7
         with:
           script: |
-            const fs = require('fs');
-            const report = JSON.parse(fs.readFileSync('research-output/official-watch.json', 'utf8'));
-            if (report.status !== 'new_dates_detected') return;
-            const {owner, repo} = context.repo;
-            const existing = await github.paginate(github.rest.issues.listForRepo,
-              {owner, repo, state:'all', per_page:100});
-            for (const date of report.new_dates) {
-              const title = 'Новое послание: ' + date + ' — проверить 7 языков';
-              if (existing.some(issue => issue.title === title)) {
-                core.info('Already reported: ' + date);
-                continue;
-              }
-              const body = [
-                'Обнаружена новая дата на официальном сайте Информационного центра Меджугорья.',
-                '',
-                'Дата: ' + date,
-                'Источник: ' + report.source,
-                '',
-                'Проверьте наличие перевода в каждом архиве независимо:',
-                '- [ ] Русский (RU)',
-                '- [ ] Беларуская (BE)',
-                '- [ ] Українська (UK)',
-                '- [ ] Hrvatski (HR)',
-                '- [ ] English (EN)',
-                '- [ ] Slovenčina (SK)',
-                '- [ ] Latviešu (LV)',
-                '',
-                'ВНИМАНИЕ: наличие новой даты НЕ означает наличие всех переводов.',
-                'medjugorje.ws возвращает HTTP 403 из GitHub Actions.',
-                'Ни один перевод не был автоматически импортирован или опубликован.'
-              ].join('\n');
-              await github.rest.issues.create({owner, repo, title, body, assignees:[owner]});
-            }
+            const notify = require('./scripts/notify-watch.cjs');
+            await notify({github, context, core, path:'review-input/research-output/review.json'});
+      # Commit comparison state only after successful notifications. API failure retries
+      # the same event next run; issue fingerprint markers prevent duplicate notices.
+      - run: mkdir -p watch-state && cp review-input/watch-state/official.json watch-state/official.json
+      - uses: actions/cache/save@v4
+        with:
+          path: watch-state/official.json
+          key: message-observations-official-${{ github.run_id }}-${{ github.run_attempt }}

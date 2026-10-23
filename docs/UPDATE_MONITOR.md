@@ -1,9 +1,48 @@
-# Monitoring and seven-language coverage
+# Проверка новых публикаций и исправлений — аудит и доработка
 
-GitHub Actions can read the official Information Centre English archive at https://www.medjugorje.hr/en/our-lady-messages-archive, but tests from GitHub runners confirm **HTTP 403** at www.medjugorje.ws and text.medjugorje.ws.
+## Аудит main `d6dccd7` (23.10.2026)
 
-The scheduled watcher checks **only new publication dates** twice daily: 09:17 and 21:17 UTC. It creates a GitHub Issue assigned to the repository owner, with 7 separate language checkboxes (RU, BE, UK, HR, EN, SK, LV) when it finds a new date. The source website's translations are NOT checked automatically, because that is presently blocked.
+Автопроверка уже существовала: `watch-official-messages.yml` проверял **даты** официального EN-архива; `watch-community-messages.yml` — консервативно отобранные **метаданные RSS** пяти сайтов Light of Mary. Поэтому новый параллельный механизм не создан: улучшены эти два workflow.
 
-The local index currently contains only RU/BE/UK. HR/EN/SK/LV need full archive imports from available saved .mht/.html files. The Latvian source last shows entries in 2019; don't claim a current Latvian translation exists without evidence. Older revisions/late translations are NOT detected by this date watcher.
+| Вопрос | До изменения |
+|---|---|
+| Источники | Официальный `www.medjugorje.hr/en/our-lady-messages-archive`; RSS `svetmariji.ru`, `svitlomariji.com.ua`, `svetlomariino.sk`, `medjugorje.lv`, `thelightofmary.com` |
+| Уникальность | Официальные даты позже max локальной даты; dedupe issue по title. RSS — язык + URL в marker, только публикации с 23.10.2026 |
+| Автоматический импорт | Нет. `research-import.yml` запускается вручную, пишет **unverified** данные в закрытый artifact, без записи `data/` и без deploy. Сохранённые HTML/MHT импортируются вручную |
+| Исправления старого текста | Не отслеживались; SHA-256 и конфликты существуют в ручных импортерах, но scheduled date/RSS checks их не сравнивали |
+| Уведомления | Дедуплицированные Issues, summary, JSON artifacts, failures при блокировке/пустой структуре |
 
-An access failure or unexpected page structure results in a failed workflow, never a 'no new messages' result. This run does NOT deploy or change the PWA.
+Устаревшее утверждение старого документа о наличии только трёх языков удалено: в main семь JSON. Это не означает семь актуальных переводов каждой записи. Данные имеют `verified:false`; редакционное утверждение не выведено из наличия в репозитории.
+
+## Новое поведение
+
+- Оба существующих workflow: `0 5,17 * * *` = **08:00/20:00 Europe/Minsk (UTC+3)** и `workflow_dispatch`. GitHub schedule может опаздывать и работает только после попадания workflow в default branch. Этот Draft PR сам расписание main **не активирует**; merge владельца не выполнялся.
+- robots.txt сохраняется; HTTP 401/403/429, неожиданные redirects и ошибки источника — failure/incomplete, не «нет новых посланий». Новых источников и обхода блокировок нет.
+- Identity: домен происхождения + язык + GUID RSS (или canonical permalink с устойчивыми query-параметрами); официальный архив — источник + дата раздела. Это **ID наблюдения источника**, не автоматически подтверждённый canonical ID послания. Одну дату с несколькими разделами не превращаем в одного визионера.
+- Официальный HTML, который уже загружал прежний watcher, теперь сохраняет видимые разделы под датами: исправление текста этого **EN-раздела** даёт `source_correction`. Из HTML удалены script/style; строки остаются данными, не кодом.
+- RSS сохраняет GUID, заголовок, URL, дату публикации, категории и description как **метаданные**, а не утверждённый текст послания. Все релевантные записи доступного окна наблюдаются для исправлений; первый снимок старых публикаций без новых событий становится baseline.
+- Сравниваются fingerprint полей и происхождение. Одинаковый текст разных GUID не склеивается. Перемещение permalink при постоянном GUID — изменение того же источника. Совпадение source_url с локальной записью явно показывается вместе с canonical ID/source_id/hash/verified.
+- Новая публикация и исправление различаются; отсутствующая запись RSS не объявляется удалённой. Исправление ранее наблюдавшегося источника обновляет существующее issue комментарием. Для новых кандидатов создаётся issue; неизвестные дата послания, визионер, тип явно обозначены. Ничего автоматически не атрибутируется.
+- Полный JSON event содержит source, checked_at_utc, languages, предыдущий fingerprint и unified diff **полей источника**. При большом diff issue сокращает отображение и направляет к приватному artifact. При отсутствии событий нет issues/comments.
+- Совместимость со старыми markers/title сохраняет ранее созданные issues. SHA markers в body/comments дедуплицируют повторы, включая закрытые issues. Состояние фиксируется **после** успешных уведомлений: ошибка API не теряет событие, повторный запуск не дублирует уже записанное.
+- Concurrency по workflow/ref предотвращает наложение запусков одного источника. Частичный отказ источника сохраняет baseline и не мешает редакционному отчёту по успешно прочитанным сайтам; workflow всё равно FAIL.
+
+## Границы достоверности
+
+`medjugorje.ws` исторически возвращает 403 GitHub runners. Его тексты **не скачиваются и не сравниваются** этим монитором. Точное отличие наблюдений не означает точного diff семи исходных JSON: прямое соответствие происхождения и полный текст часто отсутствуют. Новая дата официального EN-архива не доказывает наличие HR/RU/BE/UK/SK/LV. Текущего документированного BE-feed нет. Общий RSS может пропустить публикацию вне доступного окна; исправления старше baseline или за пределами RSS неизвестны. После удаления/истечения GitHub cache создаётся новый baseline; тихая потеря исторического покрытия не скрывается, summary сообщает инициализацию. Новые публикации по-прежнему дедуплицируются markers issues.
+
+Первый доступ к источнику — baseline, а не подтверждение исторических текстов. Добавление полного текстового diff переводов требует авторизованного источника/API или сохранённых HTML/MHT и отдельной редакционной проверки. Текущий код не обещает невозможного покрытия.
+
+## Безопасность и credentials
+
+Check job: `contents:read`; только отдельный trusted schedule/dispatch notify job имеет `issues:write`. PR запускает тесты, не сетевое сканирование и не уведомления. `pull_request_target` отсутствует. Нет write contents, push исходных JSON, auto-approve, PR merge или deployment.
+
+Внешние данные читаются парсерами/JSON; не интерполируются в shell, JS-код или workflow expressions. Issue поля экранируют HTML, fences и mentions. Стандартный `GITHUB_TOKEN` предоставляет GitHub Actions; новые credentials не нужны, секреты не выводятся.
+
+## Проверки и Android
+
+**PASS локально:** 42 Python-теста (включая 17 watcher tests), Node mock GitHub API (создание, closed issues, исправления, повторы, inert external data), `check:data`, `build`, YAML validation и неизменность `data/`.
+**FAIL окружения, корректно зарегистрирован:** реальный read-only CLI официального watcher 23.10.2026 получил proxy CONNECT 403 к robots.txt. Отчёт `blocked_or_failed`, exit 2, `new_dates:null`, а не «нет изменений». Это отказ сетевой политики среды, не новый вывод о доступе сайта из GitHub Actions.
+**NOT TESTED:** live scan всех источников в GitHub для этой ветки; state restore/save и реальное создание issues в scheduled runner. До merge расписание нового Draft не активно. Физический Android не требуется для серверного watcher.
+
+С телефона: открыть вкладку Files этого PR и этот отчёт. После отдельного решения владельца о merge: GitHub → Actions → нужный Watch → Run workflow; проверить summary и artifact. При новом событии открыть issue, сверить source/date/type/visionary/languages/diff; не считать неизвестные поля утверждёнными. Ошибка проверки видна красным и требует диагностики, а не импорта.
