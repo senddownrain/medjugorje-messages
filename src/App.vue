@@ -285,17 +285,29 @@ function readHash() {
 async function load() {
   busy.value = true; failed.value = false;
   try {
-    const files = await Promise.all(['index', 'ru', 'be', 'uk'].map(async name => {
+    const required = ['index', 'ru', 'be', 'uk'];
+    const optional = ['hr', 'en', 'sk', 'lv'];
+    async function read(name, allowMissing = false) {
       const response = await fetch(import.meta.env.BASE_URL + 'data/' + name + '.json');
-      if (!response.ok) throw new Error(name + ': HTTP ' + response.status);
-      return await response.json();
-    }));
-    if (!Array.isArray(files[0].messages)) throw new Error('Invalid data index');
-    index.value = [...files[0].messages].sort((a, b) =>
+      if (!response.ok) {
+        if (allowMissing && response.status === 404) return null;
+        throw new Error(name + ': HTTP ' + response.status);
+      }
+      const result = await response.json();
+      if (!result || typeof result !== 'object') throw new Error('Invalid JSON: ' + name);
+      return result;
+    }
+    const first = await Promise.all(required.map(code => read(code)));
+    const extras = await Promise.all(optional.map(code => read(code, true)));
+    if (!Array.isArray(first[0].messages)) throw new Error('Invalid data index');
+    index.value = [...first[0].messages].sort((a, b) =>
       b.date.localeCompare(a.date) || b.id.localeCompare(a.id));
+    const languageFiles = [...first.slice(1), ...extras];
     localized.value = Object.fromEntries(
-      ['ru', 'be', 'uk'].map((code, n) =>
-        [code, Object.fromEntries(files[n + 1].messages.map(row => [row.id, row]))])
+      [...required.slice(1), ...optional]
+        .map((code, n) => [code, languageFiles[n]])
+        .filter(([,file]) => file && Array.isArray(file.messages))
+        .map(([code,file]) => [code, Object.fromEntries(file.messages.map(row => [row.id, row]))])
     );
     readHash();
   } catch (error) {
