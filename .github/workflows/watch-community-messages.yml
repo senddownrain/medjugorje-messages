@@ -28,7 +28,7 @@ jobs:
       - name: Unit tests — ignore news and daily posts
         run: python -m unittest discover -s tests -p test_watch_community_messages.py -v
       - name: Check authorized community RSS metadata
-        run: python scripts/watch_community_messages.py --since "2026-10-23T00:00:00+00:00"
+        run: python -m scripts.watch_community_messages --since "2026-10-23T00:00:00+00:00"
       - name: Report status
         if: always()
         run: |
