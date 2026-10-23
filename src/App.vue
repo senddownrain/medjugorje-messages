@@ -1,10 +1,15 @@
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue';
+import { useTheme } from 'vuetify';
 
 const languages = [
   { code: 'ru', short: 'RU', full: 'Русский' },
   { code: 'be', short: 'BY', full: 'Беларуская' },
-  { code: 'uk', short: 'UA', full: 'Українська' }
+  { code: 'uk', short: 'UA', full: 'Українська' },
+  { code: 'hr', short: 'HR', full: 'Hrvatski' },
+  { code: 'en', short: 'EN', full: 'English' },
+  { code: 'sk', short: 'SK', full: 'Slovenčina' },
+  { code: 'lv', short: 'LV', full: 'Latviešu' }
 ];
 const translations = {
   ru: {
@@ -68,14 +73,119 @@ const translations = {
     notVerified: 'Дослідницький архів — дані ще перевіряються'
   }
 };
+
+const extraTranslations = {
+  en: {
+    brand: 'Queen of Peace', subtitle: 'Messages from Medjugorje',
+    latest: 'Latest', archive: 'Archive', latestMonthly: 'Latest monthly message',
+    date: 'Date', year: 'Year', type: 'Type', visionary: 'Visionary', search: 'Search',
+    allYears: 'All years', allTypes: 'All types', allVisionaries: 'All',
+    anyDate: 'Any date', searchPlaceholder: 'Search titles and messages',
+    monthly: 'Monthly', weekly: 'Weekly', annual: 'Annual', special: 'Special', other: 'Other',
+    marija: 'Marija', mirjana: 'Mirjana', ivanka: 'Ivanka', jakov: 'Jakov', ivan: 'Ivan',
+    unknown: 'Not specified', noText: 'No message text in this archived entry.',
+    unavailable: 'Translation unavailable in this language.',
+    available: 'Available in', found: 'Messages found', showMore: 'Show more',
+    noResults: 'No matching messages.', reset: 'Clear filters', original: 'Source',
+    back: 'Back to archive', note: 'Source note', read: 'Read message',
+    loading: 'Loading archive…', error: 'Could not load the archive.',
+    retry: 'Try again', footer: 'Translations provided by the community; texts are under review.',
+    light: 'Light theme', dark: 'Dark theme',
+    stored: 'After the first successful load, you can read offline.',
+    notVerified: 'Research archive — editorial verification in progress'
+  },
+  hr: {
+    brand: 'Kraljica Mira', subtitle: 'Poruke iz Međugorja', latest: 'Najnovija',
+    archive: 'Arhiva', latestMonthly: 'Najnovija mjesečna poruka',
+    date: 'Datum', year: 'Godina', type: 'Vrsta', visionary: 'Vidjelac', search: 'Pretraga',
+    allYears: 'Sve godine', allTypes: 'Sve vrste', allVisionaries: 'Svi',
+    anyDate: 'Bilo koji datum', searchPlaceholder: 'Pretraži poruke',
+    monthly: 'Mjesečna', weekly: 'Tjedna', annual: 'Godišnja', special: 'Posebna', other: 'Druga',
+    marija: 'Marija', mirjana: 'Mirjana', ivanka: 'Ivanka', jakov: 'Jakov', ivan: 'Ivan',
+    unknown: 'Nije navedeno', noText: 'Tekst poruke nije dostupan u arhivi.',
+    unavailable: 'Prijevod na ovom jeziku još nije učitan.',
+    available: 'Dostupni jezici', found: 'Pronađene poruke', showMore: 'Prikaži više',
+    noResults: 'Nema odgovarajućih poruka.', reset: 'Poništi filtre',
+    original: 'Izvor', back: 'Natrag u arhivu', note: 'Napomena izvora',
+    read: 'Pročitaj poruku', loading: 'Učitavanje arhive…',
+    error: 'Arhiva se ne može učitati.', retry: 'Pokušaj ponovno',
+    footer: 'Prijevode je osigurala zajednica; tekstovi se provjeravaju.',
+    light: 'Svijetla tema', dark: 'Tamna tema',
+    stored: 'Arhiva je dostupna izvan mreže nakon prvog učitavanja.',
+    notVerified: 'Istraživačka arhiva — provjera je u tijeku'
+  },
+  sk: {
+    brand: 'Kráľovná pokoja', subtitle: 'Posolstvá z Medžugoria',
+    latest: 'Najnovšie', archive: 'Archív', latestMonthly: 'Najnovšie mesačné posolstvo',
+    date: 'Dátum', year: 'Rok', type: 'Typ', visionary: 'Vizionár', search: 'Hľadať',
+    allYears: 'Všetky roky', allTypes: 'Všetky typy', allVisionaries: 'Všetci',
+    anyDate: 'Ľubovoľný dátum', searchPlaceholder: 'Hľadať v posolstvách',
+    monthly: 'Mesačné', weekly: 'Týždenné', annual: 'Ročné', special: 'Osobitné', other: 'Iné',
+    marija: 'Marija', mirjana: 'Mirjana', ivanka: 'Ivanka', jakov: 'Jakov', ivan: 'Ivan',
+    unknown: 'Neuvedené', noText: 'Text posolstva nie je v archíve.',
+    unavailable: 'Preklad v tomto jazyku zatiaľ nebol nahraný.',
+    available: 'Dostupné jazyky', found: 'Nájdené posolstvá', showMore: 'Zobraziť viac',
+    noResults: 'Nenašli sa žiadne posolstvá.', reset: 'Vymazať filtre',
+    original: 'Zdroj', back: 'Späť do archívu', note: 'Poznámka zdroja',
+    read: 'Čítať posolstvo', loading: 'Načítava sa archív…',
+    error: 'Archív sa nepodarilo načítať.', retry: 'Skúsiť znova',
+    footer: 'Preklady poskytla komunita; texty sa overujú.',
+    light: 'Svetlá téma', dark: 'Tmavá téma',
+    stored: 'Po prvom načítaní je archív dostupný offline.',
+    notVerified: 'Výskumný archív — prebieha kontrola'
+  },
+  lv: {
+    brand: 'Miera Karaliene', subtitle: 'Medžugorjes vēstījumi',
+    latest: 'Jaunākais', archive: 'Arhīvs', latestMonthly: 'Jaunākais ikmēneša vēstījums',
+    date: 'Datums', year: 'Gads', type: 'Veids', visionary: 'Vizionārs', search: 'Meklēt',
+    allYears: 'Visi gadi', allTypes: 'Visi veidi', allVisionaries: 'Visi',
+    anyDate: 'Jebkurš datums', searchPlaceholder: 'Meklēt vēstījumos',
+    monthly: 'Ikmēneša', weekly: 'Iknedēļas', annual: 'Ikgadējs', special: 'Īpašs', other: 'Cits',
+    marija: 'Marija', mirjana: 'Mirjana', ivanka: 'Ivanka', jakov: 'Jakovs', ivan: 'Ivans',
+    unknown: 'Nav norādīts', noText: 'Šajā arhīva ierakstā nav vēstījuma teksta.',
+    unavailable: 'Tulkojums šajā valodā vēl nav pievienots.',
+    available: 'Pieejamās valodas', found: 'Atrasti vēstījumi', showMore: 'Rādīt vairāk',
+    noResults: 'Vēstījumi nav atrasti.', reset: 'Notīrīt filtrus',
+    original: 'Avots', back: 'Atpakaļ uz arhīvu', note: 'Avota piezīme',
+    read: 'Lasīt vēstījumu', loading: 'Ielādē arhīvu…',
+    error: 'Neizdevās ielādēt arhīvu.', retry: 'Mēģināt vēlreiz',
+    footer: 'Tulkojumus nodrošinājusi kopiena; tekstus vēl pārbauda.',
+    light: 'Gaišais režīms', dark: 'Tumšais režīms',
+    stored: 'Pēc pirmās ielādes arhīvs pieejams bezsaistē.',
+    notVerified: 'Pētniecības arhīvs — notiek pārbaude'
+  }
+};
+Object.assign(translations, extraTranslations);
+const settingsStrings = {
+  ru: {settings:'Настройки',interfaceLanguage:'Язык интерфейса',readingLanguage:'Язык посланий',appearance:'Оформление',systemTheme:'Как в системе',lightTheme:'Светлая',darkTheme:'Тёмная',close:'Закрыть',awaiting:'Архив этого языка ещё готовится. Можно выбрать язык интерфейса уже сейчас.'},
+  be: {settings:'Налады',interfaceLanguage:'Мова інтэрфейсу',readingLanguage:'Мова пасланняў',appearance:'Афармленне',systemTheme:'Як у сістэме',lightTheme:'Светлая',darkTheme:'Цёмная',close:'Закрыць',awaiting:'Архіў гэтай мовы яшчэ рыхтуецца. Мову інтэрфейсу ўжо можна выбраць.'},
+  uk: {settings:'Налаштування',interfaceLanguage:'Мова інтерфейсу',readingLanguage:'Мова послань',appearance:'Вигляд',systemTheme:'Як у системі',lightTheme:'Світла',darkTheme:'Темна',close:'Закрити',awaiting:'Архів цією мовою ще готується. Мову інтерфейсу вже можна обрати.'},
+  en: {settings:'Settings',interfaceLanguage:'Interface language',readingLanguage:'Message language',appearance:'Appearance',systemTheme:'System default',lightTheme:'Light',darkTheme:'Dark',close:'Close',awaiting:'This language archive is being prepared. You can already use its interface language.'},
+  hr: {settings:'Postavke',interfaceLanguage:'Jezik sučelja',readingLanguage:'Jezik poruka',appearance:'Izgled',systemTheme:'Prema sustavu',lightTheme:'Svijetla',darkTheme:'Tamna',close:'Zatvori',awaiting:'Arhiva na ovom jeziku još se priprema. Jezik sučelja već možete odabrati.'},
+  sk: {settings:'Nastavenia',interfaceLanguage:'Jazyk rozhrania',readingLanguage:'Jazyk posolstiev',appearance:'Vzhľad',systemTheme:'Podľa systému',lightTheme:'Svetlá',darkTheme:'Tmavá',close:'Zavrieť',awaiting:'Archív v tomto jazyku sa pripravuje. Jazyk rozhrania si už môžete vybrať.'},
+  lv: {settings:'Iestatījumi',interfaceLanguage:'Saskarnes valoda',readingLanguage:'Vēstījumu valoda',appearance:'Izskats',systemTheme:'Sistēmas iestatījums',lightTheme:'Gaišais',darkTheme:'Tumšais',close:'Aizvērt',awaiting:'Šīs valodas arhīvs vēl tiek sagatavots. Saskarnes valodu jau var izvēlēties.'}
+};
+for (const code of Object.keys(settingsStrings)) Object.assign(translations[code], settingsStrings[code]);
+
 function initialSetting(key, fallback) {
   try { return localStorage.getItem(key) || fallback; }
   catch { return fallback; }
 }
-const lang = ref(['ru', 'be', 'uk'].includes(initialSetting('medjugorje-language', 'ru'))
+const allowedLanguages = languages.map(item => item.code);
+const lang = ref(allowedLanguages.includes(initialSetting('medjugorje-language', 'ru'))
   ? initialSetting('medjugorje-language', 'ru') : 'ru');
+const uiLang = ref(allowedLanguages.includes(initialSetting('medjugorje-interface-language', 'ru'))
+  ? initialSetting('medjugorje-interface-language', 'ru') : 'ru');
+const languageOptions = languages.map(item => ({title: item.full, value: item.code}));
+const settingsOpen = ref(false);
+const vuetifyTheme = useTheme();
 const theme = ref(initialSetting('medjugorje-theme', 'auto'));
-const T = computed(() => translations[lang.value]);
+const T = computed(() => translations[uiLang.value] || translations.ru);
+const appearanceOptions = computed(() => [
+  {title:T.value.systemTheme,value:'auto'},
+  {title:T.value.lightTheme,value:'light'},
+  {title:T.value.darkTheme,value:'dark'}
+]);
 const section = ref('latest');
 const selectedId = ref(null);
 const index = ref([]);
@@ -93,11 +203,16 @@ const knownCategories = ['monthly', 'weekly', 'annual', 'special', 'other'];
 
 function applyTheme(value) {
   document.documentElement.dataset.theme = value === 'auto' ? '' : value;
+  const dark = value === 'dark' || (value === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  vuetifyTheme.global.name.value = dark ? 'marianDark' : 'marianLight';
 }
 watch(lang, value => {
   try { localStorage.setItem('medjugorje-language', value); } catch { /* private browser mode */ }
-  document.documentElement.lang = value === 'be' ? 'be' : value;
   limit.value = 35;
+});
+watch(uiLang, value => {
+  try { localStorage.setItem('medjugorje-interface-language', value); } catch { /* private mode */ }
+  document.documentElement.lang = value;
 });
 watch(theme, value => {
   try { localStorage.setItem('medjugorje-theme', value); } catch { /* private browser mode */ }
@@ -106,7 +221,7 @@ watch(theme, value => {
 
 function formatDate(value) {
   if (!value) return '';
-  const locale = lang.value === 'be' ? 'be-BY' : lang.value === 'uk' ? 'uk-UA' : 'ru-RU';
+  const locale = ({be:'be-BY',uk:'uk-UA',hr:'hr-HR',sk:'sk-SK',lv:'lv-LV',en:'en-US'})[uiLang.value] || 'ru-RU';
   return new Date(value + 'T12:00:00Z').toLocaleDateString(locale,
     { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
 }
@@ -114,11 +229,13 @@ function typename(type) { return T.value[type] || T.value.other; }
 function visionaryName(value) { return T.value[value] || (value || T.value.unknown); }
 function getTranslation(id) { return localized.value[lang.value]?.[id] || null; }
 const latestRow = computed(() => index.value.find(row =>
-  row.type === 'monthly' && row.translations?.[lang.value]?.has_text));
+  row.type === 'monthly' && row.translations?.[lang.value]?.has_text)
+  || index.value.find(row => row.type === 'monthly'));
 const currentRow = computed(() => selectedId.value
   ? index.value.find(row => row.id === selectedId.value) : latestRow.value);
 const currentTranslation = computed(() => currentRow.value
   ? getTranslation(currentRow.value.id) : null);
+const hasLanguageArchive = computed(() => Boolean(localized.value[lang.value]));
 const availableLanguages = computed(() => languages.filter(item =>
   currentRow.value?.translations?.[item.code]?.has_text));
 const years = computed(() => Array.from(new Set(
@@ -190,14 +307,15 @@ async function load() {
 }
 onMounted(() => {
   applyTheme(theme.value);
-  document.documentElement.lang = lang.value;
+  document.documentElement.lang = uiLang.value;
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if (theme.value === 'auto') applyTheme('auto'); });
   window.addEventListener('hashchange', readHash);
   load();
 });
 </script>
 
 <template>
-  <div class="app-shell">
+  <v-app><div class="app-shell">
     <header class="topbar">
       <div class="brand" @click="selectSection('latest')" role="button" tabindex="0" @keydown.enter="selectSection('latest')">
         <span class="brand-symbol" aria-hidden="true">✳</span>
@@ -207,12 +325,11 @@ onMounted(() => {
         </span>
       </div>
       <div class="top-actions">
-        <div class="language-picker" aria-label="Language">
-          <button v-for="item in languages" :key="item.code" type="button"
-            :class="{ active: lang === item.code }"
-            :aria-label="item.full" :aria-pressed="lang === item.code"
-            @click="lang = item.code">{{ item.short }}</button>
-        </div>
+        <button class="language-shortcut" type="button" @click="settingsOpen = true" :aria-label="T.readingLanguage">
+          {{ languages.find(item => item.code === lang)?.short || 'RU' }}
+        </button>
+        <v-btn class="settings-button" variant="text" size="small"
+          :aria-label="T.settings" :title="T.settings" @click="settingsOpen = true">⚙</v-btn>
         <button class="theme-button" type="button"
           :title="theme === 'dark' ? T.light : T.dark"
           :aria-label="theme === 'dark' ? T.light : T.dark"
@@ -221,6 +338,24 @@ onMounted(() => {
         </button>
       </div>
     </header>
+
+    <v-dialog v-model="settingsOpen" max-width="470" scrollable>
+      <v-card class="settings-dialog">
+        <v-card-title class="dialog-title">{{ T.settings }}</v-card-title>
+        <v-card-text>
+          <v-select v-model="uiLang" :items="languageOptions" :label="T.interfaceLanguage"
+            density="comfortable" variant="outlined" hide-details="auto" class="setting-control" />
+          <v-select v-model="lang" :items="languageOptions" :label="T.readingLanguage"
+            density="comfortable" variant="outlined" hide-details="auto" class="setting-control" />
+          <p v-if="!hasLanguageArchive" class="settings-hint">{{ T.awaiting }}</p>
+          <v-select v-model="theme" :items="appearanceOptions" :label="T.appearance"
+            density="comfortable" variant="outlined" hide-details="auto" class="setting-control" />
+        </v-card-text>
+        <v-card-actions>
+          <v-btn variant="text" color="primary" @click="settingsOpen = false">{{ T.close }}</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
     <main class="content">
       <nav class="main-nav" :aria-label="T.subtitle">
@@ -262,7 +397,7 @@ onMounted(() => {
               <p v-else class="message-text">{{ currentTranslation.text }}</p>
             </div>
             <p v-else class="empty-text">
-              {{ currentTranslation ? T.noText : T.unavailable }}
+              {{ currentTranslation ? T.noText : (!hasLanguageArchive ? T.awaiting : T.unavailable) }}
             </p>
             <div v-if="availableLanguages.length > 0 && (selectedId || !currentTranslation?.text)"
               class="other-languages">
@@ -324,7 +459,7 @@ onMounted(() => {
             <span>{{ T.found }}: <strong>{{ results.length }}</strong></span>
             <button type="button" @click="clearFilters">{{ T.reset }}</button>
           </div>
-          <div v-if="results.length === 0" class="state-message">{{ T.noResults }}</div>
+          <div v-if="results.length === 0" class="state-message">{{ hasLanguageArchive ? T.noResults : T.awaiting }}</div>
           <div v-else class="results-list">
             <button v-for="row in shownResults" :key="row.id"
               class="result-item" type="button" @click="openMessage(row.id)">
@@ -346,5 +481,5 @@ onMounted(() => {
       <p class="footnote">{{ T.notVerified }}</p>
       <p class="offline-note">{{ T.stored }}</p>
     </footer>
-  </div>
+  </div></v-app>
 </template>
