@@ -19,8 +19,8 @@ from scripts.probe_community_feeds import SITES, USER_AGENT
 
 # Exclude commentary whose titles merely quote a message.
 TITLE_PATTERNS = {
-    "ru": re.compile(r"^(?:послани[ея]\s+(?:богородиц|цариц|девы марии)|ежегодное послание)\b", re.I),
-    "uk": re.compile(r"^(?:послання\s+(?:богородиц|цариц|діви марії)|щорічне послання)\b", re.I),
+    "ru": re.compile(r"^(?:послани[ея]\s+(?:богородиц\w*|цариц\w*|девы марии)|ежегодное послание)\b", re.I),
+    "uk": re.compile(r"^(?:послання\s+(?:богородиц\w*|цариц\w*|діви марії)|щорічне послання)\b", re.I),
     "sk": re.compile(r"^(?:posolstvo\s+(?:panny márie|kráľovnej pokoja)|výročné (?:posolstvo|zjavenie))\b", re.I),
     "lv": re.compile(r"^(?:dievmātes.*?\bvēstījums|vēstījums marijai pavlovičai|ikmēneša vēstījums)\b", re.I),
     "en": re.compile(r"^(?:message from the queen of peace|our lady.s message|annual message of our lady|monthly message from)\b", re.I)
