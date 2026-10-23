@@ -1,0 +1,96 @@
+name: Watch official Medjugorje publication dates
+on:
+  schedule:
+    - cron: '17 9,21 * * *'
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'scripts/watch_official_updates.py'
+      - 'tests/test_watch_official_updates.py'
+      - '.github/workflows/watch-official-messages.yml'
+permissions:
+  contents: read
+  issues: write
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Validate date parser
+        run: python -m unittest discover -s tests -p test_watch_official_updates.py -v
+      - name: Check official dates
+        run: python scripts/watch_official_updates.py
+      - name: Summarize outcome
+        if: always()
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          p = Path("research-output/official-watch.json")
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as summary:
+              summary.write("## Official message publication watch\n\n")
+              if not p.exists():
+                  summary.write("FAILED: report not produced.\n")
+              else:
+                  data = json.loads(p.read_text(encoding="utf-8"))
+                  summary.write("**Status:** " + data["status"] + "\n\n")
+                  if data["status"] == "blocked_or_failed":
+                      summary.write("**FAILED (not no updates):** " + data["error"] + "\n")
+                  else:
+                      summary.write("Latest official: " + data["latest_official"] + "\n\n")
+                      summary.write("Latest local: " + data["latest_local"] + "\n\n")
+                      summary.write("Newer dates: " + ", ".join(data["new_dates"] or ["none"]) + "\n\n")
+                      summary.write("**Seven translation languages have NOT been checked against the source.**\n")
+          PY
+      - name: Upload monitor report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: official-date-watch
+          path: research-output/official-watch.json
+          retention-days: 14
+          if-no-files-found: warn
+      - name: Create issue only for new dates
+        if: success() && github.event_name != 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = JSON.parse(fs.readFileSync('research-output/official-watch.json', 'utf8'));
+            if (report.status !== 'new_dates_detected') return;
+            const {owner, repo} = context.repo;
+            const existing = await github.paginate(github.rest.issues.listForRepo,
+              {owner, repo, state:'all', per_page:100});
+            for (const date of report.new_dates) {
+              const title = 'Новое послание: ' + date + ' — проверить 7 языков';
+              if (existing.some(issue => issue.title === title)) {
+                core.info('Already reported: ' + date);
+                continue;
+              }
+              const body = [
+                'Обнаружена новая дата на официальном сайте Информационного центра Меджугорья.',
+                '',
+                'Дата: ' + date,
+                'Источник: ' + report.source,
+                '',
+                'Проверьте наличие перевода в каждом архиве независимо:',
+                '- [ ] Русский (RU)',
+                '- [ ] Беларуская (BE)',
+                '- [ ] Українська (UK)',
+                '- [ ] Hrvatski (HR)',
+                '- [ ] English (EN)',
+                '- [ ] Slovenčina (SK)',
+                '- [ ] Latviešu (LV)',
+                '',
+                'ВНИМАНИЕ: наличие новой даты НЕ означает наличие всех переводов.',
+                'medjugorje.ws возвращает HTTP 403 из GitHub Actions.',
+                'Ни один перевод не был автоматически импортирован или опубликован.'
+              ].join('\n');
+              await github.rest.issues.create({owner, repo, title, body, assignees:[owner]});
+            }
