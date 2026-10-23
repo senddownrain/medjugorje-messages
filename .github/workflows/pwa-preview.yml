@@ -27,7 +27,7 @@ jobs:
       - name: Validate all seven language files and text checksums
         run: npm run check:data
       - name: Compile Vue PWA with offline seven-language archive
-        run: npm run build
+        run: npm run build:private
       - name: Upload private build for inspection
         uses: actions/upload-artifact@v4
         with:
