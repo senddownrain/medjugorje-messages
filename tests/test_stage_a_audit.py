@@ -35,14 +35,15 @@ def save_mhtml(path, html, location):
 class StageAAuditTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.report = build_report(ROOT / "data", ROOT / "research-sources/medjugorje_original_sources_seven.zip")
+        cls.report = build_report(ROOT / "data", ROOT / "research-sources/medjugorje_original_sources_seven.zip",
+            thematic_zip=ROOT / "research-sources/medjugorje_thematic_en_hr_sources_audit_2026-10-23.zip")
 
     def test_current_snapshot_has_no_integrity_violations(self):
         self.assertEqual(self.report["violations"], [])
 
     def test_all_seven_original_snapshots_match_without_proving_category_coverage(self):
         sources = self.report["sources"]
-        self.assertEqual(sources["status"], "SEVEN_ALL_SNAPSHOTS_MATCH_JSON_PENDING_CATEGORY_REVIEW")
+        self.assertEqual(sources["status"], "VERIFIED_SOURCE_SNAPSHOT_COVERAGE")
         self.assertEqual(len(sources["sources"]), 7)
         self.assertEqual(sources["source_records_compared"], sum(s["records"] for s in self.report["summary"]["languages"].values()))
         self.assertEqual(sources["source_missing_count"], 0)
@@ -51,7 +52,8 @@ class StageAAuditTests(unittest.TestCase):
         self.assertEqual(sources["unclassified_source_block_count"], 0)
         self.assertEqual(sources["non_message_navigation_count"], 286)
         self.assertEqual(sources["json_records_absent_from_saved_sources"], 0)
-        self.assertEqual(set(sources["missing_required"]), {"en/annual", "en/special", "hr/annual", "hr/special"})
+        self.assertEqual(sources["missing_required"], [])
+        self.assertEqual(self.report["summary"]["editorial_status"], "PENDING_EDITORIAL_ATTRIBUTION")
         self.assertEqual(set().union(*(set(s["source_ids"]) for s in sources["sources"])),
                          {r["id"] for r in self.report["inventory"]})
         self.assertTrue(all(s["supplied_manifest_sha_and_size_and_count_match"] for s in sources["sources"]))
@@ -67,7 +69,7 @@ class StageAAuditTests(unittest.TestCase):
         self.assertEqual(self.report["sources"]["proposals_confirmed_in_original_all"], len(self.report["proposals"]))
         with zipfile.ZipFile(source_path) as archive:
             for proposal in self.report["proposals"]:
-                self.assertEqual(proposal["review_status"], "original_all_snapshot_confirmed_pending_category_and_editorial_review")
+                self.assertEqual(proposal["review_status"], "PENDING_EDITORIAL_ATTRIBUTION")
                 self.assertFalse(proposal["applied"])
                 for evidence in proposal["evidence"]:
                     snapshot = evidence["original_snapshot"]

@@ -13,6 +13,7 @@ from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 from scripts.import_mhtml import LANGS, TYPES, load_html, parse_page
 from scripts.audit_source_snapshots import attach_source_evidence
+from scripts.audit_thematic_snapshots import attach_thematic_evidence
 
 
 def digest(raw):
@@ -243,16 +244,20 @@ def write_reports(report, out):
     for name, value in report.items():
         (out / f"{name}.json").write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     with (out / "proposals.csv").open("w", encoding="utf-8", newline="") as stream:
-        writer = csv.DictWriter(stream, lineterminator="\n", fieldnames=("id", "date", "field", "before", "proposed", "confidence", "review_status", "applied", "evidence"))
+        writer = csv.DictWriter(stream, lineterminator="\n", fieldnames=("id", "date", "field", "before", "proposed", "confidence", "review_status", "applied", "evidence", "source_group_evidence"))
         writer.writeheader()
         for row in report["proposals"]:
-            writer.writerow({**row, "before": json.dumps(row["before"]), "evidence": json.dumps(row["evidence"], ensure_ascii=False)})
+            writer.writerow({**row, "before": json.dumps(row["before"]), "evidence": json.dumps(row["evidence"], ensure_ascii=False),
+                             "source_group_evidence": json.dumps(row.get("source_group_evidence", []), ensure_ascii=False)})
 
 
-def build_report(folder, source_zip=None, manifest=None):
+def build_report(folder, source_zip=None, manifest=None, thematic_zip=None):
     report = audit_data(folder)
     if source_zip:
-        return attach_source_evidence(report, source_zip, folder)
+        report = attach_source_evidence(report, source_zip, folder)
+        return attach_thematic_evidence(report, thematic_zip, folder) if thematic_zip else report
+    if thematic_zip:
+        raise ValueError("Thematic coverage requires the original seven-source ZIP too")
     report["sources"] = audit_sources(manifest, folder)
     return report
 
@@ -263,6 +268,7 @@ def main():
     source_args = parser.add_mutually_exclusive_group()
     source_args.add_argument("--sources", type=Path, help="Local JSON manifest of saved source MHTML files")
     source_args.add_argument("--source-zip", type=Path, help="Original seven-source ZIP, verified independently")
+    parser.add_argument("--thematic-zip", type=Path, help="Four original thematic snapshots plus reference audit")
     parser.add_argument("--out", type=Path, default=Path("reports/stage-a"))
     args = parser.parse_args()
     # Prevent an accidental report destination from touching original inputs.
@@ -277,10 +283,18 @@ def main():
             parser.error("Output must not contain source inputs or their manifest")
     if args.source_zip and (out == args.source_zip.resolve() or out in args.source_zip.resolve().parents):
         parser.error("Output must not contain the source ZIP")
-    report = build_report(args.data, args.source_zip, args.sources)
+    if args.thematic_zip and (not args.source_zip or out == args.thematic_zip.resolve() or out in args.thematic_zip.resolve().parents):
+        parser.error("Thematic ZIP requires --source-zip and must be outside the output directory")
+    if args.thematic_zip and not args.thematic_zip.is_file():
+        parser.error("Thematic ZIP is unavailable; source snapshot coverage was not verified")
+    report = build_report(args.data, args.source_zip, args.sources, args.thematic_zip)
     write_reports(report, out)
     print(json.dumps({k: v for k, v in report["summary"].items() if k not in
                       ("file_sha256", "unattributed_weekly_ids")}, ensure_ascii=False, indent=2))
+    if report["summary"]["status"] == "VERIFIED_SOURCE_SNAPSHOT_COVERAGE":
+        return 0  # Technical snapshot coverage only; editorial approval is independent.
+    if report["summary"]["status"] == "SOURCE_REVIEW_REQUIRED":
+        return 1
     # Exit 2 means source audit pending; it must never be mistaken for completion.
     return 1 if report["violations"] or report["sources"]["status"] in (
         "SAVED_SOURCE_DIFFERENCES_REQUIRE_REVIEW", "SOURCE_BLOCKS_REQUIRE_REVIEW") else 2

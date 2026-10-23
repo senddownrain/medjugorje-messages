@@ -6,7 +6,7 @@
     "before": null,
     "proposed": "ivan",
     "confidence": "explicit_saved_source_evidence",
-    "review_status": "original_all_snapshot_confirmed_pending_category_and_editorial_review",
+    "review_status": "PENDING_EDITORIAL_ATTRIBUTION",
     "evidence": [
       {
         "visionary": "ivan",
@@ -36,7 +36,8 @@
         }
       }
     ],
-    "applied": false
+    "applied": false,
+    "source_group_evidence": []
   },
   {
     "id": "060908s",
@@ -45,7 +46,7 @@
     "before": null,
     "proposed": "ivan",
     "confidence": "explicit_saved_source_evidence",
-    "review_status": "original_all_snapshot_confirmed_pending_category_and_editorial_review",
+    "review_status": "PENDING_EDITORIAL_ATTRIBUTION",
     "evidence": [
       {
         "visionary": "ivan",
@@ -75,7 +76,19 @@
         }
       }
     ],
-    "applied": false
+    "applied": false,
+    "source_group_evidence": [
+      {
+        "page": "en/special",
+        "content_location": "https://www.medjugorje.ws/en/messages/special/",
+        "zip_member": "sources/Other Medjugorje Messages - list - Medjugorje WebSite.mht",
+        "source_sha256": "da96fdf164c5022d4ee5491c0083b953703f539d5d6bf5ff0cb2682acf1ab5be",
+        "heading_position": 0,
+        "anchor": "special.ivan",
+        "label": "Medjugorje Messages given to Ivan",
+        "url": "https://www.medjugorje.ws/en/messages/special.ivan/"
+      }
+    ]
   },
   {
     "id": "050402s",
@@ -84,7 +97,7 @@
     "before": null,
     "proposed": "mirjana",
     "confidence": "explicit_saved_source_evidence",
-    "review_status": "original_all_snapshot_confirmed_pending_category_and_editorial_review",
+    "review_status": "PENDING_EDITORIAL_ATTRIBUTION",
     "evidence": [
       {
         "visionary": "mirjana",
@@ -114,7 +127,8 @@
         }
       }
     ],
-    "applied": false
+    "applied": false,
+    "source_group_evidence": []
   },
   {
     "id": "850625w",
@@ -123,7 +137,7 @@
     "before": null,
     "proposed": "marija",
     "confidence": "explicit_saved_source_evidence",
-    "review_status": "original_all_snapshot_confirmed_pending_category_and_editorial_review",
+    "review_status": "PENDING_EDITORIAL_ATTRIBUTION",
     "evidence": [
       {
         "visionary": "marija",
@@ -180,7 +194,8 @@
         }
       }
     ],
-    "applied": false
+    "applied": false,
+    "source_group_evidence": []
   },
   {
     "id": "850114w",
@@ -189,7 +204,7 @@
     "before": null,
     "proposed": "vicka",
     "confidence": "explicit_saved_source_evidence",
-    "review_status": "original_all_snapshot_confirmed_pending_category_and_editorial_review",
+    "review_status": "PENDING_EDITORIAL_ATTRIBUTION",
     "evidence": [
       {
         "visionary": "vicka",
@@ -327,7 +342,8 @@
         }
       }
     ],
-    "applied": false
+    "applied": false,
+    "source_group_evidence": []
   },
   {
     "id": "841008w",
@@ -336,7 +352,7 @@
     "before": null,
     "proposed": "jakov",
     "confidence": "explicit_saved_source_evidence",
-    "review_status": "original_all_snapshot_confirmed_pending_category_and_editorial_review",
+    "review_status": "PENDING_EDITORIAL_ATTRIBUTION",
     "evidence": [
       {
         "visionary": "jakov",
@@ -393,7 +409,8 @@
         }
       }
     ],
-    "applied": false
+    "applied": false,
+    "source_group_evidence": []
   },
   {
     "id": "840814w",
@@ -402,7 +419,7 @@
     "before": null,
     "proposed": "ivan",
     "confidence": "explicit_saved_source_evidence",
-    "review_status": "original_all_snapshot_confirmed_pending_category_and_editorial_review",
+    "review_status": "PENDING_EDITORIAL_ATTRIBUTION",
     "evidence": [
       {
         "visionary": "ivan",
@@ -486,7 +503,8 @@
         }
       }
     ],
-    "applied": false
+    "applied": false,
+    "source_group_evidence": []
   },
   {
     "id": "840430w",
@@ -495,7 +513,7 @@
     "before": null,
     "proposed": "marija",
     "confidence": "explicit_saved_source_evidence",
-    "review_status": "original_all_snapshot_confirmed_pending_category_and_editorial_review",
+    "review_status": "PENDING_EDITORIAL_ATTRIBUTION",
     "evidence": [
       {
         "visionary": "marija",
@@ -552,6 +570,7 @@
         }
       }
     ],
-    "applied": false
+    "applied": false,
+    "source_group_evidence": []
   }
 ]

@@ -72,15 +72,17 @@ def source_text(node):
     return re.sub(r"\n{3,}", "\n\n", value).strip()
 
 
-def extract_original(raw, language):
-    """Return source records and exact MIME/DOM provenance; refuse ambiguous pages."""
+def extract_original(raw, language, category="all"):
+    """Return records and exact MIME/DOM provenance, including thematic anchors."""
+    if category not in ("all", "annual", "special"):
+        raise ValueError("Unsupported source category")
     mime = BytesParser(policy=policy.default).parsebytes(raw)
-    expected = f"https://www.medjugorje.ws/{language}/messages/all"
+    expected = f"https://www.medjugorje.ws/{language}/messages/{category}"
     parts = [p for p in mime.walk() if not p.is_multipart()
              and p.get_content_type() == "text/html"
              and p.get("Content-Location", "").rstrip("/") == expected]
     if len(parts) != 1:
-        raise ValueError("Expected exactly one original /all HTML part")
+        raise ValueError("Expected exactly one original HTML part at the requested location")
     part = parts[0]
     html = part.get_payload(decode=True).decode(part.get_content_charset() or "utf-8")
     soup = BeautifulSoup(html, "html.parser")
@@ -89,11 +91,22 @@ def extract_original(raw, language):
         raise ValueError("Message containers and headings do not agree")
     records, provenance = [], {}
     section = None
+    group, seen_groups = None, set()
     for position, wrapper in enumerate(wrappers):
         headings = wrapper.select("h2.poselstvi-datum")
         dates = wrapper.select('.mm-head input[type="checkbox"]')
         if len(headings) != 1 or len(dates) != 1:
             raise ValueError("Expected one dated heading in each message container")
+        anchors = [a["name"] for a in wrapper.select("a[name]") if a["name"].startswith(category + ".")]
+        if category != "all":
+            if anchors:
+                labels = wrapper.select("div.nadpis h2 a[href]")
+                if len(anchors) != 1 or len(labels) != 1 or anchors[0] in seen_groups:
+                    raise ValueError("Ambiguous or repeated thematic group anchor")
+                seen_groups.add(anchors[0])
+                group = {"anchor": anchors[0], "label": labels[0].get_text(" ", strip=True), "url": labels[0]["href"]}
+            if group is None:
+                raise ValueError("Thematic message has no preceding source group anchor")
         for year_link in wrapper.select("h2 a.nadpis[href]"):
             if re.fullmatch(rf"/{language}/messages/\d{{4}}/?", urlparse(year_link["href"]).path):
                 section = {"title": year_link.get_text(" ", strip=True), "url": year_link["href"]}
@@ -123,7 +136,9 @@ def extract_original(raw, language):
                 value = source_text(child)
                 if value:
                     segments.append({"kind": "message" if "poselstvi-mary" in classes else "context", "text": value})
-            elif {"mm-head", "mmm-footer"}.intersection(classes) or child.name in ("h1", "h2", "h3", "h4", "h5", "h6"):
+            elif ({"mm-head", "mmm-footer"}.intersection(classes)
+                  or (category != "all" and anchors and "nadpis" in classes)
+                  or child.name in ("h1", "h2", "h3", "h4", "h5", "h6")):
                 continue
             elif source_text(child):
                 links = child.find_all("a", href=True)
@@ -144,6 +159,8 @@ def extract_original(raw, language):
         provenance[key] = {"heading_position": position, "heading_selector": "div.messages h2.poselstvi-datum",
                            "source_year_section": section, "non_message_navigation": navigation,
                            "unclassified_source_blocks": unclassified}
+        if category != "all":
+            provenance[key]["thematic_group"] = group
     return records, provenance, part["Content-Location"]
 
 

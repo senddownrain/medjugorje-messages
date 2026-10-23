@@ -1,5 +1,5 @@
 {
-  "status": "SEVEN_ALL_SNAPSHOTS_MATCH_JSON_PENDING_CATEGORY_REVIEW",
+  "status": "VERIFIED_SOURCE_SNAPSHOT_COVERAGE",
   "artifact": "research-sources/medjugorje_original_sources_seven.zip",
   "archive_sha256": "00f3b0d539345a8d4d697a91be987b6b78c1d5e8c5079f780fa693eb18b740cb",
   "archive_bytes": 1397664,
@@ -4704,12 +4704,7 @@
       "supplied_manifest_sha_and_size_and_count_match": true
     }
   ],
-  "missing_required": [
-    "en/annual",
-    "en/special",
-    "hr/annual",
-    "hr/special"
-  ],
+  "missing_required": [],
   "scope": "Сверка семи сохранённых /all, без утверждения полноты сайта или тематических серий.",
   "source_records_compared": 4351,
   "heading_date_issue_count": 0,
@@ -4718,5 +4713,9 @@
   "source_missing_count": 0,
   "record_difference_count": 0,
   "json_records_absent_from_saved_sources": 0,
-  "proposals_confirmed_in_original_all": 8
+  "proposals_confirmed_in_original_all": 8,
+  "all_snapshot_status": "VERIFIED_SEVEN_ALL_SNAPSHOTS",
+  "editorial_status": "PENDING_EDITORIAL_ATTRIBUTION",
+  "thematic_report": "thematic.json",
+  "thematic_archive_sha256": "e300ebe4af0c0b2c619d7de7daca61c9aba8ccb50475e09de06b3b450e613654"
 }

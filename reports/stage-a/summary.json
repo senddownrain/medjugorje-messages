@@ -1,5 +1,5 @@
 {
-  "status": "INCOMPLETE_SOURCE_AUDIT",
+  "status": "VERIFIED_SOURCE_SNAPSHOT_COVERAGE",
   "unique_records": 899,
   "integrity_violations": 0,
   "type_counts": {
@@ -251,6 +251,8 @@
     "840308w",
     "840301w"
   ],
-  "source_snapshot_status": "SEVEN_ALL_SNAPSHOTS_MATCH_JSON_PENDING_CATEGORY_REVIEW",
-  "source_records_compared": 4351
+  "source_snapshot_status": "VERIFIED_SOURCE_SNAPSHOT_COVERAGE",
+  "source_records_compared": 4351,
+  "editorial_status": "PENDING_EDITORIAL_ATTRIBUTION",
+  "thematic_entries_compared": 476
 }
