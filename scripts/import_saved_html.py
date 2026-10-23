@@ -2,7 +2,7 @@
 """Import saved, user-authorized HTML archive pages without network requests.
 
 Usage:
-  python scripts/import_saved_html.py --ru saved/ru.html --be saved/be.html \
+  python -m scripts.import_saved_html --ru saved/ru.html --be saved/be.html \
     --uk saved/uk.html --output research-output/offline
 
 The output is RESEARCH ONLY and always marked verified=false.
