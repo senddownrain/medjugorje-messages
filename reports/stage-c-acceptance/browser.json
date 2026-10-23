@@ -1,0 +1,203 @@
+{
+  "status": "PASS",
+  "phase": "regression",
+  "browser": "154.0.8037.57",
+  "checks": [
+    "A PASS: four controls only, word search before filters, month across years, year AND month, live updates, reset preserves query, 320/390px",
+    "B PASS: language sheet has two independent languages only; sun/moon never opens sheet; settings persist on refresh; keyboard focus returns",
+    "C PASS: full names, human message type, no series placeholders or brand stars; one divider; historical reader has no Latest label; unchanged long text at 320px and pending preserved",
+    "Regression PASS: 28 real Chromium viewport/language/theme combinations; all six people plus unknown, full labels fit, present translations only, no horizontal scroll",
+    "Regression PASS: safe word/phrase highlights; keyboard Enter; Back/Forward/in-app Back restore query/type/language/70 cards/scroll/focus",
+    "Regression PASS: real module Worker RPC; rapid query/language changes finish with latest LV result; no hidden availability mode",
+    "Regression PASS: old history drops removed controls; month restores; #archive and #message refresh work; missing translation never falls back; context stays separate",
+    "Regression PASS: empty results, reduced 430px viewport, Worker/archive loading error and retry preserve query; actual Android keyboard NOT TESTED"
+  ],
+  "matrix": [
+    {
+      "width": 320,
+      "ui_language": "ru",
+      "theme": "light",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "ui_language": "ru",
+      "theme": "dark",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "ui_language": "be",
+      "theme": "light",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "ui_language": "be",
+      "theme": "dark",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "ui_language": "uk",
+      "theme": "light",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "ui_language": "uk",
+      "theme": "dark",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "ui_language": "hr",
+      "theme": "light",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "ui_language": "hr",
+      "theme": "dark",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "ui_language": "en",
+      "theme": "light",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "ui_language": "en",
+      "theme": "dark",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "ui_language": "sk",
+      "theme": "light",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "ui_language": "sk",
+      "theme": "dark",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "ui_language": "lv",
+      "theme": "light",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "ui_language": "lv",
+      "theme": "dark",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "ui_language": "ru",
+      "theme": "light",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "ui_language": "ru",
+      "theme": "dark",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "ui_language": "be",
+      "theme": "light",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "ui_language": "be",
+      "theme": "dark",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "ui_language": "uk",
+      "theme": "light",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "ui_language": "uk",
+      "theme": "dark",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "ui_language": "hr",
+      "theme": "light",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "ui_language": "hr",
+      "theme": "dark",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "ui_language": "en",
+      "theme": "light",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "ui_language": "en",
+      "theme": "dark",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "ui_language": "sk",
+      "theme": "light",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "ui_language": "sk",
+      "theme": "dark",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "ui_language": "lv",
+      "theme": "light",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "ui_language": "lv",
+      "theme": "dark",
+      "status": "PASS"
+    }
+  ],
+  "page_errors": [],
+  "physical_android": "NOT TESTED",
+  "physical_software_keyboard": "NOT TESTED",
+  "pwa_install_offline": "NOT TESTED",
+  "deployment": "NOT RUN",
+  "original_sha256": {
+    "be.json": "4bb87770b6514192cc0bfe52b664dcac36c1ac6dc63e8a815d6651153dec4f05",
+    "en.json": "f769b260506c67a83cfb5f034b0238682fb2adea83895d42dfca1586665a1a2a",
+    "hr.json": "26c5132acb3ac4128869e29f1fef9b8b4a183049624f4efc225d406bc84f65ce",
+    "index.json": "5ea11d808d0eb59cd37cd1ceb95f2071e460449fa5c854d43b60cdd6fb0cd131",
+    "lv.json": "90fd9d035663d5644e24620a310e661a1b2f78ed172e7a45de1af20ca410001a",
+    "ru.json": "d878a69ddef832adb729e83ad2ff4e4813dc2b9e1ac47d10d3af42ccf600b1ec",
+    "sk.json": "42936b7804aaba198bc1a03b2cedff4887015383be580b8ffb66b5546bfe8b28",
+    "uk.json": "b3f3290e4d5074e530028aaae69fc864fd0b99d3e2f4a2d719d56bd8a494049d"
+  },
+  "scope": "Built production app over loopback, service workers blocked. Before screenshots copied unchanged from PR19 2c69a62. No Android device or OS keyboard.",
+  "screenshot_count": 29,
+  "screenshots_note": "Повторные снимки локально; неизменённая галерея C находится в reports/stage-c-polish/screenshots."
+}

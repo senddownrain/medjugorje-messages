@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "method": "git merge-tree --write-tree HEAD origin/feat/private-https-preview; unattached tree only; no branch/worktree changes or merge commit",
+  "stage_c_implementation_commit": "029f47032c5b93e4b007c9fb8dbb57db42c28d4b",
+  "stage_c_base": "feat/search-v2-foundation",
+  "stage_c_base_sha": "3c2d6678bb5f13a9408c922eae7800b4a767dd0f",
+  "preview_pr": 15,
+  "preview_sha": "c53598d57ba86793c4985af85f418547bc8b762f",
+  "conflicts": false,
+  "simulated_tree": "d670771f50ad4b288b86609ac6435905eafa859d",
+  "scripts_preserved": [
+    "test:ui:browser",
+    "build:private"
+  ],
+  "hosting_blob_preserved": true,
+  "deployment_tested": false
+}
