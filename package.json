@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "test:ui:browser": "python3 scripts/check-reader-browser.py",
     "build:search-metadata": "node scripts/build-search-metadata.mjs",
     "check:search-metadata": "node scripts/build-search-metadata.mjs --check",
     "test:search": "node --test tests/search/*.test.mjs",
