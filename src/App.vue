@@ -293,6 +293,12 @@ async function load() {
         if (allowMissing && response.status === 404) return null;
         throw new Error(name + ': HTTP ' + response.status);
       }
+      // Vite SPA fallback can return index.html with HTTP 200 for an absent optional JSON.
+      const contentType = response.headers.get('content-type') || '';
+      if (!contentType.includes('json')) {
+        if (allowMissing) return null;
+        throw new Error('Expected JSON for ' + name + ', got ' + contentType);
+      }
       const result = await response.json();
       if (!result || typeof result !== 'object') throw new Error('Invalid JSON: ' + name);
       return result;
