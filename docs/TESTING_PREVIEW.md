@@ -21,3 +21,9 @@ Fallback on a computer:
     npm run dev
 
 Open http://localhost:5173/medjugorje-messages/ on your computer; to test on the phone on the same Wi-Fi, use the computer's LAN IP and port 5173. This is a UI test, not an install/offline test.
+
+## If Codespaces opens only the VS Code editor
+
+A `*.github.dev` URL is the Codespaces **editor**, not the website. In its terminal, check `git branch --show-current` and ensure this PWA branch is selected. Then run `npm install` if needed and `npm run dev`; open **PORTS → 5173 → Open in Browser**. The forwarded site URL uses a different `*-5173.app.github.dev` hostname; visit `/medjugorje-messages/` on that site. Port visibility may remain **Private**; log into the same GitHub account in the phone browser. A localhost link from the terminal will not work directly in a different device.
+
+While this is a draft, the branch may not contain data merged later into `main`. PWA preview and public hosting are separate operations.
