@@ -61,13 +61,43 @@ def probe_origin(origin, session):
         return {"origin": origin, "state": "unavailable", "exception_type": type(exc).__name__}
 
 
+
+def probe_official_archive(session):
+    """Official information centre's English archive — independent source."""
+    origin = "https://www.medjugorje.hr"
+    target = origin + "/en/our-lady-messages-archive"
+    try:
+        robots = session.get(origin + "/robots.txt", timeout=15)
+        if robots.status_code in (401, 403, 429):
+            return {"origin": origin, "state": "blocked", "at": "robots.txt", "http_status": robots.status_code}
+        if robots.status_code not in (200, 404):
+            return {"origin": origin, "state": "unavailable", "at": "robots.txt", "http_status": robots.status_code}
+        policy = RobotFileParser()
+        policy.parse(robots.text.splitlines() if robots.status_code == 200 else [])
+        if not policy.can_fetch(USER_AGENT, target):
+            return {"origin": origin, "state": "blocked", "at": "robots_policy"}
+        response = session.get(target, timeout=25)
+        if response.status_code in (401, 403, 429):
+            return {"origin": origin, "state": "blocked", "at": "official_archive", "http_status": response.status_code}
+        if response.status_code != 200:
+            return {"origin": origin, "state": "unavailable", "at": "official_archive", "http_status": response.status_code}
+        if "html" not in response.headers.get("content-type", "").lower():
+            return {"origin": origin, "state": "unexpected_content_type"}
+        text = BeautifulSoup(response.text, "html.parser").get_text(" ", strip=True)
+        if not ("September" in text and "2026" in text):
+            return {"origin": origin, "state": "unparseable", "message": "Recent dated headings not located"}
+        return {"origin": origin, "state": "accessible", "url": target,
+                "body_characters": len(text)}
+    except requests.RequestException as exc:
+        return {"origin": origin, "state": "unavailable", "exception_type": type(exc).__name__}
+
 def run(path: Path):
     session = requests.Session()
     session.headers["User-Agent"] = USER_AGENT
     report = {
         "type": "diagnostic_only",
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
-        "probes": [probe_origin(origin, session) for origin in ORIGINS]
+        "probes": [probe_origin(origin, session) for origin in ORIGINS] + [probe_official_archive(session)]
     }
     report["source_status"] = (
         "access_available" if any(p["state"] == "accessible" for p in report["probes"])
