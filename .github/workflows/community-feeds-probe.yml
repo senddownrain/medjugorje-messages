@@ -1,0 +1,51 @@
+name: Check community translation feeds (diagnostic)
+on:
+  pull_request:
+    paths:
+      - 'scripts/probe_community_feeds.py'
+      - 'tests/test_community_feeds.py'
+      - '.github/workflows/community-feeds-probe.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Test feed parser
+        run: python -m unittest discover -s tests -p test_community_feeds.py -v
+      - name: Probe community RSS feeds
+        run: python scripts/probe_community_feeds.py
+      - name: Display accessibility summary
+        if: always()
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json, os
+          path=Path("research-output/community-feed-probe.json")
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf8") as f:
+              f.write("## Community feed connectivity (no text import)\n\n")
+              if not path.exists():
+                  f.write("No diagnostics. Probe failed.\n")
+              else:
+                  data=json.loads(path.read_text("utf8"))
+                  f.write("| Lang | Feed | Status | Entries |\n|---|---|---|---:|\n")
+                  for s in data["sites"]:
+                      f.write(f'| {s["language"]} | {s["feed_url"]} | {s["state"]} | {s.get("items",0)} |\n')
+                  f.write("\n**Accessible RSS is not proof that a new translation has been published.**\n")
+          PY
+      - name: Save diagnostic artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: community-rss-connectivity
+          path: research-output/community-feed-probe.json
+          retention-days: 7
+          if-no-files-found: warn
