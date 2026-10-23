@@ -1,8 +1,8 @@
 import { matchingRanges } from '../search/unicode.js';
 
-export const emptyFilters = () => ({ visionary: '', series: '', type: '', year: '', date: '', dateFrom: '', dateTo: '' });
-export const defaultState = (language = 'ru') => ({ language, query: '', mode: 'words', foldDiacritics: true,
-  filters: emptyFilters(), includeMissing: false, searchOpen: false, filtersOpen: false,
+export const emptyFilters = () => ({ visionary: '', type: '', year: '', month: '' });
+export const defaultState = (language = 'ru') => ({ language, query: '',
+  filters: emptyFilters(), searchOpen: false, filtersOpen: false,
   limit: 35, selectedId: null, scrollTop: 0, focusId: null });
 
 export function route(hash) {
@@ -14,9 +14,17 @@ export function route(hash) {
 }
 export const hashFor = state => state.selectedId ? '#message/' + encodeURIComponent(state.selectedId) : state.searchOpen ? '#search' : '#';
 export function searchOptions(state) {
-  return { query: state.query, mode: state.mode, foldDiacritics: state.foldDiacritics,
-    filters: { ...Object.fromEntries(Object.entries(state.filters).filter(([, value]) => value !== '')),
-      availability: state.includeMissing ? 'all' : 'present' } };
+  return { query: state.query, mode: 'words', foldDiacritics: true,
+    filters: { ...Object.fromEntries(Object.keys(emptyFilters()).map(key => [key, state.filters[key]]).filter(([, value]) => value)),
+      availability: 'present' } };
+}
+
+/** Drop hidden controls from pre-polish history entries; never silently filter by them. */
+export function restoreReaderState(saved, language) {
+  const next = defaultState(language);
+  for (const key of Object.keys(next)) if (key !== 'filters' && saved[key] !== undefined) next[key] = saved[key];
+  for (const key of Object.keys(next.filters)) next.filters[key] = saved.filters?.[key] || '';
+  return next;
 }
 
 /** Clip only the presentation; the original message/segments are never changed. */

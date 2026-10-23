@@ -15,6 +15,10 @@ function optionsFor(options) {
   for (const name of ['dateFrom', 'dateTo', 'date']) if (f[name]) validDate(f[name]);
   if (f.dateFrom && f.dateTo && f.dateFrom > f.dateTo) throw new RangeError('Reversed date interval');
   if (f.year != null && !/^\d{4}$/u.test(String(f.year))) throw new RangeError('Invalid year');
+  if (f.month != null) {
+    if (!/^(?:0?[1-9]|1[0-2])$/u.test(String(f.month))) throw new RangeError('Invalid month');
+    f.month = String(f.month).padStart(2, '0');
+  }
   if (f.attributionPolicy && !['include_pending', 'without_pending'].includes(f.attributionPolicy)) throw new RangeError('Unknown attribution policy');
   if (f.availability && !['all', 'present', 'with_text', 'missing'].includes(f.availability)) throw new RangeError('Unknown availability filter');
   return f;
@@ -33,7 +37,7 @@ export class SearchCatalog {
     const add = (key, n) => { if (!this.facets.has(key)) this.facets.set(key, []); this.facets.get(key).push(n); };
     this.rows.forEach((row, n) => {
       for (const [name, value] of Object.entries({ type: row.type.value, series: row.series.value ?? 'unattributed',
-        year: row.date.slice(0, 4), date: row.date, visionary: row.visionary.value ?? 'unattributed',
+        year: row.date.slice(0, 4), month: row.date.slice(5, 7), date: row.date, visionary: row.visionary.value ?? 'unattributed',
         withoutPending: row.visionary.editorial_status === 'pending' ? 'unattributed' : row.visionary.value ?? 'unattributed',
         reviewStatus: row.visionary.editorial_status })) add(`${name}:${value}`, n);
       for (const l of LANGUAGES) {
@@ -94,7 +98,7 @@ export class SearchCatalog {
     if (parsed.active && !this.archives.has(language)) throw new Error('Language archive not loaded');
     let candidates = null, index;
     const lists = [];
-    for (const name of ['type', 'series', 'year', 'date', 'visionary', 'reviewStatus']) {
+    for (const name of ['type', 'series', 'year', 'month', 'date', 'visionary', 'reviewStatus']) {
       if (!f[name] || name === 'reviewStatus' && f[name] === 'any') continue;
       const facet = name === 'visionary' && f.attributionPolicy === 'without_pending' ? 'withoutPending' : name;
       lists.push(this.facets.get(`${facet}:${f[name]}`));
@@ -121,6 +125,7 @@ export class SearchCatalog {
       if (f.series && (f.series === 'unattributed' ? row.series.value !== null : row.series.value !== f.series)) continue;
       if (f.type && row.type.value !== f.type) continue;
       if (f.year && row.date.slice(0, 4) !== String(f.year)) continue;
+      if (f.month && row.date.slice(5, 7) !== f.month) continue;
       if (f.date && row.date !== f.date || f.dateFrom && row.date < f.dateFrom || f.dateTo && row.date > f.dateTo) continue;
       if (f.reviewStatus && f.reviewStatus !== 'any' && row.visionary.editorial_status !== f.reviewStatus) continue;
       const state = row.availability[language];

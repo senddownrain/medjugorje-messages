@@ -1,0 +1,67 @@
+{
+  "status": "PASS",
+  "baseline_pr": 19,
+  "baseline_commit": "2c69a62d359f9239c6356ad06759d8834db681ae",
+  "originals": {
+    "data/be.json": {
+      "sha256": "4bb87770b6514192cc0bfe52b664dcac36c1ac6dc63e8a815d6651153dec4f05",
+      "bytes": 407614,
+      "bytewise_unchanged": true
+    },
+    "data/en.json": {
+      "sha256": "f769b260506c67a83cfb5f034b0238682fb2adea83895d42dfca1586665a1a2a",
+      "bytes": 1492041,
+      "bytewise_unchanged": true
+    },
+    "data/hr.json": {
+      "sha256": "26c5132acb3ac4128869e29f1fef9b8b4a183049624f4efc225d406bc84f65ce",
+      "bytes": 1326559,
+      "bytewise_unchanged": true
+    },
+    "data/index.json": {
+      "sha256": "5ea11d808d0eb59cd37cd1ceb95f2071e460449fa5c854d43b60cdd6fb0cd131",
+      "bytes": 2037515,
+      "bytewise_unchanged": true
+    },
+    "data/lv.json": {
+      "sha256": "90fd9d035663d5644e24620a310e661a1b2f78ed172e7a45de1af20ca410001a",
+      "bytes": 1098937,
+      "bytewise_unchanged": true
+    },
+    "data/ru.json": {
+      "sha256": "d878a69ddef832adb729e83ad2ff4e4813dc2b9e1ac47d10d3af42ccf600b1ec",
+      "bytes": 1921679,
+      "bytewise_unchanged": true
+    },
+    "data/sk.json": {
+      "sha256": "42936b7804aaba198bc1a03b2cedff4887015383be580b8ffb66b5546bfe8b28",
+      "bytes": 1385625,
+      "bytewise_unchanged": true
+    },
+    "data/uk.json": {
+      "sha256": "b3f3290e4d5074e530028aaae69fc864fd0b99d3e2f4a2d719d56bd8a494049d",
+      "bytes": 533576,
+      "bytewise_unchanged": true
+    }
+  },
+  "unchanged": [
+    "derived/search-metadata.json",
+    "reports/stage-a",
+    "reports/stage-b",
+    "reports/stage-c",
+    "vite.config.js",
+    "src/main.js",
+    "scripts/stage-data.mjs",
+    ".github/workflows/pwa-preview.yml"
+  ],
+  "pending_attributions": 8,
+  "unknown_recipients": 154,
+  "model_records": 899,
+  "before_screenshots_copied_bytewise": [
+    "reports/stage-c-polish/screenshots/before-filters-ivan-390.png",
+    "reports/stage-c-polish/screenshots/before-home-ru-320-light.png",
+    "reports/stage-c-polish/screenshots/before-home-ru-390-dark.png",
+    "reports/stage-c-polish/screenshots/before-home-ru-390-light.png",
+    "reports/stage-c-polish/screenshots/before-language-sheet-390.png"
+  ]
+}

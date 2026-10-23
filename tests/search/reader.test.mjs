@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { WorkerSearch } from '../../src/search/worker-search.js';
-import { defaultState, hashFor, route, searchOptions, snippet } from '../../src/ui/reader-state.js';
+import { defaultState, hashFor, route, searchOptions, snippet, restoreReaderState } from '../../src/ui/reader-state.js';
 import { languages, translations } from '../../src/ui/translations.js';
 
 const deferred = () => { let resolve, reject; const promise = new Promise((a,b) => { resolve=a; reject=b; }); return { promise, resolve, reject }; };
@@ -43,9 +43,17 @@ test('Canonical legacy routes, filter-only defaults and complete UI localization
   assert.equal(hashFor(state),'#');
   assert.equal(searchOptions(state).filters.availability,'present');
   state.includeMissing=true; state.filters.visionary='vicka';
-  assert.deepEqual(searchOptions(state).filters,{visionary:'vicka',availability:'all'});
-  const keys=['vicka','pending','includeMissing','seriesUnknown','languageSettings','backToResults','mirjana_second_day','dateFrom','dateTo','strictAccents'];
+  assert.deepEqual(searchOptions(state).filters,{visionary:'vicka',availability:'present'});
+  const restored=restoreReaderState({ ...state, filters:{year:'2020',month:'09',date:'1984-08-14',series:'ivan_special'},mode:'phrase' },'en');
+  assert.deepEqual(searchOptions(restored),{query:'',mode:'words',foldDiacritics:true,filters:{year:'2020',month:'09',availability:'present'}});
+  assert.equal(restored.includeMissing,undefined);
+  const keys=['vicka','pending','month','allMonths','languageSettings','backToResults'];
   for (const {code} of languages) for (const key of keys) assert.ok(translations[code][key],`${code}:${key}`);
+  for (const {code} of languages) {
+    for (const person of ['mirjana','marija','ivan','vicka','jakov','ivanka']) assert.ok(translations[code][person].includes(' '),`${code}:${person} must include the surname`);
+    for (const type of ['monthly','weekly','annual','special']) assert.ok(translations[code].messageTypes[type],`${code}:${type}`);
+    assert.equal(translations[code].messageTypes.unattributed,undefined);
+  }
 });
 test('Snippet highlights source context without promoting it to message text or HTML', () => {
   const record={text:'', title:'Title', segments:[{kind:'context',text:'Before <img onerror=x> Наверніться. After'}]};

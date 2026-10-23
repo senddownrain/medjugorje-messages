@@ -1,5 +1,4 @@
 <script setup>
-import BrandMark from './BrandMark.vue';
 defineProps({ row: Object, record: Object, t: Object, date: String, latest: Boolean,
   language: String, languages: Array, archiveLoaded: Boolean });
 defineEmits(['language']);
@@ -7,11 +6,11 @@ defineEmits(['language']);
 
 <template>
   <article class="reading" :data-message-id="row.id">
-    <p class="reading-kicker"><BrandMark /> {{ latest ? t.latestMessage : t[row.type.value] }}</p>
+    <p v-if="latest" class="reading-kicker">{{ t.latestMessage }}</p>
     <h1>{{ date }}</h1>
     <p class="reading-person">{{ t[row.visionary.value] || t.unknown }}</p>
     <p v-if="row.visionary.editorial_status === 'pending'" class="pending-label">{{ t.pending }}</p>
-    <p class="reading-series">{{ t[row.type.value] }} · {{ t[row.series.value] || t.seriesUnknown }}</p>
+    <p v-if="row.type.source_status === 'source_confirmed' && t.messageTypes[row.type.value]" class="reading-type">{{ t.messageTypes[row.type.value] }}</p>
     <div class="reading-divider" aria-hidden="true">✧</div>
     <div :lang="language" class="message-body">
       <p v-if="!record" class="empty-text">{{ archiveLoaded ? t.unavailable : t.awaiting }}</p>

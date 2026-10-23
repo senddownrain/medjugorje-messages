@@ -176,3 +176,34 @@ const keys = ['latestMessage','searchHint','filters','hideFilters','series','all
 for (const [language, values] of Object.entries(readingStrings)) {
   Object.assign(translations[language], Object.fromEntries(keys.map((key, n) => [key, values[n]])));
 }
+
+const filterLabels = {
+  ru: ['Тип послания','Месяц','Все месяцы'], be: ['Тып паслання','Месяц','Усе месяцы'],
+  uk: ['Тип послання','Місяць','Усі місяці'], hr: ['Vrsta poruke','Mjesec','Svi mjeseci'],
+  en: ['Message type','Month','All months'], sk: ['Typ posolstva','Mesiac','Všetky mesiace'],
+  lv: ['Vēstījuma veids','Mēnesis','Visi mēneši']
+};
+for (const [language, [type, month, allMonths]] of Object.entries(filterLabels)) Object.assign(translations[language], { type, month, allMonths });
+const languageSheetTitles = { ru:'Языки', be:'Мовы', uk:'Мови', hr:'Jezici', en:'Languages', sk:'Jazyky', lv:'Valodas' };
+for (const [language, title] of Object.entries(languageSheetTitles)) translations[language].languageSettings = title;
+
+// Display names only. The canonical recipient IDs and editorial status never change here.
+export const visionaryLabels = {
+  ru: { mirjana:'Мирьяна Драгичевич-Сольдо', marija:'Мария Павлович-Лунетти', ivan:'Иван Драгичевич', vicka:'Вицка Иванкович-Миятович', jakov:'Яков Чоло', ivanka:'Иванка Иванкович-Элез' },
+  be: { mirjana:'Мір’яна Драгічэвіч-Сольда', marija:'Марыя Паўлавіч-Лунеці', ivan:'Іван Драгічэвіч', vicka:'Віцка Іванкавіч-Міятавіч', jakov:'Якаў Чола', ivanka:'Іванка Іванкавіч-Элез' },
+  uk: { mirjana:'Мір’яна Драгічевич-Сольдо', marija:'Марія Павлович-Лунетті', ivan:'Іван Драгічевич', vicka:'Віцка Іванкович-Міятович', jakov:'Яків Чоло', ivanka:'Іванка Іванкович-Елез' },
+  hr: { mirjana:'Mirjana Dragićević-Soldo', marija:'Marija Pavlović-Lunetti', ivan:'Ivan Dragićević', vicka:'Vicka Ivanković-Mijatović', jakov:'Jakov Čolo', ivanka:'Ivanka Ivanković-Elez' },
+  en: { mirjana:'Mirjana Dragićević-Soldo', marija:'Marija Pavlović-Lunetti', ivan:'Ivan Dragićević', vicka:'Vicka Ivanković-Mijatović', jakov:'Jakov Čolo', ivanka:'Ivanka Ivanković-Elez' },
+  sk: { mirjana:'Mirjana Dragićević-Soldo', marija:'Marija Pavlović-Lunetti', ivan:'Ivan Dragićević', vicka:'Vicka Ivanković-Mijatović', jakov:'Jakov Čolo', ivanka:'Ivanka Ivanković-Elez' },
+  lv: { mirjana:'Mirjana Dragičeviča-Soldo', marija:'Marija Pavloviča-Luneti', ivan:'Ivans Dragičevičs', vicka:'Vicka Ivankoviča-Mijatoviča', jakov:'Jakovs Čolo', ivanka:'Ivanka Ivankoviča-Eleza' }
+};
+const messageTypes = {
+  ru: { monthly:'Ежемесячное послание', weekly:'Еженедельное послание', annual:'Ежегодное послание', special:'Особое послание' },
+  be: { monthly:'Штомесячнае пасланне', weekly:'Штотыднёвае пасланне', annual:'Штогадовае пасланне', special:'Асаблівае пасланне' },
+  uk: { monthly:'Щомісячне послання', weekly:'Щотижневе послання', annual:'Щорічне послання', special:'Особливе послання' },
+  hr: { monthly:'Mjesečna poruka', weekly:'Tjedna poruka', annual:'Godišnja poruka', special:'Posebna poruka' },
+  en: { monthly:'Monthly message', weekly:'Weekly message', annual:'Annual message', special:'Special message' },
+  sk: { monthly:'Mesačné posolstvo', weekly:'Týždenné posolstvo', annual:'Výročné posolstvo', special:'Osobitné posolstvo' },
+  lv: { monthly:'Ikmēneša vēstījums', weekly:'Iknedēļas vēstījums', annual:'Ikgadējais vēstījums', special:'Īpašs vēstījums' }
+};
+for (const language of Object.keys(visionaryLabels)) Object.assign(translations[language], visionaryLabels[language], { messageTypes:messageTypes[language] });

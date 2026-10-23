@@ -1,5 +1,7 @@
 # Этап C: единый мобильный экран чтения и поиска
 
+> Историческая версия C до UX Polish. Актуальны [отчёт](UX_POLISH_STAGE_C.md) и [галерея до/после](UX_POLISH_SCREENSHOTS.md).
+
 Ветка `feat/unified-reader` основана на `feat/search-v2-foundation`, PR #18,
 коммит `3c2d6678bb5f13a9408c922eae7800b4a767dd0f`.
 Цепочка сохранена: main → #16 → #17 → #18 → C.

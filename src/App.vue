@@ -5,10 +5,9 @@ import metadata from '../derived/search-metadata.json';
 import { SearchCatalog } from './search/catalog.js';
 import { WorkerSearch } from './search/worker-search.js';
 import { languages, translations } from './ui/translations.js';
-import { defaultState, emptyFilters, hashFor, route, searchOptions } from './ui/reader-state.js';
+import { defaultState, emptyFilters, hashFor, route, searchOptions, restoreReaderState } from './ui/reader-state.js';
 import ResultCard from './ui/ResultCard.vue';
 import MessageReader from './ui/MessageReader.vue';
-import BrandMark from './ui/BrandMark.vue';
 
 function setting(key, fallback) { try { return localStorage.getItem(key) || fallback; } catch { return fallback; } }
 function save(key, value) { try { localStorage.setItem(key, value); } catch { /* private mode */ } }
@@ -33,8 +32,10 @@ const originalScrollRestoration = history.scrollRestoration;
 history.scrollRestoration = 'manual';
 const people = ['marija', 'mirjana', 'ivanka', 'jakov', 'ivan', 'vicka', 'unattributed'];
 const types = ['monthly', 'weekly', 'annual', 'special'];
-const series = ['ivanka_annual', 'jakov_annual', 'mirjana_annual', 'ivan_special', 'marija_special', 'mirjana_second_day', 'unattributed'];
 const years = [...new Set(metadata.messages.map(r => r.date.slice(0, 4)))].sort().reverse();
+const months = computed(() => Array.from({ length:12 }, (_, n) => ({ value:String(n + 1).padStart(2, '0'),
+  label:new Intl.DateTimeFormat(uiLang.value, { month:'long', timeZone:'UTC' }).format(new Date(Date.UTC(2020, n, 1))) })));
+const hasActiveFilters = computed(() => Object.values(state.filters).some(Boolean));
 const options = computed(() => searchOptions(state));
 const latestRow = computed(() => catalog.value?.rows.find(r => r.availability[state.language] === 'with_text'));
 const currentRow = computed(() => state.selectedId ? catalog.value?.byId.get(state.selectedId) : latestRow.value);
@@ -96,7 +97,7 @@ function readRoute() {
   const saved = history.state?.readerV2 && history.state.snapshot;
   restoring = true;
   navigationVersion++;
-  if (saved && hashFor(saved) === hashFor(parsed)) Object.assign(state, defaultState(), saved);
+  if (saved && hashFor(saved) === hashFor(parsed)) Object.assign(state, restoreReaderState(saved, state.language));
   else Object.assign(state, defaultState(state.language), parsed);
   if (!validLanguage(state.language)) state.language = 'ru';
   restoreTarget = { version:navigationVersion, y:state.scrollTop, focusId:state.focusId };
@@ -138,9 +139,8 @@ function goHome() {
   searchNow();
 }
 function reset() {
-  state.query = ''; state.filters = emptyFilters(); state.mode = 'words'; state.foldDiacritics = true;
-  state.includeMissing = false; state.limit = 35;
-  queryInput.value?.focus();
+  state.filters = emptyFilters(); state.limit = 35;
+  nextTick(() => document.querySelector('#filter-toggle')?.focus({ preventScroll:true }));
 }
 function toggleFilters() { openSearch(); state.filtersOpen = !state.filtersOpen; }
 function submitSearch() { queryInput.value?.blur(); resultHeading.value?.focus({ preventScroll:true }); }
@@ -204,7 +204,6 @@ onUnmounted(() => {
     <a class="skip-link" href="#main-content" @click.prevent="$refs.mainContent.focus()">{{ T.read }}</a>
     <header class="topbar">
       <a href="#" class="brand" @click.prevent="goHome">
-        <BrandMark class="brand-symbol" />
         <span class="brand-copy"><strong>{{ T.brand }}</strong><span>{{ T.subtitle }}</span></span>
       </a>
       <div class="top-actions">
@@ -224,7 +223,6 @@ onUnmounted(() => {
         <v-card-text>
           <label class="field"><span>{{ T.interfaceLanguage }}</span><select id="ui-language" v-model="uiLang"><option v-for="item in languages" :key="item.code" :value="item.code">{{ item.full }}</option></select></label>
           <label class="field"><span>{{ T.readingLanguage }}</span><select id="reading-language" v-model="state.language"><option v-for="item in languages" :key="item.code" :value="item.code">{{ item.full }}</option></select></label>
-          <label class="field"><span>{{ T.appearance }}</span><select id="appearance" v-model="theme"><option value="auto">{{ T.systemTheme }}</option><option value="light">{{ T.lightTheme }}</option><option value="dark">{{ T.darkTheme }}</option></select></label>
         </v-card-text>
         <v-card-actions><v-btn id="close-settings" variant="text" @click="settingsOpen = false">{{ T.close }}</v-btn></v-card-actions>
       </v-card>
@@ -244,19 +242,13 @@ onUnmounted(() => {
           </form>
           <div class="search-tools">
             <button id="filter-toggle" type="button" :aria-expanded="state.filtersOpen" aria-controls="search-filters" @click="toggleFilters">{{ state.filtersOpen ? T.hideFilters : T.filters }} <span aria-hidden="true">{{ state.filtersOpen ? '−' : '+' }}</span></button>
-            <button v-if="state.searchOpen" id="reset-search" type="button" @click="reset">{{ T.reset }}</button>
+            <button v-if="hasActiveFilters" id="reset-search" type="button" @click="reset">{{ T.reset }}</button>
           </div>
           <form v-if="state.filtersOpen" id="search-filters" class="filters" @submit.prevent="submitSearch">
-            <label class="field"><span>{{ T.visionary }}</span><select id="visionary" v-model="state.filters.visionary"><option value="">{{ T.allVisionaries }}</option><option v-for="person in people" :key="person" :value="person">{{ person === 'unattributed' ? T.unknown : T[person] }}</option></select></label>
-            <label class="field"><span>{{ T.type }}</span><select id="message-type" v-model="state.filters.type"><option value="">{{ T.allTypes }}</option><option v-for="type in types" :key="type" :value="type">{{ T[type] }}</option></select></label>
-            <label class="field wide"><span>{{ T.series }}</span><select id="series" v-model="state.filters.series"><option value="">{{ T.allSeries }}</option><option v-for="value in series" :key="value" :value="value">{{ value === 'unattributed' ? T.seriesUnknown : T[value] }}</option></select></label>
+            <label class="field wide"><span>{{ T.visionary }}</span><select id="visionary" v-model="state.filters.visionary"><option value="">{{ T.allVisionaries }}</option><option v-for="person in people" :key="person" :value="person">{{ person === 'unattributed' ? T.unknown : T[person] }}</option></select></label>
+            <label class="field wide"><span>{{ T.type }}</span><select id="message-type" v-model="state.filters.type"><option value="">{{ T.allTypes }}</option><option v-for="type in types" :key="type" :value="type">{{ T.messageTypes[type] }}</option></select></label>
             <label class="field"><span>{{ T.year }}</span><select id="year" v-model="state.filters.year"><option value="">{{ T.allYears }}</option><option v-for="year in years" :key="year" :value="year">{{ year }}</option></select></label>
-            <label class="field"><span>{{ T.date }}</span><input id="exact-date" type="date" v-model="state.filters.date" /></label>
-            <label class="field"><span>{{ T.dateFrom }}</span><input id="date-from" type="date" v-model="state.filters.dateFrom" /></label>
-            <label class="field"><span>{{ T.dateTo }}</span><input id="date-to" type="date" v-model="state.filters.dateTo" /></label>
-            <label class="field wide"><span>{{ T.search }}</span><select id="search-mode" v-model="state.mode"><option value="words">{{ T.words }}</option><option value="phrase">{{ T.phrase }}</option></select></label>
-            <label class="check-field wide"><input id="strict-accents" type="checkbox" :checked="!state.foldDiacritics" @change="state.foldDiacritics = !$event.target.checked" /><span>{{ T.strictAccents }}</span></label>
-            <label class="check-field wide"><input id="include-missing" type="checkbox" v-model="state.includeMissing" /><span>{{ T.includeMissing }}</span></label>
+            <label class="field"><span>{{ T.month }}</span><select id="month" v-model="state.filters.month"><option value="">{{ T.allMonths }}</option><option v-for="month in months" :key="month.value" :value="month.value">{{ month.label }}</option></select></label>
           </form>
           <section v-if="state.searchOpen" id="search-results" :aria-busy="search.status === 'loading'">
             <h1 ref="resultHeading" class="result-count" tabindex="-1" aria-live="polite" aria-atomic="true">{{ T.found }} <span id="result-total">{{ search.status === 'ready' ? search.ids.length : '…' }}</span></h1>
@@ -272,7 +264,7 @@ onUnmounted(() => {
           </section>
         </section>
         <template v-if="state.selectedId || !state.searchOpen">
-          <MessageReader v-if="currentRow" :row="currentRow" :record="currentRecord" :date="formatDate(currentRow.date)" :latest="!state.selectedId" :t="T" :language="state.language" :languages="availableLanguages" :archive-loaded="catalog.archives.has(state.language)" @language="selectLanguage" />
+          <MessageReader v-if="currentRow" :row="currentRow" :record="currentRecord" :date="formatDate(currentRow.date)" :latest="currentRow.id === latestRow?.id" :t="T" :language="state.language" :languages="availableLanguages" :archive-loaded="catalog.archives.has(state.language)" @language="selectLanguage" />
           <p v-else class="state-message" role="status">{{ T.notFound }}</p>
           <section v-if="!state.selectedId" class="recent" :aria-label="T.recent">
             <h2>{{ T.recent }}</h2><ResultCard v-for="row in recentRows" :key="row.id" :row="row" :t="T" :date="formatDate(row.metadata.date)" query="" :options="{}" @open="openMessage" />
@@ -280,6 +272,6 @@ onUnmounted(() => {
         </template>
       </template>
     </main>
-    <footer class="footer"><BrandMark class="footer-mark" /><p>{{ T.footer }}</p><p>{{ T.notVerified }}</p></footer>
+    <footer class="footer"><p>{{ T.footer }}</p><p>{{ T.notVerified }}</p></footer>
   </div></v-app>
 </template>

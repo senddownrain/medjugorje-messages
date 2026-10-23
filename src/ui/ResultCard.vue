@@ -12,7 +12,7 @@ const excerpt = computed(() => snippet(props.row.record, props.query, props.opti
     <span class="card-date">{{ date }}<svg class="card-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12" /></svg></span>
     <span class="card-person">{{ t[row.metadata.visionary.value] || t.unknown }}</span>
     <span v-if="row.pendingAttribution" class="pending-label">{{ t.pending }}</span>
-    <span class="card-meta">{{ t[row.metadata.type.value] }} · {{ t[row.metadata.series.value] || t.seriesUnknown }}</span>
+    <span v-if="row.metadata.type.source_status === 'source_confirmed' && t.messageTypes[row.metadata.type.value]" class="card-meta">{{ t.messageTypes[row.metadata.type.value] }}</span>
     <span v-if="!row.record" class="card-missing">{{ t.unavailable }}</span>
     <template v-else-if="excerpt">
       <span v-if="excerpt.kind === 'context'" class="snippet-context">{{ t.context }}</span>
