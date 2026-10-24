@@ -117,8 +117,12 @@ with tempfile.TemporaryDirectory() as temp:
             (site/'sw.js').write_text(old_sw + '\n// successful-update-fixture\n')
             page.evaluate('navigator.serviceWorker.getRegistration().then(r => r.update())')
             expect(page.get_by_text('Доступна новая версия — обновить', exact=True)).to_be_visible(timeout=30000)
-            with page.expect_navigation(wait_until='domcontentloaded'):
-                page.get_by_text('Доступна новая версия — обновить', exact=True).click()
+            # applyUpdate first saves history (possibly changing the hash). That
+            # same-document navigation is not the reload after SW activation.
+            # Wait for a new document before interacting with its settings.
+            page.evaluate('window.__startupUpdateDocument = true')
+            page.get_by_text('Доступна новая версия — обновить', exact=True).click()
+            page.wait_for_function('window.__startupUpdateDocument !== true')
             expect(page.locator('.reading')).to_be_visible()
             page.wait_for_function('navigator.serviceWorker.getRegistration().then(r => !r.waiting)')
             checks.append('PASS SW waits for explicit update, activates/reloads, keeps saved data')
@@ -136,8 +140,9 @@ with tempfile.TemporaryDirectory() as temp:
             (site/'data/latest.json').write_text(json.dumps(new_manifest))
             page.evaluate("document.dispatchEvent(new Event('visibilitychange'))")
             expect(page.get_by_text('Доступна новая версия — обновить', exact=True)).to_be_visible()
-            with page.expect_navigation(wait_until='domcontentloaded'):
-                page.get_by_text('Доступна новая версия — обновить', exact=True).click()
+            page.evaluate('window.__startupUpdateDocument = true')
+            page.get_by_text('Доступна новая версия — обновить', exact=True).click()
+            page.wait_for_function('window.__startupUpdateDocument !== true')
             expect(page.locator('.reading')).to_be_visible()
             page.wait_for_function("""async version => {
                 const r=await (await caches.open('message-manifest-schema-1')).match('./data/latest.json');
