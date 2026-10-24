@@ -23,9 +23,12 @@ jobs:
       - run: npm run test:search:browser
       - run: npm run build
       - run: npm run test:ui:browser -- --output /tmp/reader-ui
+      - run: npm run test:startup
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: reader-ui-review
-          path: /tmp/reader-ui
+          path: |
+            /tmp/reader-ui
+            reports/stage-d/pwa.json
           retention-days: 7

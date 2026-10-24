@@ -207,3 +207,6 @@ const messageTypes = {
   lv: { monthly:'Ikmēneša vēstījums', weekly:'Iknedēļas vēstījums', annual:'Ikgadējais vēstījums', special:'Īpašs vēstījums' }
 };
 for (const language of Object.keys(visionaryLabels)) Object.assign(translations[language], visionaryLabels[language], { messageTypes:messageTypes[language] });
+
+const connectivity = {ru:["Нет интернета. Доступны сохранённые данные; незагруженный язык или архив требует подключения.","Доступна новая версия — обновить"], be:["Няма інтэрнэту. Даступныя захаваныя даныя; новы архіў патрабуе злучэння.","Абнавіць праграму"], uk:["Немає інтернету. Доступні збережені дані; новий архів потребує з’єднання.","Оновити застосунок"], hr:["Nema interneta. Dostupni su spremljeni podaci; novi arhiv zahtijeva vezu.","Ažuriraj aplikaciju"], en:["Offline. Saved data is available; an unloaded language or archive needs a connection.","Update available — reload"], sk:["Bez internetu. Uložené údaje sú dostupné; nový archív vyžaduje pripojenie.","Aktualizovať aplikáciu"], lv:["Nav interneta. Pieejami saglabātie dati; jaunam arhīvam vajadzīgs savienojums.","Atjaunināt lietotni"]};
+for (const [language, [offline, updateApp]] of Object.entries(connectivity)) Object.assign(translations[language], {offline, updateApp});

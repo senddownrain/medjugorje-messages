@@ -1,13 +1,13 @@
 import { createApp } from 'vue';
 import App from './App.vue';
 import { createVuetify } from 'vuetify';
-import { VApp, VBtn, VCard, VCardActions, VCardText, VCardTitle, VDialog, VSelect } from 'vuetify/components';
+import { VApp, VBtn, VCard, VCardActions, VCardText, VCardTitle, VDialog } from 'vuetify/components';
 import 'vuetify/styles';
 import './style.css';
 import { registerSW } from 'virtual:pwa-register';
 
 const vuetify = createVuetify({
-  components: { VApp, VBtn, VCard, VCardActions, VCardText, VCardTitle, VDialog, VSelect },
+  components: { VApp, VBtn, VCard, VCardActions, VCardText, VCardTitle, VDialog },
   theme: {
     defaultTheme: 'marianLight',
     themes: {
@@ -28,5 +28,10 @@ const vuetify = createVuetify({
     }
   }
 });
-registerSW({ immediate: true });
+const updateSW = registerSW({
+  onNeedRefresh() { window.dispatchEvent(new Event('app-update-ready')); }
+});
+window.addEventListener('accept-app-update', () => updateSW(true));
+// Detect deployments while an installed app stays open. Activation waits for consent.
+setInterval(() => navigator.serviceWorker?.getRegistration().then(r => r?.update()).catch(() => {}), 60 * 60 * 1000);
 createApp(App).use(vuetify).mount('#app');

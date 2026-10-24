@@ -1,9 +1,7 @@
 <script setup>
 import { computed, markRaw, nextTick, onMounted, onUnmounted, reactive, ref, shallowRef, watch } from 'vue';
 import { useTheme } from 'vuetify';
-import metadata from '../derived/search-metadata.json';
-import { SearchCatalog } from './search/catalog.js';
-import { WorkerSearch } from './search/worker-search.js';
+import { readData } from './data-loader.js';
 import { languages, translations } from './ui/translations.js';
 import { defaultState, emptyFilters, hashFor, route, searchOptions, restoreReaderState } from './ui/reader-state.js';
 import ResultCard from './ui/ResultCard.vue';
@@ -26,24 +24,45 @@ const T = computed(() => translations[uiLang.value]);
 const settingsOpen = ref(false), queryInput = ref(null), resultHeading = ref(null);
 const busy = ref(true), failed = ref(false);
 const catalog = shallowRef(null);
+const manifest = shallowRef(null), latest = shallowRef({});
+const online = ref(navigator.onLine);
+const updateReady = ref(false);
+let dataUpdateReady = false, checkingUpdate = false;
+function applyUpdate() {
+  replaceEntry();
+  if (dataUpdateReady) location.reload();
+  else window.dispatchEvent(new Event('accept-app-update'));
+}
+async function checkDataUpdate() {
+  if (document.visibilityState !== 'visible' || !navigator.onLine || !manifest.value || checkingUpdate) return;
+  checkingUpdate = true;
+  try {
+    const value = await readData('latest.json', { refresh:true });
+    if (value.schema_version === 1 && value.data_version !== manifest.value.data_version) {
+      dataUpdateReady = true; updateReady.value = true;
+    }
+  } catch { /* Preserve the last successful data during a failed update check. */ }
+  finally { checkingUpdate = false; }
+}
+function networkChanged() { online.value = navigator.onLine; }
+function foundUpdate() { updateReady.value = true; }
 const search = shallowRef({ status: 'loading', ids: [], language: state.language });
-let archives = {}, workerSearch, restoring = false, scrollFrame = null, navigationVersion = 0;
+let archives = {}, metadata, searchModule, advancedPromise, workerSearch, restoring = false, scrollFrame = null, navigationVersion = 0;
+let loadVersion = 0, searchVersion = 0, advancedGeneration = 0, advancedChunkFailed = false;
 const originalScrollRestoration = history.scrollRestoration;
 history.scrollRestoration = 'manual';
 const people = ['marija', 'mirjana', 'ivanka', 'jakov', 'ivan', 'vicka', 'unattributed'];
 const types = ['monthly', 'weekly', 'annual', 'special'];
-const years = [...new Set(metadata.messages.map(r => r.date.slice(0, 4)))].sort().reverse();
+const years = computed(() => [...new Set(catalog.value?.rows.map(r => r.date.slice(0, 4)) || [])].sort().reverse());
 const months = computed(() => Array.from({ length:12 }, (_, n) => ({ value:String(n + 1).padStart(2, '0'),
   label:new Intl.DateTimeFormat(uiLang.value, { month:'long', timeZone:'UTC' }).format(new Date(Date.UTC(2020, n, 1))) })));
 const hasActiveFilters = computed(() => Object.values(state.filters).some(Boolean));
 const options = computed(() => searchOptions(state));
-const latestRow = computed(() => catalog.value?.rows.find(r => r.availability[state.language] === 'with_text'));
+const latestRow = computed(() => latest.value[state.language]?.row);
 const currentRow = computed(() => state.selectedId ? catalog.value?.byId.get(state.selectedId) : latestRow.value);
-const currentRecord = computed(() => currentRow.value ? catalog.value?.archives.get(state.language)?.get(currentRow.value.id) || null : null);
+const currentRecord = computed(() => currentRow.value ? (state.selectedId ? catalog.value?.archives.get(state.language)?.get(currentRow.value.id) : latest.value[state.language]?.record) || null : null);
 const availableLanguages = computed(() => languages.filter(l => currentRow.value && currentRow.value.availability[l.code] !== 'translation_not_present'));
 const visibleRows = computed(() => catalog.value?.projectResults(search.value.ids.slice(0, state.limit), state.language) || []);
-const recentRows = computed(() => catalog.value?.projectResults(catalog.value.rows.filter(r =>
-  r.availability[state.language] !== 'translation_not_present' && r.id !== latestRow.value?.id).slice(0, 4).map(r => r.id), state.language) || []);
 function formatDate(value) {
   return new Date(value + 'T12:00:00Z').toLocaleDateString(({ be:'be-BY',uk:'uk-UA',hr:'hr-HR',sk:'sk-SK',lv:'lv-LV',en:'en-GB' })[uiLang.value] || 'ru-RU',
     { day:'numeric', month:'long', year:'numeric', timeZone:'UTC' });
@@ -59,25 +78,57 @@ watch(() => state.language, value => save('medjugorje-language', value));
 
 function snapshot() { return JSON.parse(JSON.stringify(state)); }
 function replaceEntry() {
-  if (!restoring) history.replaceState({ ...history.state, readerV2: true, snapshot: snapshot() }, '', hashFor(state));
+  history.replaceState({ ...history.state, readerV2: true, snapshot: snapshot() }, '', hashFor(state));
 }
 function saveScroll() { state.scrollTop = window.scrollY; replaceEntry(); }
 function onScroll() {
   if (scrollFrame !== null || restoring) return;
   scrollFrame = requestAnimationFrame(() => { scrollFrame = null; saveScroll(); });
 }
-function searchNow() { if (workerSearch) workerSearch.run(state.language, options.value); }
+async function ensureAdvanced(language) {
+  const generation = advancedGeneration;
+  if (!advancedPromise) advancedPromise = Promise.all([
+    readData(manifest.value.metadata), import('./search/catalog.js'), import('./search/controller.js')
+  ]).then(([model, { SearchCatalog }, module]) => {
+    if (generation !== advancedGeneration) throw new Error('Obsolete snapshot');
+    metadata = model; searchModule = module;
+    catalog.value = markRaw(new SearchCatalog(metadata, archives));
+  }).catch(error => { if (generation === advancedGeneration) { advancedPromise = null; advancedChunkFailed = error instanceof TypeError; } throw error; });
+  await advancedPromise;
+  if (generation !== advancedGeneration) throw new Error('Obsolete snapshot');
+  if (!archives[language]) {
+    const archive = await readData(manifest.value.latest[language].archive);
+    if (generation !== advancedGeneration) throw new Error('Obsolete snapshot');
+    archives[language] = archive;
+    catalog.value.addLanguageArchive(language, archive);
+  }
+}
+async function searchNow() {
+  if (!manifest.value || !state.searchOpen) return;
+  const version = ++searchVersion, language = state.language, opts = structuredClone(JSON.parse(JSON.stringify(options.value)));
+  search.value = { status:'loading', ids:[], language };
+  // Immediately invalidate an in-flight Worker result while the new corpus downloads.
+  if (workerSearch) workerSearch.version++;
+  try {
+    await ensureAdvanced(language);
+    if (version !== searchVersion || !state.searchOpen || language !== state.language) return;
+    if (!workerSearch) workerSearch = new searchModule.WorkerSearch(metadata, archives, value => {
+      if (value.language === state.language && state.searchOpen) search.value = value;
+    });
+    await workerSearch.run(language, opts);
+    if (search.value.status === 'ready') performance.mark('search-ready');
+  } catch (error) {
+    if (version === searchVersion) search.value = { status:'error', ids:[], language, error:error.message };
+  }
+}
 watch(options, () => { if (!restoring) { state.limit = 35; state.scrollTop = 0; } searchNow(); replaceEntry(); }, { deep: true });
-watch(() => state.language, () => { searchNow(); replaceEntry(); });
+watch(() => state.language, () => { load(); replaceEntry(); });
 watch(() => state.limit, replaceEntry);
 watch(() => state.filtersOpen, replaceEntry);
 
 function startSearch() {
-  workerSearch?.dispose();
-  try {
-    workerSearch = new WorkerSearch(metadata, archives, value => { search.value = value; });
-    searchNow();
-  } catch (error) { search.value = { status:'error', ids:[], error:error.message, language:state.language }; }
+  if (advancedChunkFailed) { replaceEntry(); location.reload(); return; }
+  workerSearch?.dispose(); workerSearch = null; searchNow();
 }
 async function restorePosition(version, y, focusId) {
   await nextTick();
@@ -101,7 +152,8 @@ function readRoute() {
   else Object.assign(state, defaultState(state.language), parsed);
   if (!validLanguage(state.language)) state.language = 'ru';
   restoreTarget = { version:navigationVersion, y:state.scrollTop, focusId:state.focusId };
-  searchNow();
+  if (manifest.value && state.selectedId) load();
+  else searchNow();
   restorePosition(restoreTarget.version, restoreTarget.y, restoreTarget.focusId);
 }
 watch(() => search.value.status, status => {
@@ -132,6 +184,8 @@ function goBack() {
   else goHome();
 }
 function goHome() {
+  searchVersion++;
+  if (workerSearch) workerSearch.version++;
   Object.assign(state, defaultState(state.language));
   restoring = false; navigationVersion++;
   history.pushState({ readerV2:true, snapshot:snapshot() }, '', '#');
@@ -147,51 +201,62 @@ function submitSearch() { queryInput.value?.blur(); resultHeading.value?.focus({
 function selectLanguage(language) { state.language = language; }
 function systemChanged(event) { systemDark.value = event.matches; }
 async function load() {
+  const version = ++loadVersion, language = state.language;
   busy.value = true; failed.value = false;
-  workerSearch?.dispose(); workerSearch = null;
+  searchVersion++;
+  if (workerSearch) workerSearch.version++;
   try {
-    // Keep stage B's existing index + seven-language loading policy. Stage D owns changes.
-    const required = ['index', 'ru', 'be', 'uk'];
-    const optional = ['hr', 'en', 'sk', 'lv'];
-    async function read(name, allowMissing = false) {
-      const response = await fetch(import.meta.env.BASE_URL + 'data/' + name + '.json');
-      if (!response.ok) {
-        if (allowMissing && response.status === 404) return null;
-        throw new Error(name + ': HTTP ' + response.status);
-      }
-      const contentType = response.headers.get('content-type') || '';
-      if (!contentType.includes('json')) {
-        if (allowMissing) return null;
-        throw new Error('Expected JSON for ' + name + ', got ' + contentType);
-      }
-      const result = await response.json();
-      if (!result || typeof result !== 'object') throw new Error('Invalid JSON: ' + name);
-      return result;
+    if (!manifest.value) {
+      const value = await readData('latest.json');
+      if (value.schema_version !== 1 || !/^[a-f0-9]{24}$/.test(value.data_version)) throw new Error('Incompatible manifest');
+      manifest.value = value;
     }
-    const first = await Promise.all(required.map(code => read(code)));
-    const extras = await Promise.all(optional.map(code => read(code, true)));
-    if (!Array.isArray(first[0].messages)) throw new Error('Invalid data index');
-    const languageFiles = [...first.slice(1), ...extras];
-    archives = Object.fromEntries([...required.slice(1), ...optional].map((code,n) => [code,languageFiles[n]])
-      .filter(([,file]) => file && Array.isArray(file.messages)));
-    catalog.value = markRaw(new SearchCatalog(metadata, archives));
-    startSearch();
-  } catch (error) { console.error('Archive unavailable:', error); failed.value = true; }
-  finally {
+    if (!navigator.onLine) {
+      try {
+        const saved = await readData(`latest-for-${language}.json`, { refresh:true });
+        if (saved.schema_version === 1 && saved.data_version !== manifest.value.data_version && version === loadVersion) {
+          // Use the last successful whole snapshot of the requested language.
+          advancedGeneration++;
+          manifest.value = saved; latest.value = {}; catalog.value = null;
+          advancedPromise = null; metadata = null; archives = {}; advancedChunkFailed = false;
+          workerSearch?.dispose(); workerSearch = null;
+        }
+      } catch { /* An uncached language uses the normal explicit offline error below. */ }
+    }
+    const loadedManifest = manifest.value;
+    const value = await readData(loadedManifest.latest[language].file);
+    if (value.data_version !== loadedManifest.data_version || value.language !== language) throw new Error('Incompatible latest data');
+    latest.value = { ...latest.value, [language]:value };
+    navigator.serviceWorker?.ready.then(registration => {
+      registration.active?.postMessage({ type:'COMMIT_MANIFEST', manifest:JSON.parse(JSON.stringify(loadedManifest)), language, latest:value });
+    }).catch(() => {});
+    if (state.selectedId) await ensureAdvanced(language);
+    if (version !== loadVersion || language !== state.language) return;
     busy.value = false;
-    if (restoreTarget) restorePosition(restoreTarget.version, restoreTarget.y, restoreTarget.focusId);
+    await nextTick(); performance.mark('latest-visible');
+    searchNow();
+  } catch (error) {
+    if (version === loadVersion) { console.error('Data unavailable:', error); failed.value = true; busy.value = false; }
+  } finally {
+    if (version === loadVersion && restoreTarget) restorePosition(restoreTarget.version, restoreTarget.y, restoreTarget.focusId);
   }
 }
 readRoute();
 onMounted(() => {
   darkSystem.addEventListener('change', systemChanged);
+  window.addEventListener('online', networkChanged); window.addEventListener('offline', networkChanged);
+  window.addEventListener('app-update-ready', foundUpdate);
+  document.addEventListener('visibilitychange', checkDataUpdate);
   window.addEventListener('popstate', readRoute);
   window.addEventListener('hashchange', onHashChange);
   window.addEventListener('scroll', onScroll, { passive:true });
   load();
 });
 onUnmounted(() => {
-  workerSearch?.dispose();
+  loadVersion++; searchVersion++; workerSearch?.dispose();
+  window.removeEventListener('online', networkChanged); window.removeEventListener('offline', networkChanged);
+  window.removeEventListener('app-update-ready', foundUpdate);
+  document.removeEventListener('visibilitychange', checkDataUpdate);
   window.removeEventListener('popstate', readRoute); window.removeEventListener('hashchange', onHashChange);
   window.removeEventListener('scroll', onScroll); darkSystem.removeEventListener('change', systemChanged);
   if (scrollFrame !== null) cancelAnimationFrame(scrollFrame);
@@ -228,6 +293,8 @@ onUnmounted(() => {
       </v-card>
     </v-dialog>
 
+    <p v-if="!online" class="state-message" role="status">{{ T.offline }}</p>
+    <p v-if="updateReady" class="state-message" role="status"><button class="plain-button" @click="applyUpdate">{{ T.updateApp }}</button></p>
     <main id="main-content" ref="mainContent" class="content" tabindex="-1">
       <div v-if="busy" class="state-message" role="status">{{ T.loading }}</div>
       <div v-else-if="failed" class="state-message" role="alert"><p>{{ T.error }}</p><button class="plain-button" @click="load">{{ T.retry }}</button></div>
@@ -264,10 +331,10 @@ onUnmounted(() => {
           </section>
         </section>
         <template v-if="state.selectedId || !state.searchOpen">
-          <MessageReader v-if="currentRow" :row="currentRow" :record="currentRecord" :date="formatDate(currentRow.date)" :latest="currentRow.id === latestRow?.id" :t="T" :language="state.language" :languages="availableLanguages" :archive-loaded="catalog.archives.has(state.language)" @language="selectLanguage" />
+          <MessageReader v-if="currentRow" :row="currentRow" :record="currentRecord" :date="formatDate(currentRow.date)" :latest="currentRow.id === latestRow?.id" :t="T" :language="state.language" :languages="availableLanguages" :archive-loaded="Boolean(latest[state.language]) || Boolean(catalog?.archives.has(state.language))" @language="selectLanguage" />
           <p v-else class="state-message" role="status">{{ T.notFound }}</p>
           <section v-if="!state.selectedId" class="recent" :aria-label="T.recent">
-            <h2>{{ T.recent }}</h2><ResultCard v-for="row in recentRows" :key="row.id" :row="row" :t="T" :date="formatDate(row.metadata.date)" query="" :options="{}" @open="openMessage" />
+            <button class="more-button" id="open-archive" @click="openSearch">{{ T.recent }} ↓</button>
           </section>
         </template>
       </template>

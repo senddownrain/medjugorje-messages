@@ -11,7 +11,10 @@ export default defineConfig({
   plugins: [
     vue(),
     VitePWA({
-      registerType: 'autoUpdate',
+      strategies: 'injectManifest',
+      srcDir: 'src', filename: 'sw.js',
+      registerType: 'prompt',
+      injectManifest: { globPatterns: ['index.html', 'assets/index-*.js', 'assets/index-*.css', '**/*.{svg,png,ico}'] },
       includeAssets: ['favicon.svg'],
       manifest: {
         name: 'Послания Царицы Мира',
@@ -27,12 +30,6 @@ export default defineConfig({
           { src: 'icon-192.svg', sizes: '192x192', type: 'image/svg+xml', purpose: 'any' },
           { src: 'icon-512.svg', sizes: '512x512', type: 'image/svg+xml', purpose: 'any' }
         ]
-      },
-      workbox: {
-        globPatterns: ['**/*.{js,css,html,svg,png,ico,json}'],
-        maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
-        cleanupOutdatedCaches: true,
-        navigateFallback: 'index.html'
       },
       devOptions: { enabled: false }
     })

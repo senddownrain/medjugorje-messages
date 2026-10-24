@@ -217,9 +217,10 @@ def regression(browser):
     expect(page.locator('#retry-search')).to_be_visible(timeout=15000)
     page.unroute(worker_url);page.locator('#retry-search').click();ready(page,0)
     assert page.locator('#query').input_value()=='neexistujucislovo'
-    page.route('**/data/ru.json',lambda route:route.fulfill(status=500,body='failure'));page.reload()
-    expect(page.locator('[role="alert"]')).to_be_visible()
-    page.unroute('**/data/ru.json');page.locator('.plain-button').click();ready(page,0)
+    archive_url='**/data/*/'+page.evaluate("localStorage.getItem('medjugorje-language')")+'.json'
+    page.route(archive_url,lambda route:route.fulfill(status=500,body='failure'));page.reload()
+    expect(page.locator('#retry-search')).to_be_visible()
+    page.unroute(archive_url);page.locator('#retry-search').click();ready(page,0)
     checks.append('Regression PASS: empty results, reduced 430px viewport, Worker/archive loading error and retry preserve query; actual Android keyboard NOT TESTED')
     context.close()
 

@@ -11,12 +11,14 @@
     "test:search:browser": "python3 scripts/check-search-browser.py --output /tmp/medjugorje-search-browser.json",
     "benchmark:search": "node --expose-gc scripts/benchmark-search.mjs",
     "benchmark:search:browser": "python3 scripts/check-search-browser.py --benchmark",
-    "predev": "node scripts/stage-data.mjs",
+    "predev": "node scripts/build-runtime-data.mjs",
     "dev": "vite --host 0.0.0.0",
-    "prebuild": "node scripts/stage-data.mjs",
+    "prebuild": "node scripts/build-runtime-data.mjs",
     "build": "vite build",
     "preview": "vite preview --host 0.0.0.0",
-    "check:data": "node scripts/check-data.mjs"
+    "check:data": "node scripts/check-data.mjs",
+    "test:startup": "python3 scripts/check-startup-browser.py",
+    "measure:startup": "python3 scripts/measure-startup.py"
   },
   "dependencies": {
     "vue": "^3.5.18",
