@@ -1,0 +1,19 @@
+{
+  "method": "git merge-tree --write-tree HEAD pr-15 (simulation into an unattached Git tree; no branch/worktree changes and no merge commit)",
+  "stage_b_implementation_commit": "b642234cff18d7e6c29f31a44fd2beaffdfea03e",
+  "stage_b_base_pr": 17,
+  "stage_b_base_sha": "bb4c1ec7d0a5e813e6f8afa57ccacdb33b74ab6d",
+  "preview_pr": 15,
+  "preview_sha": "c53598d57ba86793c4985af85f418547bc8b762f",
+  "merge_base": "d6dccd78a3948ce36f54eb53f2db2957c8735125",
+  "simulated_tree": "68cd2d7cd5afca25a36f5270b4773bfe2cb71700",
+  "conflicts": false,
+  "package_scripts_preserved": [
+    "build:private",
+    "benchmark:search"
+  ],
+  "preview_hosting_blob_preserved": true,
+  "preview_config_changed_by_stage_b": false,
+  "original_eight_json_diff_vs_pr17": [],
+  "app_pwa_diff_vs_pr17": []
+}

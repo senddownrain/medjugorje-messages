@@ -1,0 +1,33 @@
+{
+  "status": "PASS",
+  "browser": "154.0.8037.57",
+  "checks": [
+    "PASS cold home: only manifest + selected latest, no archive/metadata/search code/Worker",
+    "PASS offline shell/latest; uncached language explicit error, no fallback",
+    "PASS malformed HTTP-200 data is not cached; retry succeeds after source repair",
+    "PASS loaded language, archive, dynamic code and search available offline; Back/Forward no resource refetch",
+    "PASS failed new SW installation preserves active shell and previous data",
+    "PASS SW waits for explicit update, activates/reloads, keeps saved data",
+    "PASS data-only update on foreground/confirmation; old loaded LV remains offline through whole-snapshot fallback"
+  ],
+  "home_requests": [
+    "/medjugorje-messages/",
+    "/medjugorje-messages/assets/index-wRVtuCLd.css",
+    "/medjugorje-messages/assets/index-CBi_G_hI.js",
+    "/medjugorje-messages/data/latest.json",
+    "/medjugorje-messages/assets/workbox-window.prod.es5-BBnX5xw4.js",
+    "/medjugorje-messages/data/651cc180794f6b29c680c580/latest-ru.json",
+    "/medjugorje-messages/favicon.svg",
+    "/medjugorje-messages/sw.js",
+    "/medjugorje-messages/index.html",
+    "/medjugorje-messages/assets/index-CBi_G_hI.js",
+    "/medjugorje-messages/assets/index-wRVtuCLd.css",
+    "/medjugorje-messages/icon-512.svg",
+    "/medjugorje-messages/icon-192.svg",
+    "/medjugorje-messages/favicon.svg",
+    "/medjugorje-messages/manifest.webmanifest"
+  ],
+  "physical_android": "NOT TESTED",
+  "real_https_auth": "NOT TESTED",
+  "scope": "Built production app; localhost SW; synthetic failed/successful deployments preserve original message texts."
+}
