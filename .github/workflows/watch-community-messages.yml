@@ -1,5 +1,10 @@
 name: Watch community translations (review only)
 on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/watch-official-messages.yml'
+      - '.github/workflows/watch-community-messages.yml'
   schedule:
     # 08:00 and 20:00 Europe/Minsk (UTC+3). GitHub may start late.
     - cron: '0 5,17 * * *'
