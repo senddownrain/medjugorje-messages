@@ -33,6 +33,6 @@ Public GitHub Pages is **not configured**, and no deployment is triggered. A rev
 
 - Ensure the community approves the design and how attribution/licensing should be displayed.
 - Review unresolved original-source anomalies, including missing text records.
-- Verify icon installability on current Android/iOS; SVG icons may need PNG fallbacks for broader support.
+- Verify icon installability on current Android/iOS. Approved PNG/ICO/WebP assets, maskable safe area, screenshots and Android verification steps are documented in [branding/README.md](branding/README.md).
 - Add proper versioned content updates; live HTTP 403 from GitHub Actions prevents unattended harvesting until authorized access is configured.
 - In the future, use an approved import/update feed and manual publication process, not bypasses of source-server restrictions.

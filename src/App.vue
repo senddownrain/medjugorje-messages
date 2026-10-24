@@ -2,6 +2,8 @@
 import { computed, onMounted, ref, watch } from 'vue';
 import { useTheme } from 'vuetify';
 
+const baseUrl = import.meta.env.BASE_URL;
+
 const languages = [
   { code: 'ru', short: 'RU', full: 'Русский' },
   { code: 'be', short: 'BY', full: 'Беларуская' },
@@ -336,7 +338,10 @@ onMounted(() => {
   <v-app><div class="app-shell">
     <header class="topbar">
       <div class="brand" @click="selectSection('latest')" role="button" tabindex="0" @keydown.enter="selectSection('latest')">
-        <span class="brand-symbol" aria-hidden="true">✳</span>
+        <img class="brand-symbol" :src="`${baseUrl}logo-96.webp`"
+          :srcset="`${baseUrl}logo-96.webp 96w, ${baseUrl}logo-192.webp 192w`"
+          sizes="(max-width: 360px) 32px, (max-width: 600px) 36px, 48px"
+          width="48" height="48" alt="" aria-hidden="true" />
         <span class="brand-copy">
           <strong>{{ T.brand }}</strong>
           <span>{{ T.subtitle }}</span>

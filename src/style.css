@@ -46,8 +46,7 @@ a:hover { text-decoration: underline; }
 }
 .brand { display: flex; align-items: center; gap: 12px; cursor: pointer; min-width: 0; }
 .brand-symbol {
-  width: 42px; height: 42px; flex: none; display: grid; place-items: center;
-  color: var(--accent); border: 1px solid var(--line); border-radius: 50%; font-size: 27px;
+  width: 48px; height: 48px; flex: none; display: block; object-fit: contain;
 }
 .brand-copy { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .brand-copy strong { font-family: Georgia, "Times New Roman", serif; font-size: 21px; font-weight: 500; white-space: nowrap; }
@@ -146,7 +145,7 @@ a:hover { text-decoration: underline; }
 .offline-note { font-size: 11px; opacity: .7; }
 @media (max-width: 600px) {
   .topbar { width: calc(100% - 28px); padding: 14px 0; }
-  .brand-symbol { height: 33px; width: 33px; font-size: 21px; }
+  .brand-symbol { height: 36px; width: 36px; }
   .brand { gap: 8px; }
   .brand-copy strong { font-size: 17px; }
   .brand-copy > span { font-size: 9px; max-width: 165px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -168,7 +167,7 @@ a:hover { text-decoration: underline; }
 @media (max-width: 360px) {
   .brand-copy strong { font-size: 15px; }
   .brand-copy > span { max-width: 125px; }
-  .brand-symbol { display: none; }
+  .brand-symbol { height: 32px; width: 32px; }
   .topbar { gap: 4px; }
   .result-date { font-size: 18px; }
 }
