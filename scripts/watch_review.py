@@ -39,7 +39,7 @@ def from_report(kind, report):
         'notify_new':item.get('notify_new', True)} for item in report.get('candidates', [])]
 
 
-def compare_observations(kind, report, previous, local):
+def compare_observations(kind, report, previous, local, bootstrap_sources=None):
     """First official read is a baseline except genuinely newer publication dates.
 
     Stable provenance identifies an observation. A changed fingerprint of the same
@@ -48,6 +48,7 @@ def compare_observations(kind, report, previous, local):
     """
     state = deepcopy(previous)
     events = []
+    bootstrap_sources = set(bootstrap_sources or ())
     for item in from_report(kind, report):
         key = item['key']
         before = state.get(key)
@@ -56,7 +57,10 @@ def compare_observations(kind, report, previous, local):
             continue
         if not before and kind == 'official' and item['message_date'] not in report.get('new_dates', []):
             continue
-        if not before and kind == 'community' and not item['notify_new']:
+        if not before and kind == 'community' and (
+            not item['notify_new'] or
+            (item['identity']['origin'], item['identity']['language']) in bootstrap_sources
+        ):
             continue
         matches = []
         for language, archive in local.items():
@@ -89,13 +93,24 @@ def main():
     p.add_argument('--output', type=Path, required=True)
     args = p.parse_args()
     report = json.loads(args.report.read_text())
-    previous = json.loads(args.state.read_text()) if args.state.exists() else {}
+    state_existed = args.state.exists()
+    previous = json.loads(args.state.read_text()) if state_existed else {}
     local = {path.stem:json.loads(path.read_text()) for path in Path('data').glob('*.json') if path.stem != 'index'}
-    state, events = compare_observations(args.kind, report, previous, local)
+    # Each newly observed RSS source gets one quiet baseline. This includes
+    # lost caches and sources that recover after an earlier partial failure.
+    known_sources = {(v['identity']['origin'], v['identity']['language'])
+                     for v in previous.values() if isinstance(v, dict) and 'identity' in v}
+    observed_sources = {(v['identity']['origin'], v['identity']['language'])
+                        for v in from_report(args.kind, report)}
+    bootstrap_sources = observed_sources - known_sources if args.kind == 'community' else set()
+    state, events = compare_observations(args.kind, report, previous, local,
+                                         bootstrap_sources=bootstrap_sources)
     args.state.parent.mkdir(parents=True, exist_ok=True)
     args.state.write_text(json.dumps(state, ensure_ascii=False, indent=2)+'\n')
     args.output.write_text(json.dumps({'source_status':report['status'], 'checked_at_utc':report['checked_at_utc'],
-        'events':events, 'state_entries':len(state), 'baseline_initialized':not bool(previous)}, ensure_ascii=False, indent=2)+'\n')
+        'events':events, 'state_entries':len(state), 'baseline_initialized':not state_existed,
+        'bootstrapped_sources':sorted(lang + '@' + origin for origin, lang in bootstrap_sources),
+        'bootstrap_notifications_suppressed':bool(bootstrap_sources)}, ensure_ascii=False, indent=2)+'\n')
     print(f'{len(events)} editorial review events; source status {report["status"]}; originals unchanged')
 
 
