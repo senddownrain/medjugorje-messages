@@ -1,38 +1,45 @@
-# PWA prototype (private, not yet published)
+# PWA: первый экран и кеш D
 
-**Stack:** Vue 3, Vite, vite-plugin-pwa/Workbox, static JSON from the repository's data/ folder.
+Vue 3 / Vuetify / Vite, семь независимых языков UI/посланий. Данные — исследовательский снимок `verified:false`; упаковка и кеширование не утверждают тексты или атрибуции. Восемь исходных JSON не изменяются.
 
-## What the first screen does
+## Загрузка
 
-- Displays the most recently published monthly message **with text**, separately for RU/BE/UK.
-- Opens any record and preserves editorial notes without rewriting the original text.
-- Archive filtering by year, exact date, message category, visionary and text search.
-- Separates absent translations from entries whose source heading has no quoted message text.
-- Remembers language preference and theme, supports system dark mode.
-- PWA manifest and service worker pre-cache the three JSON archives and index for offline reading after successful first installation/download.
+`npm run build` и `npm run dev` запускают `scripts/build-runtime-data.mjs`. Генератор читает исходные JSON и воспроизводимую модель B; проверяет SHA архивов против metadata.inputs и останавливается при устаревшей модели. При обновлении данных сначала выполнить `npm run build:search-metadata`, затем проверки и сборку. Двух редактируемых источников истины нет.
 
-## Testing without publishing
+`public/data/latest.json` — компактный pointer: schema/data version, стабильный ID/дата последней записи каждого языка, доступные языки и пути. SHA-derived data version зависит от архивов и модели. `data/<version>/latest-<lang>.json` содержит ровно одну исходную запись и её metadata: статус/слова/пунктуация не изменяются. LV честно показывает своё последнее доступное послание; другая языковая версия не подставляется.
 
-Run:
+На главном экране нет запросов index.json, metadata или полных архивов. Четыре прежние карточки «Недавние» заменены кнопкой открытия архива: данные загружаются по действию пользователя. Каталог, controller, metadata и **один выбранный архив** загружаются при первом поиске или deep-link. Worker создаётся только для поиска, содержит активный язык. Неиспользуемая регистрация VSelect удалена; видимые элементы C сохранены.
 
-    npm install
-    npm run check:data
-    npm run dev
+Promise-cache дедуплицирует одновременные/повторные запросы; ошибка удаляется из кеша для retry. Отдельные generations защищают загрузку языка, подготовку поиска и Worker результаты/ошибки. Back/Forward сохраняет query/фильтры/язык/list/scroll/focus. Если не загрузился dynamic JS chunk, повтор загружает страницу с сохранённым history snapshot; ошибки архива/Worker повторяются без перезагрузки.
 
-Dev URL uses the GitHub Pages project base (typically http://localhost:5173/medjugorje-messages/).
+## Офлайн и обновления
 
-To compile a distributable package:
+1. Workbox precache содержит оболочку: HTML, начальные JS/CSS и icons. Архивы, остальные переводы и search chunks **не precache**.
+2. `message-immutable-data-v1`: CacheFirst для versioned JSON, максимум 32 ответа, только успешные 200 с корректным JSON, schema/версией/языком; HTML-ошибка под HTTP 200 не кешируется. Загружаются лишь запрошенные данные. `message-demand-code-v1`: до 40 запрошенных hashed assets. Размер одного полного текущего снимка конечен; пользователь явно может загрузить все языки, но главная страница этого не делает.
+3. `message-manifest-schema-1`: сохранённый pointer коммитится **после** сохранения успешно загруженного latest выбранного языка. Первый latest передаётся SW из уже полученного ответа, без второго скачивания. Network read manifest валидирует schema/version; при offline/ошибке/несовместимости возвращается прежний pointer. Неуспешный новый latest не стирает прежний сохранённый pointer. Для каждого загруженного языка сохраняется pointer целого снимка: если новый RU-снимок не содержит ещё сохранённого LV, offline-переключение возвращает весь прежний совместимый снимок LV, включая его metadata/архив. Старый корпус не смешивается с новой моделью.
+4. После успешной установки shell и успешного получения latest выбранного языка доступны офлайн. Поиск офлайн доступен после его первой онлайн-загрузки. Незагруженный язык/архив требует сети: показываются offline-state, ошибка и retry; текст другого языка не подставляется. Сохранённое может быть вытеснено ограничением кеша, браузером или очисткой пользователем.
+5. Новая оболочка полностью precache до активации; skipWaiting вызывается только после нажатия «обновить». При неудачной установке прежний SW и data сохраняются. Versioned пути исключают смесь metadata/архивов разных снимков. Обновления schema требуют нового протокола и явной обработки совместимости.
+6. Новые данные проверяются при онлайн-запуске/перезагрузке. При возвращении приложения на передний план проверяется compact manifest; новая версия предлагает перезагрузку. Текущий каталог не заменяется посреди поиска. Новое послание попадает сюда только после отдельного утверждения данных, не из watcher candidates.
+7. Выход из аккаунта хостинга не очищает данные уже авторизованного устройства. Для удаления офлайн-копии очистить данные Chrome/приложения. Приватный доступ обеспечивает хостинг; robots/noindex не заменяют авторизацию.
 
-    npm run build
+## Проверка без публикации
 
-The project copies data/*.json into its generated public/data directory before building. Only these four JSONs are included: the extra ZIP and README are not distributed. The entire dist/ folder is attached as a **private** artifact by the "PWA preview build (private)" GitHub Actions workflow.
+```
+npm run check:data
+npm run check:search-metadata
+npm run test:search
+npm run build
+npm run test:ui:browser -- --output /tmp/d-ui
+npm run test:startup
+npm run measure:startup -- --output /tmp/d-measure.json
+```
 
-Public GitHub Pages is **not configured**, and no deployment is triggered. A review and mobile visual smoke test must precede release.
+`check-startup-browser.py` проверяет production SW на localhost: минимальные requests, offline latest, missing uncached language, offline search/language/archive, Back/Forward без скачиваний, неудачную и успешную установку SW, data-only update. Синтетические deployments меняют только временную копию dist, исходные тексты не редактируются.
 
-## Outstanding before release
+Dev Vite не доказывает PWA. Physical Android, установка, клавиатура, hosted HTTPS/auth — отдельные проверки. Утверждённые PNG/ICO/WebP, безопасная зона maskable, скриншоты и проверка на Android описаны в [branding/README.md](branding/README.md). Текущее публичное развёртывание описано в [PUBLIC_RELEASE.md](PUBLIC_RELEASE.md).
 
-- Ensure the community approves the design and how attribution/licensing should be displayed.
-- Review unresolved original-source anomalies, including missing text records.
-- Verify icon installability on current Android/iOS. Approved PNG/ICO/WebP assets, maskable safe area, screenshots and Android verification steps are documented in [branding/README.md](branding/README.md).
-- Add proper versioned content updates; live HTTP 403 from GitHub Actions prevents unattended harvesting until authorized access is configured.
-- In the future, use an approved import/update feed and manual publication process, not bypasses of source-server restrictions.
+## На Android
+
+Сейчас можно посмотреть отчёт и измерения в Draft PR. Для интерактивного D нужна разрешённая owner-private публикация **head D** с root-build/hosting конфигурацией подготовленного preview PR; существующий live URL остаётся старой версией.
+
+После такого обновления: войти владельцем в Chrome → проверить последнее послание → включить режим полёта и перезагрузить → вернуть сеть, выбрать другой язык/поиск → снова offline → проверить Back/Forward. Очистка данных Chrome нужна только для отдельного холодного запуска и удаляет офлайн-копии. Установить через меню Chrome и проверить новый запуск отдельно. Не считать localhost/эмуляцию результатом Android.

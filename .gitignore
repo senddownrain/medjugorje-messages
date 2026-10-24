@@ -5,3 +5,6 @@ public/data/
 .env
 .env.*
 !*.example
+work/
+public/release.json
+__pycache__/

@@ -1,0 +1,285 @@
+{
+  "status": "PASS",
+  "browser": "154.0.8037.57",
+  "base_pr": 18,
+  "checks": [
+    "28 real UI combinations: 320/390px × 7 UI/reading languages × both themes; latest available text, two header controls, long filter labels, no horizontal overflow",
+    "Independent UI/reading languages, bottom sheet Escape/focus restoration, system-theme updates and immediate sun/moon override",
+    "All six recipients + unknown; present translations by default; include-missing preserves 899-ID model; pending and missing canonical deep link survive refresh and Back",
+    "Words/phrases, escaped malicious input, safe highlights, filter-only year/type/exact date/inclusive range, invalid-range error and recovery",
+    "Keyboard Enter opens full reading; browser Back/Forward and in-app Back restore query, filters, language, 70-row pagination, exact scroll and focused result",
+    "Real module Worker RPC in production UI, rapid queries/language switches settle on latest LV results and safe diacritic highlights",
+    "Keyboard Tab/Enter/Escape and 430px reduced viewport; empty results stay usable (physical Android software keyboard NOT TESTED)",
+    "Worker loading failure gives explicit retry; retry recovers without losing query",
+    "Legacy #archive opens unified search; direct #message/<id> works without state; missing translation is never substituted; manual language choice retains ID",
+    "Context-only UK 230225m shows an empty-message notice and separately labeled original context, without promoting quoted text",
+    "Original required-archive loading error/retry works; eager index+7 language policy unchanged"
+  ],
+  "matrix": [
+    {
+      "width": 320,
+      "ui_language": "ru",
+      "reading_language": "ru",
+      "theme": "light",
+      "latest_id": "260925m",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "ui_language": "ru",
+      "reading_language": "ru",
+      "theme": "dark",
+      "latest_id": "260925m",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "ui_language": "be",
+      "reading_language": "be",
+      "theme": "light",
+      "latest_id": "260925m",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "ui_language": "be",
+      "reading_language": "be",
+      "theme": "dark",
+      "latest_id": "260925m",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "ui_language": "uk",
+      "reading_language": "uk",
+      "theme": "light",
+      "latest_id": "260925m",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "ui_language": "uk",
+      "reading_language": "uk",
+      "theme": "dark",
+      "latest_id": "260925m",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "ui_language": "hr",
+      "reading_language": "hr",
+      "theme": "light",
+      "latest_id": "260925m",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "ui_language": "hr",
+      "reading_language": "hr",
+      "theme": "dark",
+      "latest_id": "260925m",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "ui_language": "en",
+      "reading_language": "en",
+      "theme": "light",
+      "latest_id": "260925m",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "ui_language": "en",
+      "reading_language": "en",
+      "theme": "dark",
+      "latest_id": "260925m",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "ui_language": "sk",
+      "reading_language": "sk",
+      "theme": "light",
+      "latest_id": "260925m",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "ui_language": "sk",
+      "reading_language": "sk",
+      "theme": "dark",
+      "latest_id": "260925m",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "ui_language": "lv",
+      "reading_language": "lv",
+      "theme": "light",
+      "latest_id": "190102s",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "ui_language": "lv",
+      "reading_language": "lv",
+      "theme": "dark",
+      "latest_id": "190102s",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "ui_language": "ru",
+      "reading_language": "ru",
+      "theme": "light",
+      "latest_id": "260925m",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "ui_language": "ru",
+      "reading_language": "ru",
+      "theme": "dark",
+      "latest_id": "260925m",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "ui_language": "be",
+      "reading_language": "be",
+      "theme": "light",
+      "latest_id": "260925m",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "ui_language": "be",
+      "reading_language": "be",
+      "theme": "dark",
+      "latest_id": "260925m",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "ui_language": "uk",
+      "reading_language": "uk",
+      "theme": "light",
+      "latest_id": "260925m",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "ui_language": "uk",
+      "reading_language": "uk",
+      "theme": "dark",
+      "latest_id": "260925m",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "ui_language": "hr",
+      "reading_language": "hr",
+      "theme": "light",
+      "latest_id": "260925m",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "ui_language": "hr",
+      "reading_language": "hr",
+      "theme": "dark",
+      "latest_id": "260925m",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "ui_language": "en",
+      "reading_language": "en",
+      "theme": "light",
+      "latest_id": "260925m",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "ui_language": "en",
+      "reading_language": "en",
+      "theme": "dark",
+      "latest_id": "260925m",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "ui_language": "sk",
+      "reading_language": "sk",
+      "theme": "light",
+      "latest_id": "260925m",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "ui_language": "sk",
+      "reading_language": "sk",
+      "theme": "dark",
+      "latest_id": "260925m",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "ui_language": "lv",
+      "reading_language": "lv",
+      "theme": "light",
+      "latest_id": "190102s",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "ui_language": "lv",
+      "reading_language": "lv",
+      "theme": "dark",
+      "latest_id": "190102s",
+      "status": "PASS"
+    }
+  ],
+  "screenshots": [
+    "screenshots/home-ru-320-light.png",
+    "screenshots/home-ru-320-dark.png",
+    "screenshots/home-ru-390-light.png",
+    "screenshots/home-ru-390-dark.png",
+    "screenshots/home-be-390-light.png",
+    "screenshots/home-be-390-dark.png",
+    "screenshots/home-uk-390-light.png",
+    "screenshots/home-uk-390-dark.png",
+    "screenshots/home-hr-390-light.png",
+    "screenshots/home-hr-390-dark.png",
+    "screenshots/home-en-390-light.png",
+    "screenshots/home-en-390-dark.png",
+    "screenshots/home-sk-390-light.png",
+    "screenshots/home-sk-390-dark.png",
+    "screenshots/home-lv-390-light.png",
+    "screenshots/home-lv-390-dark.png",
+    "screenshots/language-sheet-390.png",
+    "screenshots/filters-ivan-390.png",
+    "screenshots/missing-translation-390.png",
+    "screenshots/results-lv-390.png",
+    "screenshots/keyboard-space-empty-390.png",
+    "screenshots/worker-error-390.png",
+    "screenshots/context-only-390.png"
+  ],
+  "page_errors": [],
+  "physical_android": "NOT TESTED",
+  "physical_software_keyboard": "NOT TESTED",
+  "pwa_install_offline": "NOT TESTED",
+  "private_preview_deployment": "NOT RUN",
+  "source_sha256": {
+    "be.json": "4bb87770b6514192cc0bfe52b664dcac36c1ac6dc63e8a815d6651153dec4f05",
+    "en.json": "f769b260506c67a83cfb5f034b0238682fb2adea83895d42dfca1586665a1a2a",
+    "hr.json": "26c5132acb3ac4128869e29f1fef9b8b4a183049624f4efc225d406bc84f65ce",
+    "index.json": "5ea11d808d0eb59cd37cd1ceb95f2071e460449fa5c854d43b60cdd6fb0cd131",
+    "lv.json": "90fd9d035663d5644e24620a310e661a1b2f78ed172e7a45de1af20ca410001a",
+    "ru.json": "d878a69ddef832adb729e83ad2ff4e4813dc2b9e1ac47d10d3af42ccf600b1ec",
+    "sk.json": "42936b7804aaba198bc1a03b2cedff4887015383be580b8ffb66b5546bfe8b28",
+    "uk.json": "b3f3290e4d5074e530028aaae69fc864fd0b99d3e2f4a2d719d56bd8a494049d"
+  },
+  "scope": "Built production application over loopback; service workers blocked to isolate UI. Does not validate install/offline/real Android keyboard."
+}

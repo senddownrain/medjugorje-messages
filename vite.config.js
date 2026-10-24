@@ -11,12 +11,15 @@ export default defineConfig({
   plugins: [
     vue(),
     VitePWA({
-      registerType: 'autoUpdate',
+      strategies: 'injectManifest',
+      srcDir: 'src', filename: 'sw.js',
+      registerType: 'prompt',
+      injectManifest: { globPatterns: ['index.html', 'assets/index-*.js', 'assets/index-*.css', '**/*.{svg,png,ico,webp}'] },
       includeAssets: ['favicon.ico', 'favicon-64.png', 'apple-touch-icon.png', 'logo-*.webp'],
       manifest: {
         name: 'Послания Царицы Мира',
         short_name: 'Меджугорье',
-        description: 'Послания из Меджугорья на русском, беларускай і українській',
+        description: 'Послания из Меджугорья: RU, BE, UK, HR, EN, SK, LV',
         lang: 'ru',
         start_url: base,
         scope: base,
@@ -28,12 +31,6 @@ export default defineConfig({
           { src: 'icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
           { src: 'icon-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' }
         ]
-      },
-      workbox: {
-        globPatterns: ['**/*.{js,css,html,svg,png,ico,webp,json}'],
-        maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
-        cleanupOutdatedCaches: true,
-        navigateFallback: 'index.html'
       },
       devOptions: { enabled: false }
     })

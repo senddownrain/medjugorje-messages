@@ -1,0 +1,38 @@
+name: Search foundation (local only)
+on:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  search:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: npm install --no-audit --no-fund
+      - run: npm run check:search-metadata && npm run test:search
+      - run: python -m pip install playwright
+      - run: python -m playwright install --with-deps chromium
+      - run: npm run test:search:browser
+      - run: npm run build
+      - run: npm run test:ui:browser -- --output /tmp/reader-ui
+      - run: npm run test:startup -- --output /tmp/pwa-startup.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reader-ui-review
+          path: /tmp/reader-ui
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pwa-startup-review
+          path: /tmp/pwa-startup.json
+          retention-days: 7

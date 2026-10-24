@@ -2,7 +2,7 @@
 
 Внедрён оригинал из вложения `1000100073.jpg`. Композиция, фон и все **12 звёзд** сохранены: только уменьшение всего изображения, без обрезки, перерисовки или генерации новых деталей. В тёмной теме сохранён светлый фон оригинала.
 
-База совместимости — актуальная удалённая `main`, коммит `d6dccd7`. Тегов релиза в репозитории на момент работы нет. Развёртывание не выполнялось. Исходные `data/*.json`, тексты и контрольные суммы не изменены.
+База совместимости — публичный релиз на удалённой `main`, коммит `4fdf86e` («Publish seven-language Medjugorje reader with C/D search and tested Pages deployment»). Тегов релиза в репозитории на момент работы нет. Сохранены отдельный экран поиска, отложенная загрузка архивов и протокол обновления service worker с подтверждением пользователя. Развёртывание этого изменения не выполнялось. Исходные `data/*.json`, производная модель поиска, тексты и контрольные суммы не изменены.
 
 ## Созданные графические файлы
 
@@ -24,9 +24,9 @@ PNG оптимизированы без дополнительного кван�
 
 ## Код и воспроизводимость
 
-Обновлены `src/App.vue`, `src/style.css`, `index.html`, `vite.config.js`. Логотип виден и на 320 px. Размеры в шапке: 32/36/48 CSS px; `srcset` предоставляет 96/192 px. Пустой `alt` исключает повтор озвучивания соседнего названия сайта.
+Обновлены `src/App.vue`, `src/style.css`, `index.html`, `vite.config.js`; в `docs/PWA.md` добавлена ссылка на этот отчёт. Логотип виден и на 320 px. Размеры в шапке: 32/36/48 CSS px; `srcset` предоставляет 96/192 px. Пустой `alt` исключает повтор озвучивания соседнего названия сайта.
 
-HTML использует `%BASE_URL%`, Vue — `import.meta.env.BASE_URL`. Manifest генерируется `vite-plugin-pwa`: `start_url` и `scope` равны `/medjugorje-messages/`, относительные пути иконок разрешаются внутри этой базы. Для другой базы сохранён `SITE_BASE`. Workbox включает PNG, ICO и WebP и обновляет ревизии кэша при изменении файлов.
+HTML использует `%BASE_URL%`, Vue — `import.meta.env.BASE_URL`. Manifest генерируется `vite-plugin-pwa`: `start_url` и `scope` равны `/medjugorje-messages/`, относительные пути иконок разрешаются внутри этой базы. В публичном релизе PNG и maskable уже были объявлены в manifest; теперь файлы по этим путям содержат утверждённый рисунок. Для другой базы сохранён `SITE_BASE`. В существующий Workbox `injectManifest` добавлены WebP; PNG, ICO и WebP получают новые ревизии кэша при изменении файлов. Стратегия `registerType: prompt` сохранена.
 
 Добавлены `scripts/generate-branding.py` и отдельный `scripts/requirements-branding.txt`. Для повторной подготовки:
 
@@ -45,10 +45,17 @@ SHA-256 оригинала: `44dd1eaa5ac302dce2472602248e1cfbdf6d5f1b2ce93e619a2
 | Проверка | Статус и результат |
 | --- | --- |
 | `npm run check:data` | PASS: семь языков, индекс 899 записей, контрольные суммы |
-| `python3 -m unittest discover -s tests -v` | PASS: 35 тестов; перед запуском установлены зависимости из `requirements.txt` |
-| `npm run build` | PASS: production PWA, 29 записей precache |
+| `npm ci --no-audit --no-fund` | PASS: зависимости публичного релиза установлены из lock-файла |
+| `python3 -m unittest discover -s tests -v` | PASS: 66 тестов |
+| `npm run check:search-metadata` | PASS: 899 ID, 917 ссылок на основания атрибуций |
+| `npm run test:search` | PASS: 17 тестов |
+| `npm run test:search:browser` | PASS: настоящий Worker и поиск по семи языкам |
+| `npm run test:ui:browser -- --output /workspace/scratch/logo-release-browser` | PASS: матрица 320/390 × 7 языков × 2 темы; поиск, фильтры, Back/Forward, офлайн всех загруженных языков, installability, без ошибок JS |
+| `npm run build` | PASS: production PWA, 20 записей precache |
+| `python3 scripts/check-dist.py` | PASS: Pages base, PNG manifest, 8 исходных SHA и 7 побайтно совпадающих архивов; исследовательские исходники, отчёты и ключи исключены из dist |
+| `npm run test:startup -- --output /workspace/scratch/logo-startup.json` | PASS: отложенная загрузка, офлайн, неудачное и успешное обновление оболочки, обновление только данных |
 | `git diff --check` | PASS |
-| Исходные JSON | PASS: diff относительно `origin/main` пуст |
+| Исходные JSON и производная модель | PASS: diff относительно `origin/main` пуст |
 | Светлая/тёмная темы, 320/390/1100 px | PASS: логотип загружен, нет горизонтальной прокрутки и пересечения блоков шапки; ошибок JS нет |
 | HTML, manifest, MIME и пути иконок | PASS: все восемь файлов отвечают HTTP 200 под базовым путём |
 | Размеры PNG и четыре размера ICO | PASS: проверены декодированием Pillow |
