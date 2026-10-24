@@ -1,0 +1,1315 @@
+{
+  "browser": "154.0.8037.57",
+  "physical_android_tested": false,
+  "method": "Three independent contexts per profile; cold then repeat and offline in each. Loopback gzip HTTP; shared server link paces all response bodies including Worker/SW with per-response latency and aggregate throughput. Server counts sent compressed bodies (excludes HTTP headers/TLS). Page CPU uses CDP; Worker/SW CPU not throttled. Times from navigation start; search triggered after first screen and RU phrase typed to build index; language EN tested next; each navigation starts in RU; then language changes to EN with the RU query retained, building an honest no-match EN index; times include automation observation latency; Server bytes include background SW installation up to the observation; page CDP/ResourceTiming are diagnostic and can omit SW traffic. Repeat includes installed SW. No inference about physical phone.",
+  "profiles": {
+    "normal-mobile": {
+      "response_latency_ms": 80,
+      "down_bytes_s": 1250000,
+      "page_cpu": 4
+    },
+    "slow-mobile": {
+      "response_latency_ms": 150,
+      "down_bytes_s": 200000,
+      "page_cpu": 6
+    }
+  },
+  "results": [
+    {
+      "profile": "normal-mobile",
+      "sample": 1,
+      "run": "cold",
+      "latest_ms": 4866.4,
+      "interaction_ms": 4892.1,
+      "search_ready_ms": 5534.3,
+      "language_switch_with_search_ms": 327.1,
+      "first_screen_server_body_bytes": 2584708,
+      "all_server_body_bytes": 3285491,
+      "first_screen_cdp_transferred_bytes": 1637896,
+      "all_transferred_bytes": 1638345,
+      "initial_page_transfer_bytes": 1643298,
+      "first_resources": [
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/index-COxK96o5.js",
+          "bytes": 160827,
+          "encoded": 160527,
+          "type": "script"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/index-DM59N1JP.css",
+          "bytes": 44846,
+          "encoded": 44546,
+          "type": "link"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/index.json",
+          "bytes": 242155,
+          "encoded": 241855,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/ru.json",
+          "bytes": 238201,
+          "encoded": 237901,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/be.json",
+          "bytes": 53313,
+          "encoded": 53013,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/uk.json",
+          "bytes": 70137,
+          "encoded": 69837,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/workbox-window.prod.es5-BBnX5xw4.js",
+          "bytes": 2659,
+          "encoded": 2359,
+          "type": "script"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/favicon.svg",
+          "bytes": 555,
+          "encoded": 255,
+          "type": "other"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/hr.json",
+          "bytes": 212477,
+          "encoded": 212177,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/en.json",
+          "bytes": 224104,
+          "encoded": 223804,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/sk.json",
+          "bytes": 218879,
+          "encoded": 218579,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/lv.json",
+          "bytes": 170249,
+          "encoded": 169949,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/worker-BF7vtnf2.js",
+          "bytes": 4071,
+          "encoded": 3771,
+          "type": "other"
+        }
+      ],
+      "worker_heap": [
+        {
+          "url": "http://127.0.0.1:5182/medjugorje-messages/assets/worker-BF7vtnf2.js",
+          "usedSize": 13345192,
+          "totalSize": 28311552,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 453878,
+          "error": null
+        }
+      ],
+      "page_errors": []
+    },
+    {
+      "profile": "normal-mobile",
+      "sample": 1,
+      "run": "repeat",
+      "latest_ms": 1508.4,
+      "interaction_ms": 1527.7,
+      "search_ready_ms": 2039.3,
+      "language_switch_with_search_ms": 182.8,
+      "first_screen_server_body_bytes": 0,
+      "all_server_body_bytes": 0,
+      "first_screen_cdp_transferred_bytes": 0,
+      "all_transferred_bytes": 0,
+      "initial_page_transfer_bytes": 0,
+      "first_resources": [
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/index-COxK96o5.js",
+          "bytes": 0,
+          "encoded": 1258932,
+          "type": "script"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/index-DM59N1JP.css",
+          "bytes": 0,
+          "encoded": 359484,
+          "type": "link"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/index.json",
+          "bytes": 0,
+          "encoded": 2037515,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/ru.json",
+          "bytes": 0,
+          "encoded": 1921679,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/be.json",
+          "bytes": 0,
+          "encoded": 407614,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/uk.json",
+          "bytes": 0,
+          "encoded": 533576,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/workbox-window.prod.es5-BBnX5xw4.js",
+          "bytes": 0,
+          "encoded": 5748,
+          "type": "script"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/hr.json",
+          "bytes": 0,
+          "encoded": 1326559,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/en.json",
+          "bytes": 0,
+          "encoded": 1492041,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/sk.json",
+          "bytes": 0,
+          "encoded": 1385625,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/lv.json",
+          "bytes": 0,
+          "encoded": 1098937,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/favicon.svg",
+          "bytes": 0,
+          "encoded": 439,
+          "type": "other"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/worker-BF7vtnf2.js",
+          "bytes": 0,
+          "encoded": 0,
+          "type": "other"
+        }
+      ],
+      "worker_heap": [
+        {
+          "url": "http://127.0.0.1:5182/medjugorje-messages/assets/worker-BF7vtnf2.js",
+          "usedSize": 13689716,
+          "totalSize": 27787264,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 453878,
+          "error": null
+        }
+      ],
+      "page_errors": []
+    },
+    {
+      "profile": "normal-mobile",
+      "sample": 1,
+      "run": "offline",
+      "latest_ms": 1607
+    },
+    {
+      "profile": "normal-mobile",
+      "sample": 2,
+      "run": "cold",
+      "latest_ms": 3094.1,
+      "interaction_ms": 3132.8,
+      "search_ready_ms": 3769.9,
+      "language_switch_with_search_ms": 158.7,
+      "first_screen_server_body_bytes": 2147995,
+      "all_server_body_bytes": 3285491,
+      "first_screen_cdp_transferred_bytes": 1637896,
+      "all_transferred_bytes": 1638345,
+      "initial_page_transfer_bytes": 1643298,
+      "first_resources": [
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/index-COxK96o5.js",
+          "bytes": 160827,
+          "encoded": 160527,
+          "type": "script"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/index-DM59N1JP.css",
+          "bytes": 44846,
+          "encoded": 44546,
+          "type": "link"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/index.json",
+          "bytes": 242155,
+          "encoded": 241855,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/ru.json",
+          "bytes": 238201,
+          "encoded": 237901,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/be.json",
+          "bytes": 53313,
+          "encoded": 53013,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/uk.json",
+          "bytes": 70137,
+          "encoded": 69837,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/workbox-window.prod.es5-BBnX5xw4.js",
+          "bytes": 2659,
+          "encoded": 2359,
+          "type": "script"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/favicon.svg",
+          "bytes": 555,
+          "encoded": 255,
+          "type": "other"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/hr.json",
+          "bytes": 212477,
+          "encoded": 212177,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/en.json",
+          "bytes": 224104,
+          "encoded": 223804,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/sk.json",
+          "bytes": 218879,
+          "encoded": 218579,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/lv.json",
+          "bytes": 170249,
+          "encoded": 169949,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/worker-BF7vtnf2.js",
+          "bytes": 4071,
+          "encoded": 3771,
+          "type": "other"
+        }
+      ],
+      "worker_heap": [
+        {
+          "url": "http://127.0.0.1:5182/medjugorje-messages/assets/worker-BF7vtnf2.js",
+          "usedSize": 13285864,
+          "totalSize": 27525120,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 453878,
+          "error": null
+        }
+      ],
+      "page_errors": []
+    },
+    {
+      "profile": "normal-mobile",
+      "sample": 2,
+      "run": "repeat",
+      "latest_ms": 948,
+      "interaction_ms": 983.4,
+      "search_ready_ms": 1434.1,
+      "language_switch_with_search_ms": 246.0,
+      "first_screen_server_body_bytes": 0,
+      "all_server_body_bytes": 0,
+      "first_screen_cdp_transferred_bytes": 0,
+      "all_transferred_bytes": 0,
+      "initial_page_transfer_bytes": 0,
+      "first_resources": [
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/index-COxK96o5.js",
+          "bytes": 0,
+          "encoded": 1258932,
+          "type": "script"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/index-DM59N1JP.css",
+          "bytes": 0,
+          "encoded": 359484,
+          "type": "link"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/index.json",
+          "bytes": 0,
+          "encoded": 2037515,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/ru.json",
+          "bytes": 0,
+          "encoded": 1921679,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/be.json",
+          "bytes": 0,
+          "encoded": 407614,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/uk.json",
+          "bytes": 0,
+          "encoded": 533576,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/workbox-window.prod.es5-BBnX5xw4.js",
+          "bytes": 0,
+          "encoded": 5748,
+          "type": "script"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/hr.json",
+          "bytes": 0,
+          "encoded": 1326559,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/en.json",
+          "bytes": 0,
+          "encoded": 1492041,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/sk.json",
+          "bytes": 0,
+          "encoded": 1385625,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/lv.json",
+          "bytes": 0,
+          "encoded": 1098937,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/favicon.svg",
+          "bytes": 0,
+          "encoded": 439,
+          "type": "other"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/worker-BF7vtnf2.js",
+          "bytes": 0,
+          "encoded": 0,
+          "type": "other"
+        }
+      ],
+      "worker_heap": [
+        {
+          "url": "http://127.0.0.1:5182/medjugorje-messages/assets/worker-BF7vtnf2.js",
+          "usedSize": 13418848,
+          "totalSize": 27525120,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 453878,
+          "error": null
+        }
+      ],
+      "page_errors": []
+    },
+    {
+      "profile": "normal-mobile",
+      "sample": 2,
+      "run": "offline",
+      "latest_ms": 1094.6
+    },
+    {
+      "profile": "normal-mobile",
+      "sample": 3,
+      "run": "cold",
+      "latest_ms": 3267.3,
+      "interaction_ms": 3310.5,
+      "search_ready_ms": 3847,
+      "language_switch_with_search_ms": 261.5,
+      "first_screen_server_body_bytes": 2049691,
+      "all_server_body_bytes": 3285491,
+      "first_screen_cdp_transferred_bytes": 1637896,
+      "all_transferred_bytes": 1638345,
+      "initial_page_transfer_bytes": 1643298,
+      "first_resources": [
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/index-COxK96o5.js",
+          "bytes": 160827,
+          "encoded": 160527,
+          "type": "script"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/index-DM59N1JP.css",
+          "bytes": 44846,
+          "encoded": 44546,
+          "type": "link"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/index.json",
+          "bytes": 242155,
+          "encoded": 241855,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/ru.json",
+          "bytes": 238201,
+          "encoded": 237901,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/be.json",
+          "bytes": 53313,
+          "encoded": 53013,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/uk.json",
+          "bytes": 70137,
+          "encoded": 69837,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/workbox-window.prod.es5-BBnX5xw4.js",
+          "bytes": 2659,
+          "encoded": 2359,
+          "type": "script"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/favicon.svg",
+          "bytes": 555,
+          "encoded": 255,
+          "type": "other"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/hr.json",
+          "bytes": 212477,
+          "encoded": 212177,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/en.json",
+          "bytes": 224104,
+          "encoded": 223804,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/lv.json",
+          "bytes": 170249,
+          "encoded": 169949,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/sk.json",
+          "bytes": 218879,
+          "encoded": 218579,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/worker-BF7vtnf2.js",
+          "bytes": 4071,
+          "encoded": 3771,
+          "type": "other"
+        }
+      ],
+      "worker_heap": [
+        {
+          "url": "http://127.0.0.1:5182/medjugorje-messages/assets/worker-BF7vtnf2.js",
+          "usedSize": 13485332,
+          "totalSize": 28049408,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 453878,
+          "error": null
+        }
+      ],
+      "page_errors": []
+    },
+    {
+      "profile": "normal-mobile",
+      "sample": 3,
+      "run": "repeat",
+      "latest_ms": 1416,
+      "interaction_ms": 1442.6,
+      "search_ready_ms": 1944.1,
+      "language_switch_with_search_ms": 152.1,
+      "first_screen_server_body_bytes": 0,
+      "all_server_body_bytes": 0,
+      "first_screen_cdp_transferred_bytes": 0,
+      "all_transferred_bytes": 0,
+      "initial_page_transfer_bytes": 0,
+      "first_resources": [
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/index-COxK96o5.js",
+          "bytes": 0,
+          "encoded": 1258932,
+          "type": "script"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/index-DM59N1JP.css",
+          "bytes": 0,
+          "encoded": 359484,
+          "type": "link"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/index.json",
+          "bytes": 0,
+          "encoded": 2037515,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/ru.json",
+          "bytes": 0,
+          "encoded": 1921679,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/be.json",
+          "bytes": 0,
+          "encoded": 407614,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/uk.json",
+          "bytes": 0,
+          "encoded": 533576,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/workbox-window.prod.es5-BBnX5xw4.js",
+          "bytes": 0,
+          "encoded": 5748,
+          "type": "script"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/hr.json",
+          "bytes": 0,
+          "encoded": 1326559,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/en.json",
+          "bytes": 0,
+          "encoded": 1492041,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/sk.json",
+          "bytes": 0,
+          "encoded": 1385625,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/lv.json",
+          "bytes": 0,
+          "encoded": 1098937,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/favicon.svg",
+          "bytes": 0,
+          "encoded": 439,
+          "type": "other"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/worker-BF7vtnf2.js",
+          "bytes": 0,
+          "encoded": 0,
+          "type": "other"
+        }
+      ],
+      "worker_heap": [
+        {
+          "url": "http://127.0.0.1:5182/medjugorje-messages/assets/worker-BF7vtnf2.js",
+          "usedSize": 13707464,
+          "totalSize": 27787264,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 453878,
+          "error": null
+        }
+      ],
+      "page_errors": []
+    },
+    {
+      "profile": "normal-mobile",
+      "sample": 3,
+      "run": "offline",
+      "latest_ms": 1089.2
+    },
+    {
+      "profile": "slow-mobile",
+      "sample": 1,
+      "run": "cold",
+      "latest_ms": 11726.3,
+      "interaction_ms": 11783,
+      "search_ready_ms": 12714.3,
+      "language_switch_with_search_ms": 330.7,
+      "first_screen_server_body_bytes": 2098843,
+      "all_server_body_bytes": 3285491,
+      "first_screen_cdp_transferred_bytes": 1637896,
+      "all_transferred_bytes": 1638345,
+      "initial_page_transfer_bytes": 1643298,
+      "first_resources": [
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/index-COxK96o5.js",
+          "bytes": 160827,
+          "encoded": 160527,
+          "type": "script"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/index-DM59N1JP.css",
+          "bytes": 44846,
+          "encoded": 44546,
+          "type": "link"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/index.json",
+          "bytes": 242155,
+          "encoded": 241855,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/ru.json",
+          "bytes": 238201,
+          "encoded": 237901,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/be.json",
+          "bytes": 53313,
+          "encoded": 53013,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/uk.json",
+          "bytes": 70137,
+          "encoded": 69837,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/workbox-window.prod.es5-BBnX5xw4.js",
+          "bytes": 2659,
+          "encoded": 2359,
+          "type": "script"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/favicon.svg",
+          "bytes": 555,
+          "encoded": 255,
+          "type": "other"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/hr.json",
+          "bytes": 212477,
+          "encoded": 212177,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/en.json",
+          "bytes": 224104,
+          "encoded": 223804,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/sk.json",
+          "bytes": 218879,
+          "encoded": 218579,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/lv.json",
+          "bytes": 170249,
+          "encoded": 169949,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/worker-BF7vtnf2.js",
+          "bytes": 4071,
+          "encoded": 3771,
+          "type": "other"
+        }
+      ],
+      "worker_heap": [
+        {
+          "url": "http://127.0.0.1:5182/medjugorje-messages/assets/worker-BF7vtnf2.js",
+          "usedSize": 13508212,
+          "totalSize": 27525120,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 453878,
+          "error": null
+        }
+      ],
+      "page_errors": []
+    },
+    {
+      "profile": "slow-mobile",
+      "sample": 1,
+      "run": "repeat",
+      "latest_ms": 1704.3,
+      "interaction_ms": 1745.1,
+      "search_ready_ms": 2862.2,
+      "language_switch_with_search_ms": 247.0,
+      "first_screen_server_body_bytes": 0,
+      "all_server_body_bytes": 0,
+      "first_screen_cdp_transferred_bytes": 0,
+      "all_transferred_bytes": 0,
+      "initial_page_transfer_bytes": 0,
+      "first_resources": [
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/index-COxK96o5.js",
+          "bytes": 0,
+          "encoded": 1258932,
+          "type": "script"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/index-DM59N1JP.css",
+          "bytes": 0,
+          "encoded": 359484,
+          "type": "link"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/index.json",
+          "bytes": 0,
+          "encoded": 2037515,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/ru.json",
+          "bytes": 0,
+          "encoded": 1921679,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/be.json",
+          "bytes": 0,
+          "encoded": 407614,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/uk.json",
+          "bytes": 0,
+          "encoded": 533576,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/workbox-window.prod.es5-BBnX5xw4.js",
+          "bytes": 0,
+          "encoded": 5748,
+          "type": "script"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/hr.json",
+          "bytes": 0,
+          "encoded": 1326559,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/en.json",
+          "bytes": 0,
+          "encoded": 1492041,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/sk.json",
+          "bytes": 0,
+          "encoded": 1385625,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/lv.json",
+          "bytes": 0,
+          "encoded": 1098937,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/favicon.svg",
+          "bytes": 0,
+          "encoded": 439,
+          "type": "other"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/worker-BF7vtnf2.js",
+          "bytes": 0,
+          "encoded": 0,
+          "type": "other"
+        }
+      ],
+      "worker_heap": [
+        {
+          "url": "http://127.0.0.1:5182/medjugorje-messages/assets/worker-BF7vtnf2.js",
+          "usedSize": 13422384,
+          "totalSize": 28049408,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 453878,
+          "error": null
+        }
+      ],
+      "page_errors": []
+    },
+    {
+      "profile": "slow-mobile",
+      "sample": 1,
+      "run": "offline",
+      "latest_ms": 1361.2
+    },
+    {
+      "profile": "slow-mobile",
+      "sample": 2,
+      "run": "cold",
+      "latest_ms": 11766.2,
+      "interaction_ms": 11824.7,
+      "search_ready_ms": 12718.1,
+      "language_switch_with_search_ms": 222.8,
+      "first_screen_server_body_bytes": 2115227,
+      "all_server_body_bytes": 3285491,
+      "first_screen_cdp_transferred_bytes": 1637896,
+      "all_transferred_bytes": 1638345,
+      "initial_page_transfer_bytes": 1643298,
+      "first_resources": [
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/index-COxK96o5.js",
+          "bytes": 160827,
+          "encoded": 160527,
+          "type": "script"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/index-DM59N1JP.css",
+          "bytes": 44846,
+          "encoded": 44546,
+          "type": "link"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/index.json",
+          "bytes": 242155,
+          "encoded": 241855,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/ru.json",
+          "bytes": 238201,
+          "encoded": 237901,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/be.json",
+          "bytes": 53313,
+          "encoded": 53013,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/uk.json",
+          "bytes": 70137,
+          "encoded": 69837,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/workbox-window.prod.es5-BBnX5xw4.js",
+          "bytes": 2659,
+          "encoded": 2359,
+          "type": "script"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/favicon.svg",
+          "bytes": 555,
+          "encoded": 255,
+          "type": "other"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/hr.json",
+          "bytes": 212477,
+          "encoded": 212177,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/en.json",
+          "bytes": 224104,
+          "encoded": 223804,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/sk.json",
+          "bytes": 218879,
+          "encoded": 218579,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/lv.json",
+          "bytes": 170249,
+          "encoded": 169949,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/worker-BF7vtnf2.js",
+          "bytes": 4071,
+          "encoded": 3771,
+          "type": "other"
+        }
+      ],
+      "worker_heap": [
+        {
+          "url": "http://127.0.0.1:5182/medjugorje-messages/assets/worker-BF7vtnf2.js",
+          "usedSize": 13349068,
+          "totalSize": 27787264,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 453878,
+          "error": null
+        }
+      ],
+      "page_errors": []
+    },
+    {
+      "profile": "slow-mobile",
+      "sample": 2,
+      "run": "repeat",
+      "latest_ms": 1985.7,
+      "interaction_ms": 2025.9,
+      "search_ready_ms": 2777.7,
+      "language_switch_with_search_ms": 318.4,
+      "first_screen_server_body_bytes": 0,
+      "all_server_body_bytes": 0,
+      "first_screen_cdp_transferred_bytes": 0,
+      "all_transferred_bytes": 0,
+      "initial_page_transfer_bytes": 0,
+      "first_resources": [
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/index-COxK96o5.js",
+          "bytes": 0,
+          "encoded": 1258932,
+          "type": "script"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/index-DM59N1JP.css",
+          "bytes": 0,
+          "encoded": 359484,
+          "type": "link"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/index.json",
+          "bytes": 0,
+          "encoded": 2037515,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/ru.json",
+          "bytes": 0,
+          "encoded": 1921679,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/be.json",
+          "bytes": 0,
+          "encoded": 407614,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/uk.json",
+          "bytes": 0,
+          "encoded": 533576,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/workbox-window.prod.es5-BBnX5xw4.js",
+          "bytes": 0,
+          "encoded": 5748,
+          "type": "script"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/hr.json",
+          "bytes": 0,
+          "encoded": 1326559,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/en.json",
+          "bytes": 0,
+          "encoded": 1492041,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/sk.json",
+          "bytes": 0,
+          "encoded": 1385625,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/lv.json",
+          "bytes": 0,
+          "encoded": 1098937,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/favicon.svg",
+          "bytes": 0,
+          "encoded": 439,
+          "type": "other"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/worker-BF7vtnf2.js",
+          "bytes": 0,
+          "encoded": 0,
+          "type": "other"
+        }
+      ],
+      "worker_heap": [
+        {
+          "url": "http://127.0.0.1:5182/medjugorje-messages/assets/worker-BF7vtnf2.js",
+          "usedSize": 13065608,
+          "totalSize": 27525120,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 453878,
+          "error": null
+        }
+      ],
+      "page_errors": []
+    },
+    {
+      "profile": "slow-mobile",
+      "sample": 2,
+      "run": "offline",
+      "latest_ms": 1637.6
+    },
+    {
+      "profile": "slow-mobile",
+      "sample": 3,
+      "run": "cold",
+      "latest_ms": 11631.7,
+      "interaction_ms": 11712.3,
+      "search_ready_ms": 12511.4,
+      "language_switch_with_search_ms": 206.0,
+      "first_screen_server_body_bytes": 2098843,
+      "all_server_body_bytes": 3285491,
+      "first_screen_cdp_transferred_bytes": 1637896,
+      "all_transferred_bytes": 1638345,
+      "initial_page_transfer_bytes": 1643298,
+      "first_resources": [
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/index-COxK96o5.js",
+          "bytes": 160827,
+          "encoded": 160527,
+          "type": "script"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/index-DM59N1JP.css",
+          "bytes": 44846,
+          "encoded": 44546,
+          "type": "link"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/index.json",
+          "bytes": 242155,
+          "encoded": 241855,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/ru.json",
+          "bytes": 238201,
+          "encoded": 237901,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/be.json",
+          "bytes": 53313,
+          "encoded": 53013,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/uk.json",
+          "bytes": 70137,
+          "encoded": 69837,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/workbox-window.prod.es5-BBnX5xw4.js",
+          "bytes": 2659,
+          "encoded": 2359,
+          "type": "script"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/favicon.svg",
+          "bytes": 555,
+          "encoded": 255,
+          "type": "other"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/hr.json",
+          "bytes": 212477,
+          "encoded": 212177,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/en.json",
+          "bytes": 224104,
+          "encoded": 223804,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/sk.json",
+          "bytes": 218879,
+          "encoded": 218579,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/lv.json",
+          "bytes": 170249,
+          "encoded": 169949,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/worker-BF7vtnf2.js",
+          "bytes": 4071,
+          "encoded": 3771,
+          "type": "other"
+        }
+      ],
+      "worker_heap": [
+        {
+          "url": "http://127.0.0.1:5182/medjugorje-messages/assets/worker-BF7vtnf2.js",
+          "usedSize": 13429288,
+          "totalSize": 28311552,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 453878,
+          "error": null
+        }
+      ],
+      "page_errors": []
+    },
+    {
+      "profile": "slow-mobile",
+      "sample": 3,
+      "run": "repeat",
+      "latest_ms": 1704.2,
+      "interaction_ms": 1728.4,
+      "search_ready_ms": 2534.6,
+      "language_switch_with_search_ms": 451.7,
+      "first_screen_server_body_bytes": 0,
+      "all_server_body_bytes": 0,
+      "first_screen_cdp_transferred_bytes": 0,
+      "all_transferred_bytes": 0,
+      "initial_page_transfer_bytes": 0,
+      "first_resources": [
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/index-COxK96o5.js",
+          "bytes": 0,
+          "encoded": 1258932,
+          "type": "script"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/index-DM59N1JP.css",
+          "bytes": 0,
+          "encoded": 359484,
+          "type": "link"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/index.json",
+          "bytes": 0,
+          "encoded": 2037515,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/ru.json",
+          "bytes": 0,
+          "encoded": 1921679,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/be.json",
+          "bytes": 0,
+          "encoded": 407614,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/uk.json",
+          "bytes": 0,
+          "encoded": 533576,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/workbox-window.prod.es5-BBnX5xw4.js",
+          "bytes": 0,
+          "encoded": 5748,
+          "type": "script"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/hr.json",
+          "bytes": 0,
+          "encoded": 1326559,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/en.json",
+          "bytes": 0,
+          "encoded": 1492041,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/sk.json",
+          "bytes": 0,
+          "encoded": 1385625,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/data/lv.json",
+          "bytes": 0,
+          "encoded": 1098937,
+          "type": "fetch"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/favicon.svg",
+          "bytes": 0,
+          "encoded": 439,
+          "type": "other"
+        },
+        {
+          "name": "http://127.0.0.1:5182/medjugorje-messages/assets/worker-BF7vtnf2.js",
+          "bytes": 0,
+          "encoded": 0,
+          "type": "other"
+        }
+      ],
+      "worker_heap": [
+        {
+          "url": "http://127.0.0.1:5182/medjugorje-messages/assets/worker-BF7vtnf2.js",
+          "usedSize": 13128216,
+          "totalSize": 27787264,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 453878,
+          "error": null
+        }
+      ],
+      "page_errors": []
+    },
+    {
+      "profile": "slow-mobile",
+      "sample": 3,
+      "run": "offline",
+      "latest_ms": 1631.4
+    }
+  ]
+}
