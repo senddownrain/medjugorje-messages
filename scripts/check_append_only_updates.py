@@ -51,6 +51,11 @@ def keyed(rows, label):
 def gate(baseline, proposed):
     before_lang, before_index = load_archives(baseline)
     after_lang, after_index = load_archives(proposed)
+    if after_index.get("verified") != before_index.get("verified"):
+        reject("Union index verification status changed")
+    for lang in LANGUAGES:
+        if after_lang[lang].get("verified") != before_lang[lang].get("verified"):
+            reject(lang + " archive verification status changed")
     old_index = keyed(before_index["messages"], "baseline index")
     new_index = keyed(after_index["messages"], "proposed index")
     if set(old_index) - set(new_index):
@@ -77,7 +82,9 @@ def gate(baseline, proposed):
                 reject(lang + " addition lacks explicit index presence: " + key)
             if m.get("language") != lang or m.get("date") != row.get("date") or m.get("type") != row.get("type"):
                 reject(lang + " addition has incompatible language, date or type: " + key)
-            digest = hashlib.sha256(m.get("text", "").encode("utf-8")).hexdigest()
+            if not isinstance(m.get("text"), str) or not m["text"].strip():
+                reject(lang + " append has no confirmed text: " + key)
+            digest = hashlib.sha256(m["text"].encode("utf-8")).hexdigest()
             if m.get("text_sha256") != digest:
                 reject(lang + " addition has invalid text checksum: " + key)
             index_digest = row["translations"][lang].get("text_sha256")
