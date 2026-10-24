@@ -120,3 +120,18 @@ mark { background:var(--mark); color:var(--ink); border-radius:2px; padding:0; }
   .card-date { font-size:20px; }
 }
 @media(prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto !important; transition:none !important; animation:none !important; } }
+
+/* Results use the document scroll; only the filters are a modal bottom sheet. */
+.search-active .content { padding-bottom:calc(110px + env(safe-area-inset-bottom,0px)); }
+.search-active .footer { display:none; }
+.search-screen-heading { display:flex; align-items:center; justify-content:space-between; gap:16px; }
+.search-screen-heading h1 { font-family:Georgia,"Times New Roman",serif; font-size:28px; font-weight:400; }
+.search-active .search-bar { position:fixed; z-index:10; bottom:calc(12px + max(env(safe-area-inset-bottom,0px),var(--keyboard-bottom,0px))); left:50%; transform:translateX(-50%); width:min(680px,calc(100% - 32px)); box-shadow:0 4px 28px #0002; }
+.filter-button { position:relative; display:grid; place-items:center; border-radius:10px; }
+.filter-button svg { width:22px; height:22px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+.filter-button.active { color:var(--accent); background:var(--soft); }
+.filter-dot { position:absolute; width:6px; height:6px; border-radius:50%; background:var(--gold); right:4px; top:5px; }
+.filter-sheet .filters { border:0; padding:0; margin:0; }
+.filter-sheet .settings-dialog .v-card-text { overflow-y:auto; }
+.filter-sheet .v-card-actions { justify-content:space-between; padding-bottom:calc(15px + env(safe-area-inset-bottom,0px)); }
+@media(max-width:350px) { .top-actions { gap:4px; } .brand-copy strong { font-size:17px; } .brand-copy > span { font-size:8px; } .topbar { width:calc(100% - 24px); gap:5px; } }

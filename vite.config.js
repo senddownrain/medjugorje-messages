@@ -19,7 +19,7 @@ export default defineConfig({
       manifest: {
         name: 'Послания Царицы Мира',
         short_name: 'Меджугорье',
-        description: 'Послания из Меджугорья на русском, беларускай і українській',
+        description: 'Послания из Меджугорья: RU, BE, UK, HR, EN, SK, LV',
         lang: 'ru',
         start_url: base,
         scope: base,
@@ -27,8 +27,9 @@ export default defineConfig({
         theme_color: '#f7f5f0',
         background_color: '#f7f5f0',
         icons: [
-          { src: 'icon-192.svg', sizes: '192x192', type: 'image/svg+xml', purpose: 'any' },
-          { src: 'icon-512.svg', sizes: '512x512', type: 'image/svg+xml', purpose: 'any' }
+          { src: 'icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+          { src: 'icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+          { src: 'icon-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' }
         ]
       },
       devOptions: { enabled: false }

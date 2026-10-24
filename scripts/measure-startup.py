@@ -113,7 +113,7 @@ try:
                 before_search = sum(transferred)
                 first_resources = page.evaluate("performance.getEntriesByType('resource').map(r=>({name:r.name,bytes:r.transferSize,encoded:r.encodedBodySize,type:r.initiatorType}))")
                 page_transfer = page.evaluate("performance.getEntriesByType('navigation')[0].transferSize + performance.getEntriesByType('resource').reduce((n,r)=>n+r.transferSize,0)")
-                page.locator('#query').click()
+                page.locator('#open-search').click()
                 expect(page.locator('#search-results')).to_have_attribute('aria-busy', 'false', timeout=120000)
                 page.locator('#query').fill('\"Дорогие дети\"')
                 expect(page.locator('#search-results')).to_have_attribute('aria-busy','false', timeout=120000)

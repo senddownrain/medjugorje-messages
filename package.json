@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test:ui:browser": "python3 scripts/check-reader-browser.py",
+    "test:ui:browser": "python3 scripts/check-release-browser.py",
     "build:search-metadata": "node scripts/build-search-metadata.mjs",
     "check:search-metadata": "node scripts/build-search-metadata.mjs --check",
     "test:search": "node --test tests/search/*.test.mjs",
@@ -13,7 +13,7 @@
     "benchmark:search:browser": "python3 scripts/check-search-browser.py --benchmark",
     "predev": "node scripts/build-runtime-data.mjs",
     "dev": "vite --host 0.0.0.0",
-    "prebuild": "node scripts/build-runtime-data.mjs",
+    "prebuild": "node scripts/build-runtime-data.mjs && node scripts/write-release.mjs",
     "build": "vite build",
     "preview": "vite preview --host 0.0.0.0",
     "check:data": "node scripts/check-data.mjs",
