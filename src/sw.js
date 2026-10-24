@@ -35,7 +35,19 @@ registerRoute(({ url }) => url.origin === self.location.origin && url.pathname =
 registerRoute(({ url }) => url.origin === self.location.origin &&
   new RegExp('^' + base + 'data/[a-f0-9]{24}/[a-z-]+\\.json$').test(url.pathname),
   new CacheFirst({ cacheName:'message-immutable-data-v1', plugins:[
-    new CacheableResponsePlugin({ statuses:[200] }), new ExpirationPlugin({ maxEntries:32, purgeOnQuotaError:false })
+    { async cacheWillUpdate({ request, response }) {
+      if (!response.ok || !response.headers.get('content-type')?.includes('json')) return null;
+      try {
+        const value = await response.clone().json();
+        const [version, file] = new URL(request.url).pathname.slice((base + 'data/').length).split('/');
+        if (file.startsWith('latest-')) {
+          if (value.schema_version !== 1 || value.data_version !== version || file !== `latest-${value.language}.json`) return null;
+        } else if (file === 'metadata.json') {
+          if (value.schema_version !== 1 || !Array.isArray(value.messages)) return null;
+        } else if (file !== `${value.language}.json` || !Array.isArray(value.messages)) return null;
+        return response;
+      } catch { return null; }
+    } }, new ExpirationPlugin({ maxEntries:32, purgeOnQuotaError:false })
   ] }));
 registerRoute(({ url }) => url.origin === self.location.origin && url.pathname.startsWith(base + 'assets/'),
   new CacheFirst({ cacheName:'message-demand-code-v1', plugins:[

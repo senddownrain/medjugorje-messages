@@ -27,7 +27,9 @@ with tempfile.TemporaryDirectory() as temp:
             super().do_GET()
 
         def end_headers(self):
-            self.send_header('Cache-Control', 'no-cache')
+            # Fixtures edit bytes at the same URL within one second; bypass HTTP
+            # mtime/304 caching so this checks SW validation rather than fixture staleness.
+            self.send_header('Cache-Control', 'no-store')
             super().end_headers()
 
         def log_message(self, *_):
@@ -66,7 +68,16 @@ with tempfile.TemporaryDirectory() as temp:
             assert not page.locator('.message-text').count(), 'Never fall back to another language'
             checks.append('PASS offline shell/latest; uncached language explicit error, no fallback')
             context.set_offline(False)
+            lv_file = site/'data'/manifest['latest']['lv']['file']
+            lv_original = lv_file.read_text()
+            lv_file.write_text('<html>Temporary upstream error, HTTP 200</html>')
             page.locator('.plain-button').click()
+            expect(page.locator('[role="alert"]')).to_be_visible()
+            page.wait_for_timeout(200)
+            assert not page.evaluate("async path => Boolean(await (await caches.open('message-immutable-data-v1')).match(path))", '/medjugorje-messages/data/'+manifest['latest']['lv']['file'])
+            lv_file.write_text(lv_original)
+            page.locator('.plain-button').click()
+            checks.append('PASS malformed HTTP-200 data is not cached; retry succeeds after source repair')
             expect(page.locator('.reading')).to_have_attribute('data-message-id', manifest['latest']['lv']['id'])
             page.locator('#query').click()
             expect(page.locator('#search-results')).to_have_attribute('aria-busy','false')
@@ -106,7 +117,8 @@ with tempfile.TemporaryDirectory() as temp:
             (site/'sw.js').write_text(old_sw + '\n// successful-update-fixture\n')
             page.evaluate('navigator.serviceWorker.getRegistration().then(r => r.update())')
             expect(page.get_by_text('Доступна новая версия — обновить', exact=True)).to_be_visible(timeout=30000)
-            page.get_by_text('Доступна новая версия — обновить', exact=True).click()
+            with page.expect_navigation(wait_until='domcontentloaded'):
+                page.get_by_text('Доступна новая версия — обновить', exact=True).click()
             expect(page.locator('.reading')).to_be_visible()
             page.wait_for_function('navigator.serviceWorker.getRegistration().then(r => !r.waiting)')
             checks.append('PASS SW waits for explicit update, activates/reloads, keeps saved data')
@@ -124,7 +136,8 @@ with tempfile.TemporaryDirectory() as temp:
             (site/'data/latest.json').write_text(json.dumps(new_manifest))
             page.evaluate("document.dispatchEvent(new Event('visibilitychange'))")
             expect(page.get_by_text('Доступна новая версия — обновить', exact=True)).to_be_visible()
-            page.get_by_text('Доступна новая версия — обновить', exact=True).click()
+            with page.expect_navigation(wait_until='domcontentloaded'):
+                page.get_by_text('Доступна новая версия — обновить', exact=True).click()
             expect(page.locator('.reading')).to_be_visible()
             page.wait_for_function("""async version => {
                 const r=await (await caches.open('message-manifest-schema-1')).match('./data/latest.json');
