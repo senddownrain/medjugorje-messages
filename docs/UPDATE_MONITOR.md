@@ -1,3 +1,5 @@
+> Дополнение 24.10.2026: [сравнение Codex и GitHub-hosted Actions](SOURCE_NETWORK_DIAGNOSTIC.md). HR в Actions — 200; WS — HTTP 403 Cloudflare; Codex — proxy CONNECT 403 до сайтов. #21 остаётся Draft, новое расписание не включено.
+
 # Проверка новых публикаций и исправлений — аудит и доработка
 
 ## Аудит main `d6dccd7` (23.10.2026)
