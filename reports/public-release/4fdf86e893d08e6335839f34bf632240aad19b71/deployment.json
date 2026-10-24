@@ -1,0 +1,16 @@
+{
+  "site": "https://senddownrain.github.io/medjugorje-messages/",
+  "published_sha": "4fdf86e893d08e6335839f34bf632240aad19b71",
+  "deployment_id": "4fdf86e893d08e6335839f34bf632240aad19b71",
+  "workflow_run": "https://github.com/senddownrain/medjugorje-messages/actions/runs/40079682173",
+  "workflow_conclusion": "success",
+  "jobs": {
+    "test-build": "success",
+    "deploy": "success",
+    "verify-public": "success"
+  },
+  "public_proof_artifact_id": 12555100495,
+  "public_proof_sha256": "39d9646a062de1a6657bec68d274a9f7e9e6f0203c63b158b5066ec1d85c1e2c",
+  "release_tests_artifact_id": 12554259329,
+  "release_tests_sha256": "282b2e9cb2d25870bda2810e6d5daa51b33e60b078c815995ae0e8963fc5ab52"
+}

@@ -1,0 +1,215 @@
+{
+  "status": "PASS",
+  "url": "https://senddownrain.github.io/medjugorje-messages/",
+  "release": {
+    "sha": "4fdf86e893d08e6335839f34bf632240aad19b71",
+    "source_sha256": {
+      "ru.json": "d878a69ddef832adb729e83ad2ff4e4813dc2b9e1ac47d10d3af42ccf600b1ec",
+      "be.json": "4bb87770b6514192cc0bfe52b664dcac36c1ac6dc63e8a815d6651153dec4f05",
+      "uk.json": "b3f3290e4d5074e530028aaae69fc864fd0b99d3e2f4a2d719d56bd8a494049d",
+      "hr.json": "26c5132acb3ac4128869e29f1fef9b8b4a183049624f4efc225d406bc84f65ce",
+      "en.json": "f769b260506c67a83cfb5f034b0238682fb2adea83895d42dfca1586665a1a2a",
+      "sk.json": "42936b7804aaba198bc1a03b2cedff4887015383be580b8ffb66b5546bfe8b28",
+      "lv.json": "90fd9d035663d5644e24620a310e661a1b2f78ed172e7a45de1af20ca410001a",
+      "index.json": "5ea11d808d0eb59cd37cd1ceb95f2071e460449fa5c854d43b60cdd6fb0cd131"
+    }
+  },
+  "browser": "155.0.8059.0",
+  "matrix": [
+    {
+      "width": 320,
+      "language": "ru",
+      "theme": "light",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "language": "ru",
+      "theme": "dark",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "language": "be",
+      "theme": "light",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "language": "be",
+      "theme": "dark",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "language": "uk",
+      "theme": "light",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "language": "uk",
+      "theme": "dark",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "language": "hr",
+      "theme": "light",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "language": "hr",
+      "theme": "dark",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "language": "en",
+      "theme": "light",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "language": "en",
+      "theme": "dark",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "language": "sk",
+      "theme": "light",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "language": "sk",
+      "theme": "dark",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "language": "lv",
+      "theme": "light",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "language": "lv",
+      "theme": "dark",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "language": "ru",
+      "theme": "light",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "language": "ru",
+      "theme": "dark",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "language": "be",
+      "theme": "light",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "language": "be",
+      "theme": "dark",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "language": "uk",
+      "theme": "light",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "language": "uk",
+      "theme": "dark",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "language": "hr",
+      "theme": "light",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "language": "hr",
+      "theme": "dark",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "language": "en",
+      "theme": "light",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "language": "en",
+      "theme": "dark",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "language": "sk",
+      "theme": "light",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "language": "sk",
+      "theme": "dark",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "language": "lv",
+      "theme": "light",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "language": "lv",
+      "theme": "dark",
+      "status": "PASS"
+    }
+  ],
+  "checks": [
+    "PASS HTTP 200; public release SHA (when requested); all seven served archives byte-identical to source JSON",
+    "PASS 28 mobile viewport/language/theme cases; exact latest texts; search highlights and independent seven languages; results in page above bottom bar",
+    "PASS four independent filters, native Back/Escape closes sheet while retaining results and filters; reset preserves query; reader Back/Forward restores 70 cards, scroll and focus",
+    "PASS XSS-safe empty results, reduced viewport 320/390 × 430, search submit dismisses focus; direct message refresh and explicit missing translation/pending attribution",
+    "PASS anonymous HTTPS (public mode), SW scope, Chromium installability; lazy startup; all seven cached languages/search/archive/message reload work offline"
+  ],
+  "page_errors": [],
+  "installability": {
+    "installabilityErrors": []
+  },
+  "service_worker_scope": "https://senddownrain.github.io/medjugorje-messages/",
+  "physical_android": "NOT TESTED",
+  "physical_keyboard": "NOT TESTED",
+  "os_pwa_install": "NOT TESTED",
+  "cache_update": "Separate test: check-startup-browser.py, synthetic failed/successful shell and data updates",
+  "screenshots": [
+    "screenshots/filters-390-light.png",
+    "screenshots/home-320-dark.png",
+    "screenshots/home-320-light.png",
+    "screenshots/home-390-dark.png",
+    "screenshots/home-390-light.png",
+    "screenshots/offline-ready-390.png",
+    "screenshots/search-320-reduced.png",
+    "screenshots/search-390-light.png",
+    "screenshots/search-390-reduced.png"
+  ]
+}
