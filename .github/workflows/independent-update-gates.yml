@@ -1,0 +1,44 @@
+name: Independent update safety gates (read only)
+on:
+  pull_request:
+    paths:
+      - 'scripts/check_append_only_updates.py'
+      - 'scripts/update_candidate_gate.py'
+      - 'research/update_source_registry.json'
+      - 'tests/test_independent_updates.py'
+      - '.github/workflows/independent-update-gates.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  safety:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test independent source and append-only gates
+        run: python -m unittest discover -s tests -p 'test_independent_updates.py' -v
+      - name: Regression — existing seven-language data remains valid
+        run: python -m scripts.check_append_only_updates --baseline data --candidate data
+      - name: Existing archive integrity
+        run: node scripts/check-data.mjs
+      - name: Confirm no content updates in this safety PR
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          git fetch --no-tags --depth=1 origin "$BASE_SHA"
+          if git diff --name-only "$BASE_SHA" HEAD | grep -E '^(data/|src/|public/|\.github/workflows/pages\.yml)'; then
+            echo 'Unsafe: content, UI, or deployment changed in preparatory PR'
+            exit 1
+          fi
+          echo 'PASS: no data, UI or Pages workflow changed'
+      - name: Summary
+        if: success()
+        run: |
+          echo '## Independent updates — Stage 1' >> "$GITHUB_STEP_SUMMARY"
+          echo 'PASS: seven-language source registry, hash-checked manual staging and strict append-only tests.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'No network fetch, auto-import, auto-merge, issue creation or deployment.' >> "$GITHUB_STEP_SUMMARY"

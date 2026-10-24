@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "purpose": "Read-only discovery inventory. Not permission to reproduce, import or publish source texts.",
+  "observed_on": "2026-10-24",
+  "languages": {
+    "ru": {
+      "watch_sources": [
+        {
+          "kind": "community_rss",
+          "url": "https://svetmariji.ru/feed/",
+          "scope": "metadata_only",
+          "status": "observed_accessible"
+        }
+      ],
+      "text_source": {
+        "status": "manual_source_review_required",
+        "notes": "Saved historical research snapshots exist, but no authorized current full-text feed is confirmed."
+      }
+    },
+    "be": {
+      "watch_sources": [],
+      "text_source": {
+        "status": "unconfirmed",
+        "notes": "No independently verified current Belarusian translation feed. Historical saved snapshot is not evidence of new translations."
+      }
+    },
+    "uk": {
+      "watch_sources": [
+        {
+          "kind": "community_rss",
+          "url": "https://svitlomariji.com.ua/feed/",
+          "scope": "metadata_only",
+          "status": "observed_accessible"
+        }
+      ],
+      "text_source": {
+        "status": "manual_source_review_required",
+        "notes": "RSS metadata only; full texts require authorized saved source and review."
+      }
+    },
+    "hr": {
+      "watch_sources": [],
+      "text_source": {
+        "status": "unconfirmed",
+        "notes": "An English official archive does not establish Croatian text. Historical HR MHTML research is not a live authorized feed."
+      }
+    },
+    "en": {
+      "watch_sources": [
+        {
+          "kind": "official_archive",
+          "url": "https://www.medjugorje.hr/en/our-lady-messages-archive",
+          "scope": "date_and_visible_english_sections",
+          "status": "observed_accessible"
+        },
+        {
+          "kind": "community_rss",
+          "url": "https://thelightofmary.com/feed/",
+          "scope": "metadata_only",
+          "status": "observed_accessible"
+        }
+      ],
+      "text_source": {
+        "status": "manual_source_review_required",
+        "notes": "Official EN sections observed by watcher but text ingestion and legal/editorial rights are not established."
+      }
+    },
+    "sk": {
+      "watch_sources": [
+        {
+          "kind": "community_rss",
+          "url": "https://svetlomariino.sk/feed/",
+          "scope": "metadata_only",
+          "status": "observed_accessible"
+        }
+      ],
+      "text_source": {
+        "status": "manual_source_review_required",
+        "notes": "RSS metadata only."
+      }
+    },
+    "lv": {
+      "watch_sources": [
+        {
+          "kind": "community_rss",
+          "url": "https://medjugorje.lv/feed/",
+          "scope": "metadata_only",
+          "status": "observed_accessible"
+        }
+      ],
+      "text_source": {
+        "status": "manual_source_review_required",
+        "notes": "RSS metadata only; historical saved LV source ends in 2019."
+      }
+    }
+  },
+  "safeguards": {
+    "no_network_fetch_in_staging": true,
+    "no_automatic_text_import": true,
+    "no_automatic_merge": true,
+    "no_auto_publishing": true,
+    "allow_manual_source_evidence_only": true
+  }
+}
