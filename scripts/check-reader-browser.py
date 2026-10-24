@@ -14,7 +14,7 @@ from playwright.sync_api import sync_playwright, expect
 ROOT=Path(__file__).resolve().parents[1]
 parser=argparse.ArgumentParser()
 parser.add_argument('--phase', choices=['filters','languages','reader','regression'], default='regression')
-parser.add_argument('--output',type=Path,default=ROOT/'reports/stage-c-polish')
+parser.add_argument('--output',type=Path,default=ROOT/'reports/search-sheet')
 parser.add_argument('--port',type=int,default=5176)
 parser.add_argument('--base',default='/medjugorje-messages/')
 args=parser.parse_args()
@@ -32,11 +32,13 @@ def shot(page,name,full=False):
 
 def fits(page):
     assert page.evaluate('document.documentElement.scrollWidth<=innerWidth'),page.evaluate('({width:innerWidth,scroll:document.documentElement.scrollWidth})')
+    if page.locator('#search-scroll').is_visible():assert page.locator('#search-scroll').evaluate('(e)=>e.scrollWidth<=e.clientWidth')
 
 def ready(page,count=None):
     expect(page.locator('#search-results')).to_have_attribute('aria-busy','false')
     expect(page.locator('#retry-search')).to_have_count(0)
     if count is not None:expect(page.locator('#result-total')).to_have_text(str(count))
+    expect(page.locator('.search-panel')).to_be_visible()
 
 def count(language='en',**filters):
     return sum(r['availability'][language]!='translation_not_present' and all(
@@ -52,17 +54,30 @@ def boot(browser,width=390,ui='ru',language='en',suffix=''):
     page.goto(url+suffix);expect(page.locator('.reading')).to_be_visible() if not suffix else None
     return context,page
 
+def open_sheet(page):
+    if not page.locator('#query').is_visible():page.locator('#search-button').click()
+    expect(page.locator('.search-panel')).to_be_visible()
+    page.locator('#query').click()
+
 def languages(page,ui=None,language=None):
-    page.locator('#language-button').click()
+    page.locator('#search-language-button' if page.locator('#query').is_visible() else '#language-button').click()
     if ui:page.locator('#ui-language').select_option(ui)
     if language:page.locator('#reading-language').select_option(language)
-    page.locator('#close-settings').click();expect(page.locator('.v-dialog')).not_to_be_visible()
+    page.locator('#close-settings').click();expect(page.locator('.settings-dialog')).not_to_be_visible()
 
 def phase_filters(browser):
     for width in [320,390]:
         context,page=boot(browser,width)
-        page.locator('#query').click();ready(page,894)
+        expect(page.locator('#query')).to_have_count(0)
+        assert page.locator('.top-actions button').last.get_attribute('id')=='search-button'
+        fits(page);shot(page,f'home-{width}')
+        open_sheet(page);ready(page,894)
         expect(page.locator('#search-filters')).to_have_count(0)
+        expect(page.locator('[data-active-filters]')).to_have_count(0)
+        expect(page.locator('#filter-toggle [data-icon="sliders-horizontal"]')).to_have_count(1)
+        assert page.locator('.search-bar #filter-toggle').count()==1
+        assert page.locator('.search-panel').bounding_box()['height'] <= page.viewport_size['height']*.83+5
+        fits(page);shot(page,f'search-collapsed-{width}')
         expect(page.locator('#reset-search')).to_have_count(0)
         page.locator('#query').fill('peace');ready(page)
         assert int(page.locator('#result-total').inner_text())>0
@@ -74,6 +89,7 @@ def phase_filters(browser):
         page.locator('#month').select_option('09');ready(page,count(month='09'))
         assert len({r['date'][:4] for r in rows if r['date'][5:7]=='09'})>1
         page.locator('#year').select_option('2020');ready(page,count(month='09',year='2020'))
+        expect(page.locator('[data-active-filters]')).to_have_count(1)
         fits(page);shot(page,f'a-filters-{width}')
         page.locator('#query').fill('peace');ready(page)
         page.locator('#reset-search').click();ready(page)
@@ -81,28 +97,41 @@ def phase_filters(browser):
         assert int(page.locator('#result-total').inner_text())>1
         expect(page.locator('#reset-search')).to_have_count(0)
         assert page.locator('#month').input_value()==page.locator('#year').input_value()==''
+        expect(page.locator('[data-active-filters]')).to_have_count(0)
         page.locator('#query').fill('')
         page.locator('#year').select_option('2020');page.locator('#month').select_option('09')
         ready(page,count(month='09',year='2020'))
-        page.locator('.result-card').first.click();expect(page.locator('.reading')).to_be_visible()
+        page.locator('.results-list .result-card').first.click();expect(page.locator('.reading')).to_be_visible()
         page.locator('.reader-back').click();ready(page,count(month='09',year='2020'))
         assert page.locator('#year').input_value()=='2020' and page.locator('#month').input_value()=='09'
+        page.locator('#filter-toggle').click()
+        expect(page.locator('#search-filters')).to_have_count(0)
+        expect(page.locator('[data-active-filters]')).to_have_count(1)
+        shot(page,f'search-active-collapsed-{width}')
+        page.locator('#close-search').click();expect(page.locator('.search-panel')).not_to_be_visible()
+        expect(page.locator('#search-button')).to_be_focused()
+        page.locator('#theme-button').click()
+        page.go_forward();ready(page,count(month='09',year='2020'))
+        page.locator('#filter-toggle').click();fits(page);shot(page,f'search-dark-filters-{width}')
+        page.keyboard.press('Escape');expect(page.locator('.search-panel')).not_to_be_visible()
+        expect(page.locator('#search-button')).to_be_focused()
+        page.go_forward();ready(page,count(month='09',year='2020'))
         context.close()
-    checks.append('A PASS: four controls only, word search before filters, month across years, year AND month, live updates, reset preserves query, 320/390px')
+    checks.append('A PASS: header search only; bottom sheet, inline sliders-horizontal, default-collapsed filters, active dot/reset, Escape/X focus return, Back/Forward and four filters at 320/390px')
 
 def phase_languages(browser):
     for width in [320,390]:
         context,page=boot(browser,width,language='ru')
-        assert page.locator('.top-actions button').count()==2
+        assert page.locator('.top-actions button').count()==3
         page.locator('#language-button').click()
         assert page.locator('.settings-dialog select').evaluate_all('(nodes)=>nodes.map(n=>n.id)')==['ui-language','reading-language']
         page.locator('#ui-language').focus();page.keyboard.press('Tab');expect(page.locator('#reading-language')).to_be_focused()
         shot(page,f'b-languages-{width}')
-        page.keyboard.press('Escape');expect(page.locator('.v-dialog')).not_to_be_visible()
+        page.keyboard.press('Escape');expect(page.locator('.settings-dialog')).not_to_be_visible()
         expect(page.locator('#language-button')).to_be_focused()
         shot(page,f'b-light-{width}')
         page.locator('#theme-button').click();expect(page.locator('html')).to_have_attribute('data-theme','dark')
-        expect(page.locator('.v-dialog')).not_to_be_visible();fits(page);shot(page,f'b-dark-{width}')
+        expect(page.locator('.settings-dialog')).not_to_be_visible();fits(page);shot(page,f'b-dark-{width}')
         languages(page,ui='be',language='lv')
         expect(page.locator('html')).to_have_attribute('lang','be')
         expect(page.locator('#language-button')).to_have_text('LV')
@@ -148,7 +177,7 @@ def regression(browser):
                 fits(page)
                 if width==390:shot(page,f'after-{language}-{width}-{theme}')
                 matrix.append({'width':width,'ui_language':language,'theme':theme,'status':'PASS'})
-            page.locator('#query').click();ready(page,len(archives[language]['messages']))
+            open_sheet(page);ready(page,len(archives[language]['messages']))
             page.locator('#filter-toggle').click()
             assert page.locator('#visionary option').count()==8 # all + six people + unknown
             for person in ['marija','mirjana','ivanka','jakov','ivan','vicka','unattributed']:
@@ -158,7 +187,7 @@ def regression(browser):
     context,page=boot(browser,ui='en')
     page.add_init_script("window.workerMessages=[];const send=Worker.prototype.postMessage;Worker.prototype.postMessage=function(data,...rest){window.workerMessages.push(data);return send.call(this,data,...rest);};")
     page.reload();expect(page.locator('.reading')).to_be_visible()
-    page.locator('#query').click();ready(page,894)
+    open_sheet(page);ready(page,894)
     page.locator('#query').fill('"dear children" peace');ready(page)
     assert page.locator('.card-snippet mark').count()>0
     page.locator('#query').fill('<img onerror=window.injected=1>');ready(page,0)
@@ -167,21 +196,21 @@ def regression(browser):
     page.locator('#filter-toggle').click()
     page.locator('#message-type').select_option('monthly');ready(page)
     page.locator('#filter-toggle').click();page.locator('#show-more').click()
-    target=page.locator('.result-card').nth(43);target.scroll_into_view_if_needed()
-    before=page.evaluate('scrollY');identifier=target.get_attribute('data-id');total=int(page.locator('#result-total').inner_text())
+    target=page.locator('.results-list .result-card').nth(43);target.scroll_into_view_if_needed()
+    before=page.locator('#search-scroll').evaluate('(e)=>e.scrollTop');identifier=target.get_attribute('data-id');total=int(page.locator('#result-total').inner_text())
     target.press('Enter');expect(page.locator('.reading')).to_have_attribute('data-message-id',identifier)
     page.go_back();ready(page,total)
-    assert page.locator('#query').input_value()=='peace' and page.locator('.result-card').count()==70
-    page.wait_for_function('(y)=>Math.abs(scrollY-y)<3',arg=before)
-    expect(page.locator(f'[data-id="{identifier}"]')).to_be_focused()
+    assert page.locator('#query').input_value()=='peace' and page.locator('.results-list .result-card').count()==70
+    page.wait_for_function('(y)=>Math.abs(document.querySelector("#search-scroll").scrollTop-y)<3',arg=before)
+    expect(page.locator(f'#search-scroll [data-id="{identifier}"]')).to_be_focused()
     page.go_forward();expect(page.locator('.reading')).to_have_attribute('data-message-id',identifier)
     page.locator('.reader-back').click();ready(page,total)
-    page.wait_for_function('(y)=>Math.abs(scrollY-y)<3',arg=before)
+    page.wait_for_function('(y)=>Math.abs(document.querySelector("#search-scroll").scrollTop-y)<3',arg=before)
     checks.append('Regression PASS: safe word/phrase highlights; keyboard Enter; Back/Forward/in-app Back restore query/type/language/70 cards/scroll/focus')
     page.locator('#query').fill('oldquery');page.locator('#query').fill('dear children')
-    page.locator('#language-button').click()
+    page.locator('#search-language-button').click()
     for language in ['uk','en','lv']:page.locator('#reading-language').select_option(language)
-    page.locator('#close-settings').click();expect(page.locator('.v-dialog')).not_to_be_visible()
+    page.locator('#close-settings').click();expect(page.locator('.settings-dialog')).not_to_be_visible()
     page.locator('#filter-toggle').click();page.locator('#reset-search').click()
     page.locator('#query').fill('"Dargie berni"');ready(page)
     assert int(page.locator('#result-total').inner_text())>0
@@ -220,8 +249,8 @@ def regression(browser):
     page.unroute(worker_url);page.locator('#retry-search').click();ready(page,0)
     assert page.locator('#query').input_value()=='neexistujucislovo'
     page.route('**/data/ru.json',lambda route:route.fulfill(status=500,body='failure'));page.reload()
-    expect(page.locator('[role="alert"]')).to_be_visible()
-    page.unroute('**/data/ru.json');page.locator('.plain-button').click();ready(page,0)
+    expect(page.locator('.search-panel [role="alert"]')).to_be_visible()
+    page.unroute('**/data/ru.json');page.locator('.search-panel .plain-button').click();ready(page,0)
     checks.append('Regression PASS: empty results, reduced 430px viewport, Worker/archive loading error and retry preserve query; actual Android keyboard NOT TESTED')
     context.close()
 
@@ -248,7 +277,7 @@ with tempfile.TemporaryDirectory() as temp:
                 report={'status':'PASS','phase':args.phase,'browser':browser.version,'checks':checks,'matrix':matrix,'screenshots':screenshots,'page_errors':errors,
                     'physical_android':'NOT TESTED','physical_software_keyboard':'NOT TESTED','pwa_install_offline':'NOT TESTED','deployment':'NOT RUN',
                     'original_sha256':{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted((ROOT/'data').glob('*.json'))},
-                    'scope':'Built production app over loopback, service workers blocked. Before screenshots copied unchanged from PR19 2c69a62. No Android device or OS keyboard.'}
+                    'scope':'Built Stage C search bottom sheet over loopback, service workers blocked. Current screenshots captured in this run; original C artifacts retained separately. No physical Android or OS keyboard.'}
                 target=args.output/('browser.json' if args.phase=='regression' else args.phase+'.json')
                 target.write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
                 print(json.dumps({'status':'PASS','phase':args.phase,'checks':checks,'matrix_cases':len(matrix),'screenshots':len(screenshots)},ensure_ascii=False,indent=2))
