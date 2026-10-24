@@ -73,6 +73,9 @@ function formatDate(value) {
 function applyTheme() {
   document.documentElement.dataset.theme = isDark.value ? 'dark' : 'light';
   vuetifyTheme.global.name.value = isDark.value ? 'marianDark' : 'marianLight';
+  for (const icon of document.querySelectorAll('link[data-theme-icon]')) {
+    icon.href = `${baseUrl}${icon.dataset[isDark.value ? 'dark' : 'light']}`;
+  }
 }
 watch([theme, systemDark], applyTheme, { immediate: true });
 watch(theme, value => save('medjugorje-theme', value));
@@ -301,8 +304,8 @@ onUnmounted(() => {
     <a class="skip-link" href="#main-content" @click.prevent="$refs.mainContent.focus()">{{ T.read }}</a>
     <header class="topbar">
       <a href="#" class="brand" @click.prevent="goHome">
-        <img class="brand-symbol" :src="`${baseUrl}logo-96.webp`"
-          :srcset="`${baseUrl}logo-96.webp 96w, ${baseUrl}logo-192.webp 192w`"
+        <img class="brand-symbol" :src="`${baseUrl}logo-${isDark ? 'dark' : 'light'}-96.webp`"
+          :srcset="`${baseUrl}logo-${isDark ? 'dark' : 'light'}-96.webp 96w, ${baseUrl}logo-${isDark ? 'dark' : 'light'}-192.webp 192w`"
           sizes="(max-width: 350px) 32px, (max-width: 600px) 36px, 48px"
           width="48" height="48" alt="" aria-hidden="true" />
         <span class="brand-copy"><strong>{{ T.brand }}</strong><span>{{ T.subtitle }}</span></span>

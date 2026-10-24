@@ -1,0 +1,128 @@
+[
+  {
+    "file": "public/apple-touch-icon.png",
+    "size": [
+      180,
+      180
+    ],
+    "bytes": 46067,
+    "sha256": "7383780be9e08545b1f427ff2c08da0ab02fb51821ed5b22cd4fde668a03ac29"
+  },
+  {
+    "file": "public/favicon-16.png",
+    "size": [
+      16,
+      16
+    ],
+    "bytes": 398,
+    "sha256": "4d0a3335ec75f40bf7888df6967e45123a039f33268f93f41b703e30166059bd"
+  },
+  {
+    "file": "public/favicon-64.png",
+    "size": [
+      64,
+      64
+    ],
+    "bytes": 8843,
+    "sha256": "c76937ccfe6f27c22809a109f40f3f60d090238dfd1d02c38ba2bb928ccd9eff"
+  },
+  {
+    "file": "public/favicon-dark-16.png",
+    "size": [
+      16,
+      16
+    ],
+    "bytes": 318,
+    "sha256": "99c25c25a5cc8e558422120849734f7e79e88521746d0707ab1fb9b1a9d52f7a"
+  },
+  {
+    "file": "public/favicon-dark-64.png",
+    "size": [
+      64,
+      64
+    ],
+    "bytes": 9614,
+    "sha256": "3c2a3aff034ebcc2fe2a174120de3b1f9186f080c1b600b2c8f9bd77bc95e036"
+  },
+  {
+    "file": "public/favicon-dark.ico",
+    "size": [
+      64,
+      64
+    ],
+    "bytes": 18784,
+    "sha256": "142455dff5512764220b347d49a374cedbe8729b1e498c4d119188aa675a62fc"
+  },
+  {
+    "file": "public/favicon.ico",
+    "size": [
+      64,
+      64
+    ],
+    "bytes": 17597,
+    "sha256": "32dcc7410213c116739466955dd7b2efbb13caade575e40f93b7a11d1eb5d8c8"
+  },
+  {
+    "file": "public/icon-192.png",
+    "size": [
+      192,
+      192
+    ],
+    "bytes": 51631,
+    "sha256": "c2ecee57af31a036fb51614cb1fed8053027846f5ab211c241f149150af28eff"
+  },
+  {
+    "file": "public/icon-512.png",
+    "size": [
+      512,
+      512
+    ],
+    "bytes": 277272,
+    "sha256": "c3c6cac294ade7a844f6e65e2ca08c679710882c0833eeda7df83defdec39378"
+  },
+  {
+    "file": "public/icon-maskable-512.png",
+    "size": [
+      512,
+      512
+    ],
+    "bytes": 110182,
+    "sha256": "19236b5af4871e21b7e5660b5c70cb9225a4045b8353e6a4ed4f54b1a6e76684"
+  },
+  {
+    "file": "public/logo-dark-192.webp",
+    "size": [
+      192,
+      192
+    ],
+    "bytes": 45898,
+    "sha256": "3b6f47138c5d82c910c8bbb6c8f09ee43bbdcf842f8dfc3b76d2fc6e133d3104"
+  },
+  {
+    "file": "public/logo-dark-96.webp",
+    "size": [
+      96,
+      96
+    ],
+    "bytes": 14428,
+    "sha256": "5be629d257f19a7ee39046d25bcc32b3855e6a02cf246c821493e919e742d938"
+  },
+  {
+    "file": "public/logo-light-192.webp",
+    "size": [
+      192,
+      192
+    ],
+    "bytes": 44548,
+    "sha256": "245bbd9f20416c28d172a5bcd1167bf1e63cea96cdc71fc46ee9f74e39a8c8ae"
+  },
+  {
+    "file": "public/logo-light-96.webp",
+    "size": [
+      96,
+      96
+    ],
+    "bytes": 13352,
+    "sha256": "3fca6bb407a400bf2cdf5ffb91acc77b455a706da67b80f9dacbab42b3939a0a"
+  }
+]

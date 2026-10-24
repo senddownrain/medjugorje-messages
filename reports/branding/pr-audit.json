@@ -1,0 +1,146 @@
+{
+  "15": {
+    "ancestor_in_main": false,
+    "unique_commits": [
+      "c53598d Capture dark mobile archive from the top of the page",
+      "1ecc84d Prepare owner-private HTTPS preview and verify mobile production PWA"
+    ],
+    "changes": [
+      ".github/workflows/pwa-preview.yml",
+      ".openai/hosting.json",
+      "docs/CODEX_CLOUD.md",
+      "docs/TESTING_PREVIEW.md",
+      "docs/preview/320-light.png",
+      "docs/preview/390-dark.png",
+      "docs/preview/REPORT.md",
+      "package.json",
+      "scripts/check-preview.py"
+    ]
+  },
+  "17": {
+    "ancestor_in_main": true,
+    "unique_commits": [],
+    "changes": []
+  },
+  "18": {
+    "ancestor_in_main": true,
+    "unique_commits": [],
+    "changes": []
+  },
+  "19": {
+    "ancestor_in_main": true,
+    "unique_commits": [],
+    "changes": []
+  },
+  "20": {
+    "ancestor_in_main": false,
+    "unique_commits": [
+      "3ef09d7 feat: prepare owner-private HTTPS preview for current reader without deploy"
+    ],
+    "changes": [
+      ".github/workflows/pwa-preview.yml",
+      ".openai/hosting.json",
+      "docs/PREVIEW_CURRENT_READER.md",
+      "docs/TESTING_PREVIEW.md",
+      "index.html",
+      "package.json",
+      "public/robots.txt",
+      "reports/preview-current/browser.json",
+      "scripts/check-preview.py",
+      "scripts/check-reader-browser.py"
+    ]
+  },
+  "21": {
+    "ancestor_in_main": false,
+    "unique_commits": [
+      "0873ed7 docs: link measured source-network results and keep schedule inactive",
+      "86b087e docs: establish proxy versus Cloudflare 403 and keep source failures ERROR",
+      "13dfe5c diagnostics: compare official and supplementary sources without bypass or imports",
+      "6ed76f4 feat: improve existing twice-daily source watchers with editorial correction reports"
+    ],
+    "changes": [
+      ".github/workflows/source-network-diagnostic.yml",
+      ".github/workflows/watch-community-messages.yml",
+      ".github/workflows/watch-official-messages.yml",
+      "docs/COMMUNITY_MONITOR.md",
+      "docs/SOURCE_NETWORK_DIAGNOSTIC.md",
+      "docs/UPDATE_MONITOR.md",
+      "reports/source-network/actions.json",
+      "reports/source-network/codex.json",
+      "scripts/diagnose_source_network.py",
+      "scripts/notify-watch.cjs",
+      "scripts/watch_community_messages.py",
+      "scripts/watch_official_updates.py",
+      "scripts/watch_review.py",
+      "tests/test-notify-watch.cjs",
+      "tests/test_source_network.py",
+      "tests/test_watch_review.py"
+    ]
+  },
+  "22": {
+    "ancestor_in_main": true,
+    "unique_commits": [],
+    "changes": []
+  },
+  "23": {
+    "ancestor_in_main": false,
+    "unique_commits": [
+      "4c6ccb3 feat: move reader search into a bottom sheet with inline filter controls",
+      "3ef09d7 feat: prepare owner-private HTTPS preview for current reader without deploy"
+    ],
+    "changes": [
+      ".github/workflows/pwa-preview.yml",
+      ".openai/hosting.json",
+      "docs/PREVIEW_CURRENT_READER.md",
+      "docs/SEARCH_BOTTOM_SHEET.md",
+      "docs/TESTING_PREVIEW.md",
+      "index.html",
+      "package.json",
+      "public/robots.txt",
+      "reports/preview-current/browser.json",
+      "reports/search-sheet/browser.json",
+      "reports/search-sheet/screenshots/a-filters-320.png",
+      "reports/search-sheet/screenshots/a-filters-390.png",
+      "reports/search-sheet/screenshots/after-be-390-dark.png",
+      "reports/search-sheet/screenshots/after-be-390-light.png",
+      "reports/search-sheet/screenshots/after-en-390-dark.png",
+      "reports/search-sheet/screenshots/after-en-390-light.png",
+      "reports/search-sheet/screenshots/after-hr-390-dark.png",
+      "reports/search-sheet/screenshots/after-hr-390-light.png",
+      "reports/search-sheet/screenshots/after-lv-390-dark.png",
+      "reports/search-sheet/screenshots/after-lv-390-light.png",
+      "reports/search-sheet/screenshots/after-ru-390-dark.png",
+      "reports/search-sheet/screenshots/after-ru-390-light.png",
+      "reports/search-sheet/screenshots/after-sk-390-dark.png",
+      "reports/search-sheet/screenshots/after-sk-390-light.png",
+      "reports/search-sheet/screenshots/after-uk-390-dark.png",
+      "reports/search-sheet/screenshots/after-uk-390-light.png",
+      "reports/search-sheet/screenshots/b-dark-320.png",
+      "reports/search-sheet/screenshots/b-dark-390.png",
+      "reports/search-sheet/screenshots/b-languages-320.png",
+      "reports/search-sheet/screenshots/b-languages-390.png",
+      "reports/search-sheet/screenshots/b-light-320.png",
+      "reports/search-sheet/screenshots/b-light-390.png",
+      "reports/search-sheet/screenshots/c-latest-320.png",
+      "reports/search-sheet/screenshots/c-latest-390.png",
+      "reports/search-sheet/screenshots/c-vicka-320.png",
+      "reports/search-sheet/screenshots/c-vicka-390.png",
+      "reports/search-sheet/screenshots/d-keyboard-space.png",
+      "reports/search-sheet/screenshots/d-missing-translation.png",
+      "reports/search-sheet/screenshots/d-results-lv.png",
+      "reports/search-sheet/screenshots/home-320.png",
+      "reports/search-sheet/screenshots/home-390.png",
+      "reports/search-sheet/screenshots/search-active-collapsed-320.png",
+      "reports/search-sheet/screenshots/search-active-collapsed-390.png",
+      "reports/search-sheet/screenshots/search-collapsed-320.png",
+      "reports/search-sheet/screenshots/search-collapsed-390.png",
+      "reports/search-sheet/screenshots/search-dark-filters-320.png",
+      "reports/search-sheet/screenshots/search-dark-filters-390.png",
+      "scripts/check-preview.py",
+      "scripts/check-reader-browser.py",
+      "src/App.vue",
+      "src/style.css",
+      "src/ui/translations.js"
+    ]
+  }
+}

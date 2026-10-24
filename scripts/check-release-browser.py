@@ -11,6 +11,7 @@ import tempfile
 import time
 from urllib.request import Request, urlopen
 from playwright.sync_api import sync_playwright, expect
+from branding_qa import check_theme, check_branding_assets
 
 ROOT = Path(__file__).resolve().parents[1]
 p = argparse.ArgumentParser()
@@ -25,7 +26,7 @@ phrases = dict(zip(languages, ['Дорогие дети','Дарагія дзе�
 archives = {l:json.loads((ROOT/f'data/{l}.json').read_text()) for l in languages}
 model = json.loads((ROOT/'derived/search-metadata.json').read_text())
 rows = sorted(model['messages'], key=lambda r:(r['date'],r['id']), reverse=True)
-matrix, checks, errors = [], [], []
+matrix, checks, errors, not_found = [], [], [], []
 server = None
 if args.url:
     url = args.url
@@ -89,6 +90,7 @@ try:
         for width in [320,390]:
             context = browser.new_context(viewport={'width':width,'height':844},is_mobile=True,has_touch=True)
             page = context.new_page(); page.on('pageerror',lambda e:errors.append(str(e)))
+            page.on('response',lambda r:not_found.append(r.url) if r.status == 404 else None)
             for language in languages:
                 if language == 'ru': page.goto(url)
                 else: choose(page,language,language)
@@ -97,7 +99,7 @@ try:
                 record = next(r for r in archives[language]['messages'] if r['id']==latest)
                 assert '\n\n'.join(page.locator('.message-text').all_text_contents()) == record['text']
                 for theme in ['light','dark']:
-                    if page.locator('html').get_attribute('data-theme') != theme: page.locator('#theme-button').click()
+                    check_theme(page,url,theme)
                     fits(page)
                     matrix.append({'width':width,'language':language,'theme':theme,'status':'PASS'})
                     if language == 'ru': page.screenshot(path=str(shots/f'home-{width}-{theme}.png'),animations='disabled')
@@ -118,6 +120,7 @@ try:
         context = browser.new_context(viewport={'width':390,'height':844},is_mobile=True,has_touch=True)
         page=context.new_page(); page.on('pageerror',lambda e:errors.append(str(e)))
         page.goto(url); expect(page.locator('.reading')).to_be_visible()
+        brand_hashes=check_branding_assets(page,url)
         choose(page,'en','en')
         page.locator('#open-search').click(); ready(page)
         page.locator('#query').fill('peace'); ready(page)
@@ -127,6 +130,11 @@ try:
         assert page.locator('#search-filters select').evaluate_all('(nodes)=>nodes.map(n=>n.id)')==['visionary','message-type','year','month']
         page.locator('#visionary').select_option('marija')
         page.locator('#year').select_option('2020'); ready(page)
+        page.locator('#message-type').select_option('monthly'); ready(page)
+        page.locator('#month').select_option('12'); ready(page)
+        for identifier in page.locator('.result-card').evaluate_all('(nodes)=>nodes.map(n=>n.dataset.id)'):
+            row=next(r for r in rows if r['id']==identifier)
+            assert row['date'].startswith('2020-12') and row['type']['value']=='monthly' and row['visionary']['value']=='marija'
         total=page.locator('#result-total').inner_text(); assert int(total)>0
         page.screenshot(path=str(shots/'filters-390-light.png'),animations='disabled')
         expect(page.locator('#search-filters')).to_be_visible()
@@ -180,6 +188,7 @@ try:
         profile = tempfile.TemporaryDirectory()
         context=pw.chromium.launch_persistent_context(profile.name,executable_path=shutil.which('chromium'),headless=True,args=['--no-sandbox'],viewport={'width':390,'height':844},is_mobile=True,has_touch=True)
         page=context.new_page(); page.on('pageerror',lambda e:errors.append(str(e)))
+        page.on('response',lambda r:not_found.append(r.url) if r.status == 404 else None)
         requests=[]; page.on('request',lambda r:requests.append(r.url))
         response=page.goto(url)
         assert response.status==200 and (not args.url or page.url.startswith('https://'))
@@ -211,10 +220,19 @@ try:
             page.locator('#close-settings').click()
             page.locator('.brand').click(); expect(page.locator('.reading')).to_have_attribute('data-message-id',manifest['latest'][language]['id'])
             context.set_offline(False)
+        context.set_offline(True)
+        for theme in ['light','dark']:
+            check_theme(page,url,theme)
+            statuses=page.evaluate('''async()=>Promise.all([...document.querySelectorAll('link[data-theme-icon]')].map(async i=>(await fetch(i.href)).status))''')
+            assert statuses==[200,200,200]
+            page.screenshot(path=str(shots/f'offline-branding-{theme}-390.png'),animations='disabled')
+        context.set_offline(False)
         page.screenshot(path=str(shots/'offline-ready-390.png'),animations='disabled')
         checks.append('PASS anonymous HTTPS (public mode), SW scope, Chromium installability; lazy startup; all seven cached languages/search/archive/message reload work offline')
         assert not errors, errors
+        assert not not_found, not_found
         report={'status':'PASS','url':url,'release':published,'browser':browser.version,'matrix':matrix,'checks':checks,'page_errors':errors,
+                'branding_asset_sha256':brand_hashes,'network_404':not_found,
                 'installability':installability,'service_worker_scope':scope,
                 'physical_android':'NOT TESTED','physical_keyboard':'NOT TESTED','os_pwa_install':'NOT TESTED',
                 'cache_update':'Separate test: check-startup-browser.py, synthetic failed/successful shell and data updates',

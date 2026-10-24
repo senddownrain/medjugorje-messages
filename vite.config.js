@@ -15,7 +15,7 @@ export default defineConfig({
       srcDir: 'src', filename: 'sw.js',
       registerType: 'prompt',
       injectManifest: { globPatterns: ['index.html', 'assets/index-*.js', 'assets/index-*.css', '**/*.{svg,png,ico,webp}'] },
-      includeAssets: ['favicon.ico', 'favicon-64.png', 'apple-touch-icon.png', 'logo-*.webp'],
+      includeAssets: ['favicon*.ico', 'favicon*.png', 'apple-touch-icon.png', 'logo-*.webp'],
       manifest: {
         name: 'Послания Царицы Мира',
         short_name: 'Меджугорье',
