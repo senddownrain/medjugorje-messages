@@ -1,0 +1,111 @@
+{
+  "checked_at_utc": "2026-10-24T07:54:16.308078+00:00",
+  "environment": "codex",
+  "github_run_url": null,
+  "sources": [
+    {
+      "role": "primary",
+      "source_url": "https://www.medjugorje.hr/en/our-lady-messages-archive",
+      "checked_at_utc": "2026-10-24T07:54:16.322613+00:00",
+      "state": "ERROR",
+      "attempts": [
+        {
+          "url": "https://www.medjugorje.hr/robots.txt",
+          "method": "GET",
+          "checked_at_utc": "2026-10-24T07:54:16.308103+00:00",
+          "route": {
+            "route": "HTTPS via configured proxy CONNECT",
+            "proxy": {
+              "scheme": "http",
+              "host": "proxy",
+              "port": 8080,
+              "credentials_redacted": false
+            },
+            "tls_verification": true
+          },
+          "layer": "proxy_connect",
+          "connect_status": 403,
+          "http_status": null,
+          "error_type": "ProxyError",
+          "origin_reached": false
+        },
+        {
+          "url": "https://www.medjugorje.hr/en/our-lady-messages-archive",
+          "method": "HEAD",
+          "checked_at_utc": "2026-10-24T07:54:16.317252+00:00",
+          "route": {
+            "route": "HTTPS via configured proxy CONNECT",
+            "proxy": {
+              "scheme": "http",
+              "host": "proxy",
+              "port": 8080,
+              "credentials_redacted": false
+            },
+            "tls_verification": true
+          },
+          "layer": "proxy_connect",
+          "connect_status": 403,
+          "http_status": null,
+          "error_type": "ProxyError",
+          "origin_reached": false
+        }
+      ],
+      "message_content_imported": false,
+      "reason": "robots_unavailable; content GET skipped; HEAD is metadata-only"
+    },
+    {
+      "role": "supplementary",
+      "source_url": "https://www.medjugorje.ws/en/messages/",
+      "checked_at_utc": "2026-10-24T07:54:16.333484+00:00",
+      "state": "ERROR",
+      "attempts": [
+        {
+          "url": "https://www.medjugorje.ws/robots.txt",
+          "method": "GET",
+          "checked_at_utc": "2026-10-24T07:54:16.322634+00:00",
+          "route": {
+            "route": "HTTPS via configured proxy CONNECT",
+            "proxy": {
+              "scheme": "http",
+              "host": "proxy",
+              "port": 8080,
+              "credentials_redacted": false
+            },
+            "tls_verification": true
+          },
+          "layer": "proxy_connect",
+          "connect_status": 403,
+          "http_status": null,
+          "error_type": "ProxyError",
+          "origin_reached": false
+        },
+        {
+          "url": "https://www.medjugorje.ws/en/messages/",
+          "method": "HEAD",
+          "checked_at_utc": "2026-10-24T07:54:16.329655+00:00",
+          "route": {
+            "route": "HTTPS via configured proxy CONNECT",
+            "proxy": {
+              "scheme": "http",
+              "host": "proxy",
+              "port": 8080,
+              "credentials_redacted": false
+            },
+            "tls_verification": true
+          },
+          "layer": "proxy_connect",
+          "connect_status": 403,
+          "http_status": null,
+          "error_type": "ProxyError",
+          "origin_reached": false
+        }
+      ],
+      "message_content_imported": false,
+      "reason": "robots_unavailable; content GET skipped; HEAD is metadata-only"
+    }
+  ],
+  "no_updates_claimed": false,
+  "automatic_import": false,
+  "fallback": "ERROR: editor may manually confirm source/date/ID and attach an authorized saved HTML/MHT; unverified text is never auto-imported.",
+  "state": "ERROR"
+}
