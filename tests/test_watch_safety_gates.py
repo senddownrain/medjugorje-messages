@@ -79,5 +79,42 @@ class AdditionalSafetyGates(unittest.TestCase):
         compare_observations("community", community([item()]), state, {})
         self.assertEqual(state, old)
 
+    def test_first_source_bootstrap_suppresses_historical_issue_flood(self):
+        report = community([item(guid="old-1"), item(guid="old-2")])
+        state, events = compare_observations(
+            "community", report, {}, {}, bootstrap_sources={("example.org", "ru")})
+        self.assertEqual(events, [])
+        self.assertEqual(len(state), 2)
+        self.assertEqual(compare_observations("community", report, state, {})[1], [])
+        later = community([item(guid="old-1"), item(guid="old-2"), item(guid="new-3")])
+        _, events = compare_observations("community", later, state, {})
+        self.assertEqual(len(events), 1)
+        self.assertEqual(events[0]["identity"]["source_id"], "new-3")
+
+    def test_lost_cache_rebootstrap_is_quiet(self):
+        report = community([item(guid="old-1"), item(guid="old-2")])
+        _, events = compare_observations(
+            "community", report, {}, {}, bootstrap_sources={("example.org", "ru")})
+        self.assertEqual(events, [])
+
+    def test_recovered_language_source_bootstraps_independently(self):
+        state, _ = compare_observations(
+            "community", community([item(lang="ru", guid="old")]), {}, {},
+            bootstrap_sources={("example.org", "ru")})
+        _, events = compare_observations(
+            "community", community([item(lang="ru", guid="old"), item(lang="uk", guid="old-uk")]),
+            state, {}, bootstrap_sources={("example.org", "uk")})
+        self.assertEqual(events, [])
+
+    def test_correction_after_quiet_bootstrap_is_reported(self):
+        report = community([item(guid="old")])
+        state, _ = compare_observations(
+            "community", report, {}, {}, bootstrap_sources={("example.org", "ru")})
+        corrected = deepcopy(report)
+        corrected["candidates"][0]["summary"] = "Corrected metadata"
+        _, events = compare_observations("community", corrected, state, {})
+        self.assertEqual(len(events), 1)
+        self.assertEqual(events[0]["kind"], "source_correction")
+
 if __name__ == "__main__":
     unittest.main()
