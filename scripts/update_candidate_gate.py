@@ -50,10 +50,10 @@ def iso_instant(value, field, *, nullable=False):
         fail(field + " must be a timezone-aware ISO timestamp")
     try:
         stamp = datetime.fromisoformat(value.replace("Z", "+00:00"))
-        if stamp.utcoffset() is None:
-            fail(field + " must include timezone")
     except ValueError:
         fail(field + " must be a valid ISO timestamp")
+    if stamp.utcoffset() is None:
+        fail(field + " must include timezone")
 
 
 def https_origin(value):
