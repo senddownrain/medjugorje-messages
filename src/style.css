@@ -21,6 +21,7 @@ button:disabled { cursor:wait; }
 .app-shell { min-height:100dvh; display:flex; flex-direction:column; }
 .topbar { width:min(980px,calc(100% - 40px)); margin:0 auto; padding:20px 0; display:flex; align-items:center; justify-content:space-between; gap:12px; border-bottom:1px solid var(--line); }
 .brand { display:flex; align-items:center; gap:10px; color:var(--ink); text-decoration:none; min-width:0; }
+.brand-symbol { width:48px; height:48px; flex:none; display:block; object-fit:contain; }
 .brand-copy { display:grid; gap:3px; min-width:0; }
 .brand-copy strong { font-family:Georgia,"Times New Roman",serif; font-weight:400; font-size:23px; line-height:1.15; overflow-wrap:anywhere; }
 .brand-copy > span { font-size:10px; color:var(--secondary); letter-spacing:.03em; }
@@ -98,6 +99,7 @@ mark { background:var(--mark); color:var(--ink); border-radius:2px; padding:0; }
 @media(max-width:600px) {
   .topbar { width:calc(100% - 32px); padding:16px 0; gap:10px; }
   .brand { gap:8px; }
+  .brand-symbol { width:36px; height:36px; }
   .brand-copy strong { font-size:20px; }
   .brand-copy > span { font-size:9px; line-height:1.5; }
   .top-actions { gap:6px; }
@@ -112,6 +114,7 @@ mark { background:var(--mark); color:var(--ink); border-radius:2px; padding:0; }
   .footer { width:calc(100% - 32px); }
 }
 @media(max-width:350px) {
+  .brand-symbol { width:32px; height:32px; }
   .brand-copy strong { font-size:18px; }
   .brand-copy > span { font-size:8px; }
   .topbar { gap:7px; }

@@ -3,7 +3,7 @@ import vue from '@vitejs/plugin-vue';
 import { VitePWA } from 'vite-plugin-pwa';
 
 // Use /medjugorje-messages/ when hosted as a GitHub Pages project site.
-// For local development Vite uses / by default.
+// SITE_BASE can override this for another deployment path.
 const base = process.env.SITE_BASE || '/medjugorje-messages/';
 
 export default defineConfig({
@@ -14,8 +14,8 @@ export default defineConfig({
       strategies: 'injectManifest',
       srcDir: 'src', filename: 'sw.js',
       registerType: 'prompt',
-      injectManifest: { globPatterns: ['index.html', 'assets/index-*.js', 'assets/index-*.css', '**/*.{svg,png,ico}'] },
-      includeAssets: ['favicon.svg'],
+      injectManifest: { globPatterns: ['index.html', 'assets/index-*.js', 'assets/index-*.css', '**/*.{svg,png,ico,webp}'] },
+      includeAssets: ['favicon*.ico', 'favicon*.png', 'apple-touch-icon.png', 'logo-*.webp'],
       manifest: {
         name: 'Послания Царицы Мира',
         short_name: 'Меджугорье',

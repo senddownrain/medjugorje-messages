@@ -36,7 +36,7 @@ npm run measure:startup -- --output /tmp/d-measure.json
 
 `check-startup-browser.py` проверяет production SW на localhost: минимальные requests, offline latest, missing uncached language, offline search/language/archive, Back/Forward без скачиваний, неудачную и успешную установку SW, data-only update. Синтетические deployments меняют только временную копию dist, исходные тексты не редактируются.
 
-Dev Vite не доказывает PWA. Physical Android, установка, клавиатура, hosted HTTPS/auth — отдельные проверки. SVG manifest icons остаются прежними; реальная установимость требует проверки телефона. Сборки хранятся в закрытых GitHub artifacts; Pages/deploy не включены.
+Dev Vite не доказывает PWA. Physical Android, установка, клавиатура, hosted HTTPS/auth — отдельные проверки. Утверждённые PNG/ICO/WebP, безопасная зона maskable, скриншоты и проверка на Android описаны в [branding/README.md](branding/README.md). Текущее публичное развёртывание описано в [PUBLIC_RELEASE.md](PUBLIC_RELEASE.md).
 
 ## На Android
 
