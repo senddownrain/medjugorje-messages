@@ -100,15 +100,27 @@ def main():
     # lost caches and sources that recover after an earlier partial failure.
     known_sources = {(v['identity']['origin'], v['identity']['language'])
                      for v in previous.values() if isinstance(v, dict) and 'identity' in v}
+    # Also remember healthy feeds with zero matching RSS entries, so their
+    # first genuinely new candidate is not silently lost on the next run.
+    known_sources.update((entry.split('@', 1)[1], entry.split('@', 1)[0])
+                         for entry in previous.get('__observed_sources__', []))
     observed_sources = {(v['identity']['origin'], v['identity']['language'])
                         for v in from_report(args.kind, report)}
     bootstrap_sources = observed_sources - known_sources if args.kind == 'community' else set()
     state, events = compare_observations(args.kind, report, previous, local,
                                          bootstrap_sources=bootstrap_sources)
+    if args.kind == 'community':
+        from scripts.probe_community_feeds import SITES
+        seen = set(previous.get('__observed_sources__', []))
+        for language, origin in SITES.items():
+            if report.get('sites', {}).get(language, {}).get('state') == 'accessible':
+                seen.add(language + '@' + urlsplit(origin).netloc.lower())
+        state['__observed_sources__'] = sorted(seen)
     args.state.parent.mkdir(parents=True, exist_ok=True)
     args.state.write_text(json.dumps(state, ensure_ascii=False, indent=2)+'\n')
     args.output.write_text(json.dumps({'source_status':report['status'], 'checked_at_utc':report['checked_at_utc'],
-        'events':events, 'state_entries':len(state), 'baseline_initialized':not state_existed,
+        'events':events, 'state_entries':sum(k != '__observed_sources__' for k in state),
+        'baseline_initialized':not state_existed,
         'bootstrapped_sources':sorted(lang + '@' + origin for origin, lang in bootstrap_sources),
         'bootstrap_notifications_suppressed':bool(bootstrap_sources)}, ensure_ascii=False, indent=2)+'\n')
     print(f'{len(events)} editorial review events; source status {report["status"]}; originals unchanged')
