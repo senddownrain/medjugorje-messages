@@ -247,6 +247,32 @@ class AppendOnlyTests(unittest.TestCase):
         with self.assertRaisesRegex(AppendOnlyError, "duplicate ID"):
             gate(self.before, self.after)
 
+    def test_blocks_self_verification_of_archive_and_index(self):
+        for path in (self.after / "en.json", self.after / "index.json"):
+            with self.subTest(path=path.name):
+                original = self.load(path)
+                changed = deepcopy(original)
+                changed["verified"] = True
+                dump(path, changed)
+                with self.assertRaisesRegex(AppendOnlyError, "verification status changed"):
+                    gate(self.before, self.after)
+                dump(path, original)
+
+    def test_blocks_empty_appended_translation(self):
+        new = self.add_translation()
+        path = self.after / "ru.json"
+        value = self.load(path)
+        value["messages"][0]["text"] = ""
+        value["messages"][0]["text_sha256"] = digest("")
+        dump(path, value)
+        index_path = self.after / "index.json"
+        index = self.load(index_path)
+        index["messages"][0]["translations"]["ru"]["text_sha256"] = digest("")
+        index["messages"][0]["translations"]["ru"]["has_text"] = False
+        dump(index_path, index)
+        with self.assertRaisesRegex(AppendOnlyError, "no confirmed text"):
+            gate(self.before, self.after)
+
     def test_blocks_phantom_index_entry(self):
         index_path = self.after / "index.json"
         index = self.load(index_path)
