@@ -92,7 +92,7 @@ def main():
     p.add_argument("--index", type=Path, default=Path("data/index.json"))
     p.add_argument("--output", type=Path, default=Path("research-output/official-watch.json"))
     args = p.parse_args()
-    report = {"source": URL, "checked_at_utc": datetime.now(timezone.utc).isoformat()}
+    report = {"source": URL, "source_role": "primary", "checked_at_utc": datetime.now(timezone.utc).isoformat()}
     try:
         html = fetch_archive()
         dates = extract_dates(html)
@@ -101,6 +101,7 @@ def main():
     except Exception as exc:
         report.update({"status": "blocked_or_failed", "error": str(exc), "new_dates": None,
                        "translations_checked": False})
+    report["state"] = "ERROR" if report["status"] == "blocked_or_failed" else "OK"
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     print(json.dumps(report, indent=2, ensure_ascii=False))

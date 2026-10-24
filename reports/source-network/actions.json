@@ -1,0 +1,148 @@
+{
+  "checked_at_utc": "2026-10-24T07:54:30.698327+00:00",
+  "environment": "github-hosted-actions",
+  "github_run_url": "https://github.com/senddownrain/medjugorje-messages/actions/runs/40075963937",
+  "sources": [
+    {
+      "role": "primary",
+      "source_url": "https://www.medjugorje.hr/en/our-lady-messages-archive",
+      "checked_at_utc": "2026-10-24T07:54:31.368767+00:00",
+      "state": "OK",
+      "attempts": [
+        {
+          "url": "https://www.medjugorje.hr/robots.txt",
+          "method": "GET",
+          "checked_at_utc": "2026-10-24T07:54:30.698373+00:00",
+          "route": {
+            "route": "runner HTTPS egress (no environment proxy)",
+            "proxy": null,
+            "tls_verification": true
+          },
+          "http_status": 200,
+          "layer": "http_response",
+          "origin_reached": true,
+          "response_headers": {
+            "server": "nginx/1.18.0 (Ubuntu)",
+            "content-type": "text/plain, text/plain"
+          },
+          "body_bytes": 95,
+          "body_sha256": "0b3c49dd469d8a3c41c29ae16c0658923331c5cbe214865575be19eaa6867ba9"
+        },
+        {
+          "url": "https://www.medjugorje.hr/en/our-lady-messages-archive",
+          "method": "HEAD",
+          "checked_at_utc": "2026-10-24T07:54:31.234677+00:00",
+          "route": {
+            "route": "runner HTTPS egress (no environment proxy)",
+            "proxy": null,
+            "tls_verification": true
+          },
+          "http_status": 200,
+          "layer": "http_response",
+          "origin_reached": true,
+          "response_headers": {
+            "server": "nginx/1.18.0 (Ubuntu)",
+            "content-type": "text/html;charset=utf-8"
+          }
+        },
+        {
+          "url": "https://www.medjugorje.hr/en/our-lady-messages-archive",
+          "method": "GET",
+          "checked_at_utc": "2026-10-24T07:54:31.368899+00:00",
+          "route": {
+            "route": "runner HTTPS egress (no environment proxy)",
+            "proxy": null,
+            "tls_verification": true
+          },
+          "http_status": 200,
+          "layer": "http_response",
+          "origin_reached": true,
+          "response_headers": {
+            "server": "nginx/1.18.0 (Ubuntu)",
+            "content-type": "text/html;charset=utf-8"
+          },
+          "body_bytes": 577728,
+          "body_sha256": "1d55daa831c3fc9fbca361c34f873e8044d156770074f9aaab34ed42377cd871"
+        }
+      ],
+      "message_content_imported": false,
+      "observed_dates": [
+        "2026-09-25",
+        "2026-08-25",
+        "2026-07-25"
+      ],
+      "reason": "source_access_confirmed; this is not a no-new-messages decision",
+      "final_url": "https://www.medjugorje.hr/en/our-lady-messages-archive"
+    },
+    {
+      "role": "supplementary",
+      "source_url": "https://www.medjugorje.ws/en/messages/",
+      "checked_at_utc": "2026-10-24T07:54:32.359633+00:00",
+      "state": "ERROR",
+      "attempts": [
+        {
+          "url": "https://www.medjugorje.ws/robots.txt",
+          "method": "GET",
+          "checked_at_utc": "2026-10-24T07:54:32.209976+00:00",
+          "route": {
+            "route": "runner HTTPS egress (no environment proxy)",
+            "proxy": null,
+            "tls_verification": true
+          },
+          "http_status": 200,
+          "layer": "http_response",
+          "origin_reached": true,
+          "response_headers": {
+            "content-type": "text/plain",
+            "server": "cloudflare",
+            "cf-ray": "a4f769fffe917d17-IAD"
+          },
+          "body_bytes": 28716,
+          "body_sha256": "995f5a8663716a8dcbef1f47da7b7e4c8f739e8dd578709b805fd1df9372133c"
+        },
+        {
+          "url": "https://www.medjugorje.ws/en/messages/",
+          "method": "HEAD",
+          "checked_at_utc": "2026-10-24T07:54:32.340173+00:00",
+          "route": {
+            "route": "runner HTTPS egress (no environment proxy)",
+            "proxy": null,
+            "tls_verification": true
+          },
+          "http_status": 403,
+          "layer": "http_response",
+          "origin_reached": true,
+          "response_headers": {
+            "content-type": "text/html; charset=UTF-8",
+            "server": "cloudflare",
+            "cf-ray": "a4f76a002ee97d17-IAD"
+          }
+        },
+        {
+          "url": "https://www.medjugorje.ws/en/messages/",
+          "method": "GET",
+          "checked_at_utc": "2026-10-24T07:54:32.360671+00:00",
+          "route": {
+            "route": "runner HTTPS egress (no environment proxy)",
+            "proxy": null,
+            "tls_verification": true
+          },
+          "http_status": 403,
+          "layer": "http_response",
+          "origin_reached": true,
+          "response_headers": {
+            "content-type": "text/html; charset=UTF-8",
+            "server": "cloudflare",
+            "cf-ray": "a4f76a007a81206f-IAD"
+          }
+        }
+      ],
+      "message_content_imported": false,
+      "reason": "source_request_failed"
+    }
+  ],
+  "no_updates_claimed": false,
+  "automatic_import": false,
+  "fallback": "ERROR: editor may manually confirm source/date/ID and attach an authorized saved HTML/MHT; unverified text is never auto-imported.",
+  "state": "ERROR"
+}
