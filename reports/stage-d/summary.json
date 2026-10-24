@@ -1,0 +1,423 @@
+{
+  "method": "Three independent contexts per profile; cold then repeat and offline in each. Loopback gzip HTTP; shared server link paces all response bodies including Worker/SW with per-response latency and aggregate throughput. Server counts sent compressed bodies (excludes HTTP headers/TLS). Page CPU uses CDP; Worker/SW CPU not throttled. Times from navigation start; search triggered after first screen and RU phrase typed to build index; language EN tested next; each navigation starts in RU; then language changes to EN with the RU query retained, building an honest no-match EN index; times include automation observation latency; Server bytes include background SW installation up to the observation; page CDP/ResourceTiming are diagnostic and can omit SW traffic. Repeat includes installed SW. No inference about physical phone.",
+  "measured_on": "2026-10-24",
+  "baseline_pr19_source": "5356e4ba24feed25a9a2a89585416a4f8666b659 (UI same as built 3653ce8)",
+  "implementation_commit": "cf264a6fdd2d5eeeda4782a15928da03471cd596",
+  "physical_android_tested": false,
+  "artifacts": {
+    "before": {
+      "main_js": {
+        "file": "assets/index-COxK96o5.js",
+        "raw_bytes": 1258932,
+        "gzip9_bytes": 160527,
+        "sha256": "3d67e834ecef0f02c957cb4990fe6345f4d82a2a2bdde9fe207bdc221dc4d7a3"
+      },
+      "main_css": {
+        "file": "assets/index-DM59N1JP.css",
+        "raw_bytes": 359484,
+        "gzip9_bytes": 44546,
+        "sha256": "4daf24ef7c1ca5d048c0047a0497b44eace26242754d0e8caaceed5a07b1989f"
+      },
+      "registration_js": {
+        "file": "assets/workbox-window.prod.es5-BBnX5xw4.js",
+        "raw_bytes": 5748,
+        "gzip9_bytes": 2359,
+        "sha256": "cadd21be4a88598a4dec91a26a025df0a5790ff6baec54a884e401c3f5c95557"
+      },
+      "sw": {
+        "file": "sw.js",
+        "raw_bytes": 2052,
+        "gzip9_bytes": 991,
+        "sha256": "aad33710c2ee90ff35f506def7929e2ca1e10121ec8d06caf91ac184bc64984e"
+      }
+    },
+    "after": {
+      "main_js": {
+        "file": "assets/index-CBi_G_hI.js",
+        "raw_bytes": 256134,
+        "gzip9_bytes": 91059,
+        "sha256": "9912653e727bf06cb6eafbe492b6b784232d375368bf977dbf4ab19d4ea06bff"
+      },
+      "main_css": {
+        "file": "assets/index-wRVtuCLd.css",
+        "raw_bytes": 299423,
+        "gzip9_bytes": 37471,
+        "sha256": "2e70b52b969ffc933a45fbf50b8e52ae935b3c160aea9c961daa9c8d3e047702"
+      },
+      "registration_js": {
+        "file": "assets/workbox-window.prod.es5-BBnX5xw4.js",
+        "raw_bytes": 5748,
+        "gzip9_bytes": 2359,
+        "sha256": "cadd21be4a88598a4dec91a26a025df0a5790ff6baec54a884e401c3f5c95557"
+      },
+      "sw": {
+        "file": "sw.js",
+        "raw_bytes": 27033,
+        "gzip9_bytes": 8807,
+        "sha256": "eb4e8ee99687f4c7c48970a03a4ad096ddf7b599e27a23a9611c2351127717a2"
+      }
+    }
+  },
+  "measurements": {
+    "before": {
+      "normal-mobile": {
+        "cold": {
+          "latest_ms": {
+            "median": 3267.3,
+            "min": 3094.1,
+            "max": 4866.4
+          },
+          "interaction_ms": {
+            "median": 3310.5,
+            "min": 3132.8,
+            "max": 4892.1
+          },
+          "search_ready_ms": {
+            "median": 3847,
+            "min": 3769.9,
+            "max": 5534.3
+          },
+          "language_switch_with_search_ms": {
+            "median": 261.5,
+            "min": 158.7,
+            "max": 327.1
+          },
+          "first_screen_server_body_bytes": {
+            "median": 2147995,
+            "min": 2049691,
+            "max": 2584708
+          },
+          "all_server_body_bytes": {
+            "median": 3285491,
+            "min": 3285491,
+            "max": 3285491
+          },
+          "search_after_latest_ms": {
+            "median": 667.9
+          },
+          "worker_used_bytes": {
+            "median": 13345192,
+            "min": 13285864,
+            "max": 13485332
+          }
+        },
+        "repeat": {
+          "latest_ms": {
+            "median": 1416,
+            "min": 948,
+            "max": 1508.4
+          },
+          "interaction_ms": {
+            "median": 1442.6,
+            "min": 983.4,
+            "max": 1527.7
+          },
+          "search_ready_ms": {
+            "median": 1944.1,
+            "min": 1434.1,
+            "max": 2039.3
+          },
+          "language_switch_with_search_ms": {
+            "median": 182.8,
+            "min": 152.1,
+            "max": 246.0
+          },
+          "first_screen_server_body_bytes": {
+            "median": 0,
+            "min": 0,
+            "max": 0
+          },
+          "all_server_body_bytes": {
+            "median": 0,
+            "min": 0,
+            "max": 0
+          },
+          "search_after_latest_ms": {
+            "median": 528.1
+          },
+          "worker_used_bytes": {
+            "median": 13689716,
+            "min": 13418848,
+            "max": 13707464
+          }
+        },
+        "offline": {
+          "latest_ms": {
+            "median": 1094.6,
+            "min": 1089.2,
+            "max": 1607
+          }
+        }
+      },
+      "slow-mobile": {
+        "cold": {
+          "latest_ms": {
+            "median": 11726.3,
+            "min": 11631.7,
+            "max": 11766.2
+          },
+          "interaction_ms": {
+            "median": 11783,
+            "min": 11712.3,
+            "max": 11824.7
+          },
+          "search_ready_ms": {
+            "median": 12714.3,
+            "min": 12511.4,
+            "max": 12718.1
+          },
+          "language_switch_with_search_ms": {
+            "median": 222.8,
+            "min": 206.0,
+            "max": 330.7
+          },
+          "first_screen_server_body_bytes": {
+            "median": 2098843,
+            "min": 2098843,
+            "max": 2115227
+          },
+          "all_server_body_bytes": {
+            "median": 3285491,
+            "min": 3285491,
+            "max": 3285491
+          },
+          "search_after_latest_ms": {
+            "median": 951.9
+          },
+          "worker_used_bytes": {
+            "median": 13429288,
+            "min": 13349068,
+            "max": 13508212
+          }
+        },
+        "repeat": {
+          "latest_ms": {
+            "median": 1704.3,
+            "min": 1704.2,
+            "max": 1985.7
+          },
+          "interaction_ms": {
+            "median": 1745.1,
+            "min": 1728.4,
+            "max": 2025.9
+          },
+          "search_ready_ms": {
+            "median": 2777.7,
+            "min": 2534.6,
+            "max": 2862.2
+          },
+          "language_switch_with_search_ms": {
+            "median": 318.4,
+            "min": 247.0,
+            "max": 451.7
+          },
+          "first_screen_server_body_bytes": {
+            "median": 0,
+            "min": 0,
+            "max": 0
+          },
+          "all_server_body_bytes": {
+            "median": 0,
+            "min": 0,
+            "max": 0
+          },
+          "search_after_latest_ms": {
+            "median": 830.4
+          },
+          "worker_used_bytes": {
+            "median": 13128216,
+            "min": 13065608,
+            "max": 13422384
+          }
+        },
+        "offline": {
+          "latest_ms": {
+            "median": 1631.4,
+            "min": 1361.2,
+            "max": 1637.6
+          }
+        }
+      }
+    },
+    "after": {
+      "normal-mobile": {
+        "cold": {
+          "latest_ms": {
+            "median": 977.8,
+            "min": 908.8,
+            "max": 995.7
+          },
+          "interaction_ms": {
+            "median": 996.5,
+            "min": 925.3,
+            "max": 1027.5
+          },
+          "search_ready_ms": {
+            "median": 2749.2,
+            "min": 2551.6,
+            "max": 2780.7
+          },
+          "language_switch_with_search_ms": {
+            "median": 929.3,
+            "min": 916.9,
+            "max": 934.5
+          },
+          "first_screen_server_body_bytes": {
+            "median": 142284,
+            "min": 142284,
+            "max": 142284
+          },
+          "all_server_body_bytes": {
+            "median": 780433,
+            "min": 780433,
+            "max": 780433
+          },
+          "search_after_latest_ms": {
+            "median": 1802.9
+          },
+          "worker_used_bytes": {
+            "median": 13244624,
+            "min": 13242652,
+            "max": 13420308
+          }
+        },
+        "repeat": {
+          "latest_ms": {
+            "median": 281,
+            "min": 237.5,
+            "max": 304.7
+          },
+          "interaction_ms": {
+            "median": 294.7,
+            "min": 250.7,
+            "max": 320.5
+          },
+          "search_ready_ms": {
+            "median": 1579,
+            "min": 1524.3,
+            "max": 1594.4
+          },
+          "language_switch_with_search_ms": {
+            "median": 409.2,
+            "min": 356.1,
+            "max": 436.3
+          },
+          "first_screen_server_body_bytes": {
+            "median": 2765,
+            "min": 2765,
+            "max": 2765
+          },
+          "all_server_body_bytes": {
+            "median": 282734,
+            "min": 282734,
+            "max": 282734
+          },
+          "search_after_latest_ms": {
+            "median": 1289.7
+          },
+          "worker_used_bytes": {
+            "median": 13169628,
+            "min": 12782212,
+            "max": 13215336
+          }
+        },
+        "offline": {
+          "latest_ms": {
+            "median": 216.2,
+            "min": 204.2,
+            "max": 250
+          }
+        }
+      },
+      "slow-mobile": {
+        "cold": {
+          "latest_ms": {
+            "median": 1858.5,
+            "min": 1857,
+            "max": 1859.6
+          },
+          "interaction_ms": {
+            "median": 1883.7,
+            "min": 1882.9,
+            "max": 1888.7
+          },
+          "search_ready_ms": {
+            "median": 5461.3,
+            "min": 5431,
+            "max": 5517.4
+          },
+          "language_switch_with_search_ms": {
+            "median": 2017.1,
+            "min": 2016.4,
+            "max": 2026.7
+          },
+          "first_screen_server_body_bytes": {
+            "median": 141761,
+            "min": 141761,
+            "max": 141761
+          },
+          "all_server_body_bytes": {
+            "median": 780433,
+            "min": 780433,
+            "max": 780433
+          },
+          "search_after_latest_ms": {
+            "median": 3602.8
+          },
+          "worker_used_bytes": {
+            "median": 13073428,
+            "min": 13056364,
+            "max": 13499752
+          }
+        },
+        "repeat": {
+          "latest_ms": {
+            "median": 440.6,
+            "min": 438.4,
+            "max": 450.7
+          },
+          "interaction_ms": {
+            "median": 467.7,
+            "min": 454.9,
+            "max": 472.6
+          },
+          "search_ready_ms": {
+            "median": 3361.6,
+            "min": 3337.2,
+            "max": 3545.1
+          },
+          "language_switch_with_search_ms": {
+            "median": 494.1,
+            "min": 458.9,
+            "max": 508.3
+          },
+          "first_screen_server_body_bytes": {
+            "median": 2765,
+            "min": 2765,
+            "max": 2765
+          },
+          "all_server_body_bytes": {
+            "median": 291541,
+            "min": 291541,
+            "max": 291541
+          },
+          "search_after_latest_ms": {
+            "median": 2921.0
+          },
+          "worker_used_bytes": {
+            "median": 13437424,
+            "min": 13288852,
+            "max": 13443932
+          }
+        },
+        "offline": {
+          "latest_ms": {
+            "median": 431.9,
+            "min": 416.5,
+            "max": 461.7
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "status": "PASS",
+  "originals": {
+    "data/be.json": {
+      "sha256": "4bb87770b6514192cc0bfe52b664dcac36c1ac6dc63e8a815d6651153dec4f05",
+      "byte_equal_to_pr19": true
+    },
+    "data/en.json": {
+      "sha256": "f769b260506c67a83cfb5f034b0238682fb2adea83895d42dfca1586665a1a2a",
+      "byte_equal_to_pr19": true
+    },
+    "data/hr.json": {
+      "sha256": "26c5132acb3ac4128869e29f1fef9b8b4a183049624f4efc225d406bc84f65ce",
+      "byte_equal_to_pr19": true
+    },
+    "data/index.json": {
+      "sha256": "5ea11d808d0eb59cd37cd1ceb95f2071e460449fa5c854d43b60cdd6fb0cd131",
+      "byte_equal_to_pr19": true
+    },
+    "data/lv.json": {
+      "sha256": "90fd9d035663d5644e24620a310e661a1b2f78ed172e7a45de1af20ca410001a",
+      "byte_equal_to_pr19": true
+    },
+    "data/ru.json": {
+      "sha256": "d878a69ddef832adb729e83ad2ff4e4813dc2b9e1ac47d10d3af42ccf600b1ec",
+      "byte_equal_to_pr19": true
+    },
+    "data/sk.json": {
+      "sha256": "42936b7804aaba198bc1a03b2cedff4887015383be580b8ffb66b5546bfe8b28",
+      "byte_equal_to_pr19": true
+    },
+    "data/uk.json": {
+      "sha256": "b3f3290e4d5074e530028aaae69fc864fd0b99d3e2f4a2d719d56bd8a494049d",
+      "byte_equal_to_pr19": true
+    }
+  },
+  "latest_payloads": {
+    "ru": {
+      "id": "260925m",
+      "date": "2026-09-25",
+      "record_exactly_equal": true,
+      "row_exactly_equal": true
+    },
+    "be": {
+      "id": "260925m",
+      "date": "2026-09-25",
+      "record_exactly_equal": true,
+      "row_exactly_equal": true
+    },
+    "uk": {
+      "id": "260925m",
+      "date": "2026-09-25",
+      "record_exactly_equal": true,
+      "row_exactly_equal": true
+    },
+    "hr": {
+      "id": "260925m",
+      "date": "2026-09-25",
+      "record_exactly_equal": true,
+      "row_exactly_equal": true
+    },
+    "en": {
+      "id": "260925m",
+      "date": "2026-09-25",
+      "record_exactly_equal": true,
+      "row_exactly_equal": true
+    },
+    "sk": {
+      "id": "260925m",
+      "date": "2026-09-25",
+      "record_exactly_equal": true,
+      "row_exactly_equal": true
+    },
+    "lv": {
+      "id": "190102s",
+      "date": "2019-01-02",
+      "record_exactly_equal": true,
+      "row_exactly_equal": true
+    }
+  },
+  "model_ids": 899,
+  "pending": 8,
+  "unknown": 154,
+  "data_version": "651cc180794f6b29c680c580",
+  "editorial_approval_changed": false
+}
