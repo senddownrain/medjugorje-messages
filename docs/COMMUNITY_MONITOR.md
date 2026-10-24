@@ -1,3 +1,5 @@
+> Обновлённое расписание, идентификаторы, исправления, ограничения и безопасность: [UPDATE_MONITOR.md](UPDATE_MONITOR.md). Ниже — историческое описание первоначального механизма.
+
 # Monitoring community translations
 
 Confirmed from GitHub Actions on October 23, 2026: the general RSS feeds of the Russian, Ukrainian, Slovak, Latvian and English *Light of Mary* sites are accessible. `medjugorje.ws` continues to return HTTP 403 from GitHub-hosted runners. A separate official-date watcher uses the Medjugorje Information Centre archive for the appearance of a new monthly message.

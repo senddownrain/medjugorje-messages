@@ -1,0 +1,101 @@
+name: Message watch preflight (read only)
+on:
+  pull_request:
+    paths:
+      - 'scripts/watch_*.py'
+      - 'tests/test_watch*.py'
+      - '.github/workflows/watch-preflight.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - name: Official archive (read only)
+        id: official
+        continue-on-error: true
+        run: python scripts/watch_official_updates.py --output research-output/preflight-official.json
+      - name: Five translation feeds (read only)
+        id: community
+        continue-on-error: true
+        run: python -m scripts.watch_community_messages --output research-output/preflight-community.json
+      - name: Compare with empty official baseline, no Issues
+        if: always()
+        continue-on-error: true
+        run: |
+          if test -f research-output/preflight-official.json; then
+            python -m scripts.watch_review --kind official --report research-output/preflight-official.json --state work/preflight-official-state.json --output research-output/preflight-official-review.json
+          fi
+      - name: Compare with empty community baseline, no Issues
+        if: always()
+        continue-on-error: true
+        run: |
+          if test -f research-output/preflight-community.json; then
+            python -m scripts.watch_review --kind community --report research-output/preflight-community.json --state work/preflight-community-state.json --output research-output/preflight-community-review.json
+          fi
+      - name: Summary and safety gates
+        if: always()
+        env:
+          OFFICIAL_OUTCOME: ${{ steps.official.outcome }}
+          COMMUNITY_OUTCOME: ${{ steps.community.outcome }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          def load(name):
+              p=Path('research-output')/name
+              return json.loads(p.read_text()) if p.exists() else None
+          official=load('preflight-official.json')
+          community=load('preflight-community.json')
+          off_review=load('preflight-official-review.json')
+          com_review=load('preflight-community-review.json')
+          lines=['## Live read-only watch preflight', '',
+                 'No Issues, imports, edits, cache writes, or deployment.','',
+                 '- Official outcome: '+os.environ['OFFICIAL_OUTCOME'],
+                 '- Community outcome: '+os.environ['COMMUNITY_OUTCOME']]
+          if official:
+              lines.append('- Official source: '+official.get('state','unknown')+
+                           '; status: '+official.get('status','unknown')+
+                           '; new dates: '+str(len(official.get('new_dates') or [])))
+          if community:
+              for lang, data in sorted(community.get('sites',{}).items()):
+                  lines.append('- '+lang+': '+data.get('state','unknown')+
+                               '; candidates: '+str(data.get('candidate_count',0)))
+          if off_review:
+              lines.append('- Official review events (dry run only): '+str(len(off_review['events'])))
+          if com_review:
+              lines.append('- Community first-run review events (must be zero): '+str(len(com_review['events'])))
+              lines.append('- Community sources initialized quietly: '+str(len(com_review.get('bootstrapped_sources',[]))))
+          errors=[]
+          if not off_review or not com_review:
+              errors.append('Missing comparison report')
+          if com_review and com_review['events']:
+              errors.append('Unsafe: first-run community issue flood')
+          if os.environ['OFFICIAL_OUTCOME']!='success' or os.environ['COMMUNITY_OUTCOME']!='success':
+              errors.append('At least one live source failed; see artifacts')
+          if errors:
+              lines.extend(['','**FAIL / REVIEW REQUIRED:** '+ '; '.join(errors)])
+          else:
+              lines.extend(['','**PASS:** live sources read, community first-run is quiet'])
+          with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f:
+              f.write('\n'.join(lines)+'\n')
+          print('\n'.join(lines))
+          if errors:
+              raise SystemExit(1)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: message-watch-readonly-preflight
+          path: |
+            research-output/preflight-*.json
+            work/preflight-*-state.json
+          retention-days: 14
+          if-no-files-found: warn

@@ -1,0 +1,52 @@
+name: Source network diagnostic (read only)
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - scripts/diagnose_source_network.py
+      - tests/test_source_network.py
+      - .github/workflows/source-network-diagnostic.yml
+permissions:
+  contents: read
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - run: python -m unittest discover -s tests -p test_source_network.py -v
+      - name: Check both exact sources; ERROR is not no updates
+        id: access
+        continue-on-error: true
+        run: python -m scripts.diagnose_source_network
+      - name: Summary
+        if: always()
+        run: |
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          p=Path('research-output/source-network.json')
+          with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as out:
+              if not p.exists():
+                  out.write('**ERROR: no source diagnostic report.**\n')
+              else:
+                  r=json.loads(p.read_text())
+                  out.write('**State: '+r['state']+'**\n\n')
+                  for source in r['sources']:
+                      out.write('- '+source['source_url']+' — '+source['state']+'; '+source['reason']+'\n')
+                  out.write('\nNo import, notification, schedule activation or no-new-messages assertion.\n')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: source-network-diagnostic
+          path: research-output/source-network.json
+          retention-days: 30
+          if-no-files-found: error
+      - name: Preserve source error as failed diagnostic
+        if: steps.access.outcome != 'success'
+        run: exit 1
