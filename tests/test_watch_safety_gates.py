@@ -1,7 +1,11 @@
 """Additional regression gates for Draft PR #21; no live network or Issues writes."""
 import unittest
+import json
+import tempfile
+from pathlib import Path
+from unittest.mock import patch
 from copy import deepcopy
-from scripts.watch_review import compare_observations
+from scripts.watch_review import compare_observations, main as review_main
 
 SOURCE = "https://www.medjugorje.hr/en/our-lady-messages-archive"
 
@@ -115,6 +119,52 @@ class AdditionalSafetyGates(unittest.TestCase):
         _, events = compare_observations("community", corrected, state, {})
         self.assertEqual(len(events), 1)
         self.assertEqual(events[0]["kind"], "source_correction")
+
+    def test_healthy_empty_feed_remembers_baseline_for_future_candidate(self):
+        with tempfile.TemporaryDirectory() as folder:
+            state = Path(folder) / "state.json"
+            report = Path(folder) / "report.json"
+            output = Path(folder) / "review.json"
+            initial = community([])
+            initial["sites"] = {"ru": {"state": "accessible"}}
+            report.write_text(json.dumps(initial))
+            argv = ["watch_review", "--kind", "community", "--report", str(report),
+                    "--state", str(state), "--output", str(output)]
+            with patch("sys.argv", argv):
+                review_main()
+            self.assertIn("ru@svetmariji.ru", json.loads(state.read_text())["__observed_sources__"])
+            later = community([{**item(), "url": "https://svetmariji.ru/messages/post-1/"}])
+            later["sites"] = {"ru": {"state": "accessible"}}
+            report.write_text(json.dumps(later))
+            with patch("sys.argv", argv):
+                review_main()
+            self.assertEqual(len(json.loads(output.read_text())["events"]), 1)
+
+    def test_failed_source_first_success_is_quiet_then_future_is_notified(self):
+        with tempfile.TemporaryDirectory() as folder:
+            state = Path(folder) / "state.json"
+            report = Path(folder) / "report.json"
+            output = Path(folder) / "review.json"
+            argv = ["watch_review", "--kind", "community", "--report", str(report),
+                    "--state", str(state), "--output", str(output)]
+            initial = community([], "incomplete")
+            initial["sites"] = {"ru": {"state": "failed"}}
+            report.write_text(json.dumps(initial))
+            with patch("sys.argv", argv):
+                review_main()
+            recovered = community([{**item(guid="old"), "url": "https://svetmariji.ru/messages/old/"}])
+            recovered["sites"] = {"ru": {"state": "accessible"}}
+            report.write_text(json.dumps(recovered))
+            with patch("sys.argv", argv):
+                review_main()
+            self.assertEqual(json.loads(output.read_text())["events"], [])
+            newer = community(recovered["candidates"] + [
+                {**item(guid="new"), "url": "https://svetmariji.ru/messages/new/"}])
+            newer["sites"] = recovered["sites"]
+            report.write_text(json.dumps(newer))
+            with patch("sys.argv", argv):
+                review_main()
+            self.assertEqual(len(json.loads(output.read_text())["events"]), 1)
 
 if __name__ == "__main__":
     unittest.main()
