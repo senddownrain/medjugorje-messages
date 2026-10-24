@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "old_release": "4fdf86e893d08e6335839f34bf632240aad19b71",
+  "old_icon_sha256": "969bf0c1f8cb48539d3a49e0269189cd99ed5f5fce9feef8585578dc14691fd1",
+  "new_icon_sha256": "c2ecee57af31a036fb51614cb1fed8053027846f5ab211c241f149150af28eff",
+  "browser": "154.0.8037.57",
+  "origin": "http://127.0.0.1:45615/medjugorje-messages/",
+  "checks": [
+    "Old public shell/manifest/icon cached",
+    "New SW offered explicit update",
+    "New document and icon bytes after acceptance",
+    "Both logos and favicons offline after reload"
+  ],
+  "physical_os_install": "NOT TESTED",
+  "scope": "Old actual release and new production build on the same controlled localhost origin; not a physical phone or public HTTPS upgrade"
+}

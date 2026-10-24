@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "method": "git merge-tree --write-tree; unattached tree only, no branch/worktree changes or merge commit",
+  "polish_commit": "8b8eea5dcc8726d734dfc03e044a7b9740766e7a",
+  "preview_pr": 15,
+  "preview_sha": "c53598d57ba86793c4985af85f418547bc8b762f",
+  "simulated_tree": "c7178cb4e14264b45de05ef3b586dd0d3dc829c1",
+  "conflicts": false,
+  "hosting_blob_preserved": true,
+  "npm_commands_preserved": [
+    "test:ui:browser",
+    "build:private"
+  ],
+  "deployment_tested": false
+}

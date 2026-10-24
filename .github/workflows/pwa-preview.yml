@@ -1,4 +1,4 @@
-name: PWA preview build (private)
+name: PWA build (artifact only)
 on:
   push:
     branches: [main]
@@ -28,7 +28,7 @@ jobs:
         run: npm run check:data
       - name: Compile Vue PWA with offline seven-language archive
         run: npm run build
-      - name: Upload private build for inspection
+      - name: Upload build for inspection
         uses: actions/upload-artifact@v4
         with:
           name: medjugorje-pwa-preview

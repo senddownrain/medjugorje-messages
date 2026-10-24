@@ -4,12 +4,21 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "predev": "node scripts/stage-data.mjs",
+    "test:ui:browser": "python3 scripts/check-release-browser.py",
+    "build:search-metadata": "node scripts/build-search-metadata.mjs",
+    "check:search-metadata": "node scripts/build-search-metadata.mjs --check",
+    "test:search": "node --test tests/search/*.test.mjs",
+    "test:search:browser": "python3 scripts/check-search-browser.py --output /tmp/medjugorje-search-browser.json",
+    "benchmark:search": "node --expose-gc scripts/benchmark-search.mjs",
+    "benchmark:search:browser": "python3 scripts/check-search-browser.py --benchmark",
+    "predev": "node scripts/build-runtime-data.mjs",
     "dev": "vite --host 0.0.0.0",
-    "prebuild": "node scripts/stage-data.mjs",
+    "prebuild": "node scripts/build-runtime-data.mjs && node scripts/write-release.mjs",
     "build": "vite build",
     "preview": "vite preview --host 0.0.0.0",
-    "check:data": "node scripts/check-data.mjs"
+    "check:data": "node scripts/check-data.mjs",
+    "test:startup": "python3 scripts/check-startup-browser.py",
+    "measure:startup": "python3 scripts/measure-startup.py"
   },
   "dependencies": {
     "vue": "^3.5.18",

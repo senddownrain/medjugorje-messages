@@ -1,0 +1,1854 @@
+[
+  {
+    "language": "ru",
+    "id": "160625a",
+    "source_url": "https://www.medjugorje.ws/ru/messages/120625a/",
+    "reason": "source_url_date_mismatch",
+    "source_id": "120625a",
+    "date": "2016-06-25"
+  },
+  {
+    "language": "ru",
+    "id": "140318a",
+    "source_url": "https://www.medjugorje.ws/ru/messages/140418a/",
+    "reason": "source_url_date_mismatch",
+    "source_id": "140418a",
+    "date": "2014-03-18"
+  },
+  {
+    "language": "ru",
+    "id": "111225m",
+    "source_url": "https://www.medjugorje.ws/ru/messages/121125m/",
+    "reason": "source_url_date_mismatch",
+    "source_id": "121125m",
+    "date": "2011-12-25"
+  },
+  {
+    "language": "ru",
+    "id": "101225m",
+    "source_url": "https://www.medjugorje.ws/ru/messages/101225m/",
+    "reason": "record_without_message_text",
+    "stored_status": "missing_message_text"
+  },
+  {
+    "language": "ru",
+    "id": "100101s",
+    "source_url": "https://www.medjugorje.ws/ru/messages/100101s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "marija"
+  },
+  {
+    "language": "ru",
+    "id": "850919w",
+    "source_url": "https://www.medjugorje.ws/ru/messages/850919w/",
+    "reason": "record_without_message_text",
+    "stored_status": "no_message_announced"
+  },
+  {
+    "language": "ru",
+    "id": "850405w",
+    "source_url": "https://www.medjugorje.ws/ru/messages/850405w/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "ivanka"
+  },
+  {
+    "language": "ru",
+    "id": "840614w",
+    "source_url": "https://www.medjugorje.ws/ru/messages/840614w/",
+    "reason": "record_without_message_text",
+    "stored_status": "no_message_announced"
+  },
+  {
+    "reason": "duplicate_source_url",
+    "language": "ru",
+    "source_url": "https://www.medjugorje.ws/ru/messages/120625a/",
+    "ids": [
+      "160625a",
+      "120625a"
+    ]
+  },
+  {
+    "reason": "duplicate_source_url",
+    "language": "ru",
+    "source_url": "https://www.medjugorje.ws/ru/messages/121125m/",
+    "ids": [
+      "121125m",
+      "111225m"
+    ]
+  },
+  {
+    "language": "be",
+    "id": "200302s",
+    "source_url": "https://www.medjugorje.ws/be/messages/200302s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "be",
+    "id": "200202s",
+    "source_url": "https://www.medjugorje.ws/be/messages/200202s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "be",
+    "id": "200102s",
+    "source_url": "https://www.medjugorje.ws/be/messages/200102s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "be",
+    "id": "191102s",
+    "source_url": "https://www.medjugorje.ws/be/messages/191102s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "be",
+    "id": "190902s",
+    "source_url": "https://www.medjugorje.ws/be/messages/190902s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "be",
+    "id": "190802s",
+    "source_url": "https://www.medjugorje.ws/be/messages/190802s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "be",
+    "id": "190702s",
+    "source_url": "https://www.medjugorje.ws/be/messages/190702s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "be",
+    "id": "190602s",
+    "source_url": "https://www.medjugorje.ws/be/messages/190602s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "be",
+    "id": "190202s",
+    "source_url": "https://www.medjugorje.ws/be/messages/190202s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "be",
+    "id": "190102s",
+    "source_url": "https://www.medjugorje.ws/be/messages/190102s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "be",
+    "id": "181202s",
+    "source_url": "https://www.medjugorje.ws/be/messages/181202s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "be",
+    "id": "181102s",
+    "source_url": "https://www.medjugorje.ws/be/messages/181102s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "be",
+    "id": "181002s",
+    "source_url": "https://www.medjugorje.ws/be/messages/181002s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "be",
+    "id": "180902s",
+    "source_url": "https://www.medjugorje.ws/be/messages/180902s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "be",
+    "id": "180802s",
+    "source_url": "https://www.medjugorje.ws/be/messages/180802s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "be",
+    "id": "180702s",
+    "source_url": "https://www.medjugorje.ws/be/messages/180702s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "be",
+    "id": "180602s",
+    "source_url": "https://www.medjugorje.ws/be/messages/180602s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "be",
+    "id": "180202s",
+    "source_url": "https://www.medjugorje.ws/be/messages/180202s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "be",
+    "id": "180102s",
+    "source_url": "https://www.medjugorje.ws/be/messages/180102s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "be",
+    "id": "171202s",
+    "source_url": "https://www.medjugorje.ws/be/messages/171202s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "be",
+    "id": "171102s",
+    "source_url": "https://www.medjugorje.ws/be/messages/171102s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "be",
+    "id": "171002s",
+    "source_url": "https://www.medjugorje.ws/be/messages/171002s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "be",
+    "id": "170902s",
+    "source_url": "https://www.medjugorje.ws/be/messages/170902s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "be",
+    "id": "170802s",
+    "source_url": "https://www.medjugorje.ws/be/messages/170802s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "be",
+    "id": "170702s",
+    "source_url": "https://www.medjugorje.ws/be/messages/170702s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "be",
+    "id": "170602s",
+    "source_url": "https://www.medjugorje.ws/be/messages/170602s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "be",
+    "id": "170502s",
+    "source_url": "https://www.medjugorje.ws/be/messages/170502s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "be",
+    "id": "170402s",
+    "source_url": "https://www.medjugorje.ws/be/messages/170402s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "be",
+    "id": "170302s",
+    "source_url": "https://www.medjugorje.ws/be/messages/170302s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "be",
+    "id": "170202s",
+    "source_url": "https://www.medjugorje.ws/be/messages/170202s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "be",
+    "id": "170102s",
+    "source_url": "https://www.medjugorje.ws/be/messages/170102s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "be",
+    "id": "161202s",
+    "source_url": "https://www.medjugorje.ws/be/messages/161202s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "be",
+    "id": "161102s",
+    "source_url": "https://www.medjugorje.ws/be/messages/161102s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "be",
+    "id": "160902s",
+    "source_url": "https://www.medjugorje.ws/be/messages/160902s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "230225m",
+    "source_url": "https://www.medjugorje.ws/uk/messages/230225m/",
+    "reason": "record_without_message_text",
+    "stored_status": "missing_message_text"
+  },
+  {
+    "language": "uk",
+    "id": "200302s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/200302s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "200202s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/200202s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "200102s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/200102s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "191202s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/191202s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "191102s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/191102s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "191002s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/191002s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "190902s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/190902s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "190802s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/190802s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "190702s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/190702s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "190602s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/190602s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "190502s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/190502s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "190402s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/190402s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "190302s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/190302s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "190202s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/190202s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "190102s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/190102s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "181202s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/181202s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "181102s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/181102s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "181002s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/181002s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "180902s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/180902s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "180802s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/180802s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "180702s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/180702s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "180602s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/180602s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "180502s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/180502s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "180402s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/180402s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "180302s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/180302s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "180202s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/180202s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "180102s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/180102s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "171202s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/171202s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "171102s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/171102s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "171002s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/171002s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "170902s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/170902s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "170802s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/170802s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "170702s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/170702s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "170602s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/170602s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "170502s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/170502s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "170402s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/170402s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "170302s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/170302s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "170202s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/170202s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "170102s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/170102s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "140812s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/140802s/",
+    "reason": "source_url_date_mismatch",
+    "source_id": "140802s",
+    "date": "2014-08-12"
+  },
+  {
+    "language": "uk",
+    "id": "101102s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/101102s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "101002s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/101002s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "100902s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/100902s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "100802s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/100802s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "100702s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/100702s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "100602s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/100602s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "100502s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/100502s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "100402s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/100302s/",
+    "reason": "source_url_date_mismatch",
+    "source_id": "100302s",
+    "date": "2010-04-02"
+  },
+  {
+    "language": "uk",
+    "id": "100402s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/100302s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "100318a",
+    "source_url": "https://www.medjugorje.ws/uk/messages/100318a/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "100302s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/100302s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "100202s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/100202s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "100102s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/100102s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "091202s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/091202s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "uk",
+    "id": "091102s",
+    "source_url": "https://www.medjugorje.ws/uk/messages/091102s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "reason": "duplicate_source_url",
+    "language": "uk",
+    "source_url": "https://www.medjugorje.ws/uk/messages/100302s/",
+    "ids": [
+      "100402s",
+      "100302s"
+    ]
+  },
+  {
+    "language": "hr",
+    "id": "101225a",
+    "source_url": "https://www.medjugorje.ws/hr/messages/101225a/",
+    "reason": "record_without_message_text",
+    "stored_status": "missing_message_text"
+  },
+  {
+    "language": "hr",
+    "id": "980625a",
+    "source_url": "https://www.medjugorje.ws/hr/messages/980625a/",
+    "reason": "record_without_message_text",
+    "stored_status": "missing_message_text"
+  },
+  {
+    "language": "hr",
+    "id": "960625a",
+    "source_url": "https://www.medjugorje.ws/hr/messages/960625a/",
+    "reason": "record_without_message_text",
+    "stored_status": "missing_message_text"
+  },
+  {
+    "language": "hr",
+    "id": "950625a",
+    "source_url": "https://www.medjugorje.ws/hr/messages/950625a/",
+    "reason": "record_without_message_text",
+    "stored_status": "missing_message_text"
+  },
+  {
+    "language": "hr",
+    "id": "850919w",
+    "source_url": "https://www.medjugorje.ws/hr/messages/850919w/",
+    "reason": "record_without_message_text",
+    "stored_status": "missing_message_text"
+  },
+  {
+    "language": "hr",
+    "id": "840628w",
+    "source_url": "https://www.medjugorje.ws/hr/messages/840628w/",
+    "reason": "record_without_message_text",
+    "stored_status": "missing_message_text"
+  },
+  {
+    "language": "hr",
+    "id": "840614w",
+    "source_url": "https://www.medjugorje.ws/hr/messages/840614w/",
+    "reason": "record_without_message_text",
+    "stored_status": "missing_message_text"
+  },
+  {
+    "language": "hr",
+    "id": "840531w",
+    "source_url": "https://www.medjugorje.ws/hr/messages/840531w/",
+    "reason": "record_without_message_text",
+    "stored_status": "missing_message_text"
+  },
+  {
+    "language": "hr",
+    "id": "840426w",
+    "source_url": "https://www.medjugorje.ws/hr/messages/840426w/",
+    "reason": "record_without_message_text",
+    "stored_status": "missing_message_text"
+  },
+  {
+    "language": "en",
+    "id": "101225a",
+    "source_url": "https://www.medjugorje.ws/en/messages/101225a/",
+    "reason": "record_without_message_text",
+    "stored_status": "missing_message_text"
+  },
+  {
+    "language": "en",
+    "id": "060102s",
+    "source_url": "https://www.medjugorje.ws/en/messages/050102s/",
+    "reason": "source_url_date_mismatch",
+    "source_id": "050102s",
+    "date": "2006-01-02"
+  },
+  {
+    "language": "en",
+    "id": "051102s",
+    "source_url": "https://www.medjugorje.ws/en/messages/051102s/",
+    "reason": "record_without_message_text",
+    "stored_status": "missing_message_text"
+  },
+  {
+    "language": "en",
+    "id": "050502s",
+    "source_url": "https://www.medjugorje.ws/en/messages/050702s/",
+    "reason": "source_url_date_mismatch",
+    "source_id": "050702s",
+    "date": "2005-05-02"
+  },
+  {
+    "language": "en",
+    "id": "980625a",
+    "source_url": "https://www.medjugorje.ws/en/messages/980625a/",
+    "reason": "record_without_message_text",
+    "stored_status": "missing_message_text"
+  },
+  {
+    "language": "en",
+    "id": "960625a",
+    "source_url": "https://www.medjugorje.ws/en/messages/960625a/",
+    "reason": "record_without_message_text",
+    "stored_status": "missing_message_text"
+  },
+  {
+    "language": "en",
+    "id": "950625a",
+    "source_url": "https://www.medjugorje.ws/en/messages/950625a/",
+    "reason": "record_without_message_text",
+    "stored_status": "missing_message_text"
+  },
+  {
+    "language": "en",
+    "id": "850919w",
+    "source_url": "https://www.medjugorje.ws/en/messages/850919w/",
+    "reason": "record_without_message_text",
+    "stored_status": "missing_message_text"
+  },
+  {
+    "language": "en",
+    "id": "850405w",
+    "source_url": "https://www.medjugorje.ws/en/messages/850405w/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "ivanka"
+  },
+  {
+    "language": "en",
+    "id": "840809w",
+    "source_url": "https://www.medjugorje.ws/en/messages/840809w/",
+    "reason": "record_without_message_text",
+    "stored_status": "missing_message_text"
+  },
+  {
+    "language": "en",
+    "id": "840628w",
+    "source_url": "https://www.medjugorje.ws/en/messages/840628w/",
+    "reason": "record_without_message_text",
+    "stored_status": "missing_message_text"
+  },
+  {
+    "language": "en",
+    "id": "840614w",
+    "source_url": "https://www.medjugorje.ws/en/messages/840614w/",
+    "reason": "record_without_message_text",
+    "stored_status": "missing_message_text"
+  },
+  {
+    "language": "en",
+    "id": "840531w",
+    "source_url": "https://www.medjugorje.ws/en/messages/840531w/",
+    "reason": "record_without_message_text",
+    "stored_status": "missing_message_text"
+  },
+  {
+    "language": "en",
+    "id": "840426w",
+    "source_url": "https://www.medjugorje.ws/en/messages/840426w/",
+    "reason": "record_without_message_text",
+    "stored_status": "missing_message_text"
+  },
+  {
+    "reason": "duplicate_source_url",
+    "language": "en",
+    "source_url": "https://www.medjugorje.ws/en/messages/050702s/",
+    "ids": [
+      "050702s",
+      "050502s"
+    ]
+  },
+  {
+    "language": "sk",
+    "id": "231225a",
+    "source_url": "https://www.medjugorje.ws/sk/messages/231225a/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "jakov"
+  },
+  {
+    "language": "sk",
+    "id": "211225a",
+    "source_url": "https://www.medjugorje.ws/sk/messages/211225a/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "jakov"
+  },
+  {
+    "language": "sk",
+    "id": "201225a",
+    "source_url": "https://www.medjugorje.ws/sk/messages/201225a/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "jakov"
+  },
+  {
+    "language": "sk",
+    "id": "191225a",
+    "source_url": "https://www.medjugorje.ws/sk/messages/191225a/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "jakov"
+  },
+  {
+    "language": "sk",
+    "id": "181225a",
+    "source_url": "https://www.medjugorje.ws/sk/messages/181225a/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "jakov"
+  },
+  {
+    "language": "sk",
+    "id": "171225a",
+    "source_url": "https://www.medjugorje.ws/sk/messages/171225a/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "jakov"
+  },
+  {
+    "language": "sk",
+    "id": "161225a",
+    "source_url": "https://www.medjugorje.ws/sk/messages/161225a/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "jakov"
+  },
+  {
+    "language": "sk",
+    "id": "151225a",
+    "source_url": "https://www.medjugorje.ws/sk/messages/151225a/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "jakov"
+  },
+  {
+    "language": "sk",
+    "id": "141225a",
+    "source_url": "https://www.medjugorje.ws/sk/messages/141225a/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "jakov"
+  },
+  {
+    "language": "sk",
+    "id": "131225a",
+    "source_url": "https://www.medjugorje.ws/sk/messages/131225a/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "jakov"
+  },
+  {
+    "language": "sk",
+    "id": "111225a",
+    "source_url": "https://www.medjugorje.ws/sk/messages/111225a/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "jakov"
+  },
+  {
+    "language": "sk",
+    "id": "100101s",
+    "source_url": "https://www.medjugorje.ws/sk/messages/100101s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "marija"
+  },
+  {
+    "language": "sk",
+    "id": "091225a",
+    "source_url": "https://www.medjugorje.ws/sk/messages/091225a/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "jakov"
+  },
+  {
+    "language": "sk",
+    "id": "081225a",
+    "source_url": "https://www.medjugorje.ws/sk/messages/081225a/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "jakov"
+  },
+  {
+    "language": "sk",
+    "id": "071225a",
+    "source_url": "https://www.medjugorje.ws/sk/messages/071225a/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "jakov"
+  },
+  {
+    "language": "sk",
+    "id": "051225a",
+    "source_url": "https://www.medjugorje.ws/sk/messages/051225a/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "jakov"
+  },
+  {
+    "language": "sk",
+    "id": "050318a",
+    "source_url": "https://www.medjugorje.ws/sk/messages/040318a/",
+    "reason": "source_url_date_mismatch",
+    "source_id": "040318a",
+    "date": "2005-03-18"
+  },
+  {
+    "language": "sk",
+    "id": "041225a",
+    "source_url": "https://www.medjugorje.ws/sk/messages/041225a/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "jakov"
+  },
+  {
+    "language": "sk",
+    "id": "850919w",
+    "source_url": "https://www.medjugorje.ws/sk/messages/850919w/",
+    "reason": "record_without_message_text",
+    "stored_status": "missing_message_text"
+  },
+  {
+    "language": "sk",
+    "id": "850405w",
+    "source_url": "https://www.medjugorje.ws/sk/messages/850405w/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "ivanka"
+  },
+  {
+    "language": "sk",
+    "id": "840628w",
+    "source_url": "https://www.medjugorje.ws/sk/messages/840628w/",
+    "reason": "record_without_message_text",
+    "stored_status": "missing_message_text"
+  },
+  {
+    "language": "sk",
+    "id": "840614w",
+    "source_url": "https://www.medjugorje.ws/sk/messages/840614w/",
+    "reason": "record_without_message_text",
+    "stored_status": "missing_message_text"
+  },
+  {
+    "language": "sk",
+    "id": "840426w",
+    "source_url": "https://www.medjugorje.ws/sk/messages/840426w/",
+    "reason": "record_without_message_text",
+    "stored_status": "missing_message_text"
+  },
+  {
+    "language": "lv",
+    "id": "180318a",
+    "source_url": "https://www.medjugorje.ws/lv/messages/180318a/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "170318a",
+    "source_url": "https://www.medjugorje.ws/lv/messages/170318a/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "160625a",
+    "source_url": "https://www.medjugorje.ws/lv/messages/120625a/",
+    "reason": "source_url_date_mismatch",
+    "source_id": "120625a",
+    "date": "2016-06-25"
+  },
+  {
+    "language": "lv",
+    "id": "160318a",
+    "source_url": "https://www.medjugorje.ws/lv/messages/160318a/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "120102s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/120102s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "111202s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/111202s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "111102s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/111102s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "111002s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/111002s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "110902s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/110902s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "110802s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/110802s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "110702s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/110702s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "110602s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/110602s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "110502s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/110502s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "110402s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/110402s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "110318a",
+    "source_url": "https://www.medjugorje.ws/lv/messages/110318a/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "110302s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/110302s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "110202s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/110202s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "110102s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/110102s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "101202s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/101202s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "101102s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/101102s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "101002s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/101002s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "100902s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/100902s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "100802s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/100802s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "100702s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/100702s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "100602s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/100602s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "100502s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/100502s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "100402s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/100402s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "100318a",
+    "source_url": "https://www.medjugorje.ws/lv/messages/100318a/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "100302s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/100302s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "100202s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/100202s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "100102s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/100102s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "091202s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/091202s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "091102s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/091102s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "091002s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/091002s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "090902s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/090902s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "090802s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/090802s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "090702s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/090702s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "090602s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/090602s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "090502s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/090502s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "090402s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/090402s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "090318a",
+    "source_url": "https://www.medjugorje.ws/lv/messages/090318a/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "090302s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/090302s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "090202s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/090202s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "090102s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/090102s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "081202s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/081202s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "081102s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/081102s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "081002s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/081002s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "080902s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/080902s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "080802s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/080802s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "080702s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/080702s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "080602s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/080602s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "080502s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/080502s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "080402s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/080402s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "080318a",
+    "source_url": "https://www.medjugorje.ws/lv/messages/080318a/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "080302s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/080302s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "080202s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/080202s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "071202s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/071202s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "071102s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/071102s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "070902s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/070902s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "070802s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/070802s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "070702s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/070702s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "070602s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/070602s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "070502s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/070502s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "070318a",
+    "source_url": "https://www.medjugorje.ws/lv/messages/070318a/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "070302s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/070302s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "070102s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/070102s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "061202s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/061202s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "061102s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/061102s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "061002s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/061002s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "060902s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/060802s/",
+    "reason": "source_url_date_mismatch",
+    "source_id": "060802s",
+    "date": "2006-09-02"
+  },
+  {
+    "language": "lv",
+    "id": "060902s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/060802s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "060802s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/060802s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "060625a",
+    "source_url": "https://www.medjugorje.ws/lv/messages/060625a/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "ivanka"
+  },
+  {
+    "language": "lv",
+    "id": "060502s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/060502s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "060318a",
+    "source_url": "https://www.medjugorje.ws/lv/messages/060318a/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "060302s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/060302s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "060102s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/060102s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "050502s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/050502s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "041202s",
+    "source_url": "https://www.medjugorje.ws/lv/messages/041202s/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "mirjana"
+  },
+  {
+    "language": "lv",
+    "id": "020625a",
+    "source_url": "https://www.medjugorje.ws/lv/messages/020625a/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "ivanka"
+  },
+  {
+    "language": "lv",
+    "id": "850919w",
+    "source_url": "https://www.medjugorje.ws/lv/messages/850919w/",
+    "reason": "record_without_message_text",
+    "stored_status": "missing_message_text"
+  },
+  {
+    "language": "lv",
+    "id": "850405w",
+    "source_url": "https://www.medjugorje.ws/lv/messages/850405w/",
+    "reason": "language_index_visionary_difference",
+    "language_value": null,
+    "index_value": "ivanka"
+  },
+  {
+    "language": "lv",
+    "id": "840628w",
+    "source_url": "https://www.medjugorje.ws/lv/messages/840628w/",
+    "reason": "record_without_message_text",
+    "stored_status": "missing_message_text"
+  },
+  {
+    "language": "lv",
+    "id": "840614w",
+    "source_url": "https://www.medjugorje.ws/lv/messages/840614w/",
+    "reason": "record_without_message_text",
+    "stored_status": "missing_message_text"
+  },
+  {
+    "language": "lv",
+    "id": "840531w",
+    "source_url": "https://www.medjugorje.ws/lv/messages/840531w/",
+    "reason": "record_without_message_text",
+    "stored_status": "missing_message_text"
+  },
+  {
+    "language": "lv",
+    "id": "840426w",
+    "source_url": "https://www.medjugorje.ws/lv/messages/840426w/",
+    "reason": "record_without_message_text",
+    "stored_status": "missing_message_text"
+  },
+  {
+    "reason": "duplicate_source_url",
+    "language": "lv",
+    "source_url": "https://www.medjugorje.ws/lv/messages/060802s/",
+    "ids": [
+      "060902s",
+      "060802s"
+    ]
+  }
+]

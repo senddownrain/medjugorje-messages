@@ -1,0 +1,234 @@
+{
+  "status": "PASS",
+  "url": "http://127.0.0.1:44781/medjugorje-messages/",
+  "release": {
+    "sha": "35aab0b25d7763618cdf7963a1657945c067e6a1",
+    "source_sha256": {
+      "ru.json": "d878a69ddef832adb729e83ad2ff4e4813dc2b9e1ac47d10d3af42ccf600b1ec",
+      "be.json": "4bb87770b6514192cc0bfe52b664dcac36c1ac6dc63e8a815d6651153dec4f05",
+      "uk.json": "b3f3290e4d5074e530028aaae69fc864fd0b99d3e2f4a2d719d56bd8a494049d",
+      "hr.json": "26c5132acb3ac4128869e29f1fef9b8b4a183049624f4efc225d406bc84f65ce",
+      "en.json": "f769b260506c67a83cfb5f034b0238682fb2adea83895d42dfca1586665a1a2a",
+      "sk.json": "42936b7804aaba198bc1a03b2cedff4887015383be580b8ffb66b5546bfe8b28",
+      "lv.json": "90fd9d035663d5644e24620a310e661a1b2f78ed172e7a45de1af20ca410001a",
+      "index.json": "5ea11d808d0eb59cd37cd1ceb95f2071e460449fa5c854d43b60cdd6fb0cd131"
+    }
+  },
+  "browser": "154.0.8037.57",
+  "matrix": [
+    {
+      "width": 320,
+      "language": "ru",
+      "theme": "light",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "language": "ru",
+      "theme": "dark",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "language": "be",
+      "theme": "light",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "language": "be",
+      "theme": "dark",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "language": "uk",
+      "theme": "light",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "language": "uk",
+      "theme": "dark",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "language": "hr",
+      "theme": "light",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "language": "hr",
+      "theme": "dark",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "language": "en",
+      "theme": "light",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "language": "en",
+      "theme": "dark",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "language": "sk",
+      "theme": "light",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "language": "sk",
+      "theme": "dark",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "language": "lv",
+      "theme": "light",
+      "status": "PASS"
+    },
+    {
+      "width": 320,
+      "language": "lv",
+      "theme": "dark",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "language": "ru",
+      "theme": "light",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "language": "ru",
+      "theme": "dark",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "language": "be",
+      "theme": "light",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "language": "be",
+      "theme": "dark",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "language": "uk",
+      "theme": "light",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "language": "uk",
+      "theme": "dark",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "language": "hr",
+      "theme": "light",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "language": "hr",
+      "theme": "dark",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "language": "en",
+      "theme": "light",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "language": "en",
+      "theme": "dark",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "language": "sk",
+      "theme": "light",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "language": "sk",
+      "theme": "dark",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "language": "lv",
+      "theme": "light",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "language": "lv",
+      "theme": "dark",
+      "status": "PASS"
+    }
+  ],
+  "checks": [
+    "PASS HTTP 200; public release SHA (when requested); all seven served archives byte-identical to source JSON",
+    "PASS 28 mobile viewport/language/theme cases; exact latest texts; search highlights and independent seven languages; results in page above bottom bar",
+    "PASS four independent filters, native Back/Escape closes sheet while retaining results and filters; reset preserves query; reader Back/Forward restores 70 cards, scroll and focus",
+    "PASS XSS-safe empty results, reduced viewport 320/390 × 430, search submit dismisses focus; direct message refresh and explicit missing translation/pending attribution",
+    "PASS anonymous HTTPS (public mode), SW scope, Chromium installability; lazy startup; all seven cached languages/search/archive/message reload work offline"
+  ],
+  "page_errors": [],
+  "branding_asset_sha256": {
+    "favicon.ico": "32dcc7410213c116739466955dd7b2efbb13caade575e40f93b7a11d1eb5d8c8",
+    "favicon-dark.ico": "142455dff5512764220b347d49a374cedbe8729b1e498c4d119188aa675a62fc",
+    "favicon-16.png": "4d0a3335ec75f40bf7888df6967e45123a039f33268f93f41b703e30166059bd",
+    "favicon-dark-16.png": "99c25c25a5cc8e558422120849734f7e79e88521746d0707ab1fb9b1a9d52f7a",
+    "favicon-64.png": "c76937ccfe6f27c22809a109f40f3f60d090238dfd1d02c38ba2bb928ccd9eff",
+    "favicon-dark-64.png": "3c2a3aff034ebcc2fe2a174120de3b1f9186f080c1b600b2c8f9bd77bc95e036",
+    "apple-touch-icon.png": "7383780be9e08545b1f427ff2c08da0ab02fb51821ed5b22cd4fde668a03ac29",
+    "icon-192.png": "c2ecee57af31a036fb51614cb1fed8053027846f5ab211c241f149150af28eff",
+    "icon-512.png": "c3c6cac294ade7a844f6e65e2ca08c679710882c0833eeda7df83defdec39378",
+    "icon-maskable-512.png": "19236b5af4871e21b7e5660b5c70cb9225a4045b8353e6a4ed4f54b1a6e76684",
+    "logo-light-96.webp": "3fca6bb407a400bf2cdf5ffb91acc77b455a706da67b80f9dacbab42b3939a0a",
+    "logo-light-192.webp": "245bbd9f20416c28d172a5bcd1167bf1e63cea96cdc71fc46ee9f74e39a8c8ae",
+    "logo-dark-96.webp": "5be629d257f19a7ee39046d25bcc32b3855e6a02cf246c821493e919e742d938",
+    "logo-dark-192.webp": "3b6f47138c5d82c910c8bbb6c8f09ee43bbdcf842f8dfc3b76d2fc6e133d3104"
+  },
+  "network_404": [],
+  "installability": {
+    "installabilityErrors": []
+  },
+  "service_worker_scope": "http://127.0.0.1:44781/medjugorje-messages/",
+  "physical_android": "NOT TESTED",
+  "physical_keyboard": "NOT TESTED",
+  "os_pwa_install": "NOT TESTED",
+  "cache_update": "Separate test: check-startup-browser.py, synthetic failed/successful shell and data updates",
+  "screenshots": [
+    "screenshots/filters-390-light.png",
+    "screenshots/home-320-dark.png",
+    "screenshots/home-320-light.png",
+    "screenshots/home-390-dark.png",
+    "screenshots/home-390-light.png",
+    "screenshots/offline-branding-dark-390.png",
+    "screenshots/offline-branding-light-390.png",
+    "screenshots/offline-ready-390.png",
+    "screenshots/search-320-reduced.png",
+    "screenshots/search-390-light.png",
+    "screenshots/search-390-reduced.png"
+  ]
+}
