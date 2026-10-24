@@ -23,7 +23,9 @@ const systemDark = ref(darkSystem.matches);
 const isDark = computed(() => theme.value === 'dark' || theme.value === 'auto' && systemDark.value);
 const vuetifyTheme = useTheme();
 const T = computed(() => translations[uiLang.value]);
-const settingsOpen = ref(false), queryInput = ref(null), resultHeading = ref(null);
+const settingsOpen = ref(false), queryInput = ref(null), resultHeading = ref(null), searchScroller = ref(null);
+const searchSheetOpen = computed(() => state.searchOpen && !state.selectedId);
+let focusSearchOnOpen = false;
 const busy = ref(true), failed = ref(false);
 const catalog = shallowRef(null);
 const search = shallowRef({ status: 'loading', ids: [], language: state.language });
@@ -59,15 +61,15 @@ watch(() => state.language, value => save('medjugorje-language', value));
 
 function snapshot() { return JSON.parse(JSON.stringify(state)); }
 function replaceEntry() {
-  if (!restoring) history.replaceState({ ...history.state, readerV2: true, snapshot: snapshot() }, '', hashFor(state));
+  history.replaceState({ ...history.state, readerV2: true, snapshot: snapshot() }, '', hashFor(state));
 }
-function saveScroll() { state.scrollTop = window.scrollY; replaceEntry(); }
+function saveScroll() { state.scrollTop = searchSheetOpen.value ? searchScroller.value?.scrollTop || 0 : window.scrollY; replaceEntry(); }
 function onScroll() {
   if (scrollFrame !== null || restoring) return;
   scrollFrame = requestAnimationFrame(() => { scrollFrame = null; saveScroll(); });
 }
 function searchNow() { if (workerSearch) workerSearch.run(state.language, options.value); }
-watch(options, () => { if (!restoring) { state.limit = 35; state.scrollTop = 0; } searchNow(); replaceEntry(); }, { deep: true });
+watch(options, () => { if (!restoring) { state.limit = 35; state.scrollTop = 0; nextTick(() => searchScroller.value?.scrollTo({top:0,behavior:'instant'})); } searchNow(); replaceEntry(); }, { deep: true });
 watch(() => state.language, () => { searchNow(); replaceEntry(); });
 watch(() => state.limit, replaceEntry);
 watch(() => state.filtersOpen, replaceEntry);
@@ -85,8 +87,11 @@ async function restorePosition(version, y, focusId) {
   if (state.searchOpen && !state.selectedId && search.value.status === 'loading') return;
   requestAnimationFrame(() => {
     if (version !== navigationVersion) return;
-    window.scrollTo({ top:y, behavior:'instant' });
-    if (focusId) document.querySelector(`[data-id="${CSS.escape(focusId)}"]`)?.focus({ preventScroll:true });
+    if (searchSheetOpen.value) {
+      if (!searchScroller.value) return;
+      searchScroller.value.scrollTo({ top:y, behavior:'instant' });
+    } else window.scrollTo({ top:y, behavior:'instant' });
+    if (focusId) (searchSheetOpen.value ? searchScroller.value : document)?.querySelector(`[data-id="${CSS.escape(focusId)}"]`)?.focus({ preventScroll:true });
     restoring = false;
   });
 }
@@ -114,10 +119,12 @@ function onHashChange() {
 async function openSearch() {
   if (state.searchOpen) return;
   saveScroll();
+  focusSearchOnOpen = true;
+  state.filtersOpen = false;
   state.searchOpen = true; state.selectedId = null; state.scrollTop = 0;
   history.pushState({ readerV2:true, snapshot:snapshot(), returnHome:true }, '', '#search');
   searchNow();
-  await nextTick(); window.scrollTo({ top:0, behavior:'instant' });
+  await nextTick(); searchScroller.value?.scrollTo({ top:0, behavior:'instant' });
 }
 function openMessage(id) {
   if (!catalog.value?.byId.has(id)) return;
@@ -142,7 +149,17 @@ function reset() {
   state.filters = emptyFilters(); state.limit = 35;
   nextTick(() => document.querySelector('#filter-toggle')?.focus({ preventScroll:true }));
 }
-function toggleFilters() { openSearch(); state.filtersOpen = !state.filtersOpen; }
+function toggleFilters() { state.filtersOpen = !state.filtersOpen; }
+function sheetVisibility(value) { if (!value && searchSheetOpen.value) goBack(); }
+function sheetEntered() {
+  if (focusSearchOnOpen) { queryInput.value?.focus({ preventScroll:true }); focusSearchOnOpen = false; }
+  if (restoring && restoreTarget) restorePosition(restoreTarget.version, restoreTarget.y, restoreTarget.focusId);
+}
+function settingsLeft() { if (searchSheetOpen.value) document.querySelector('#search-language-button')?.focus({ preventScroll:true }); }
+function sheetLeft() {
+  if (state.selectedId) document.querySelector('.reader-back')?.focus({ preventScroll:true });
+  else document.querySelector('#search-button')?.focus({ preventScroll:true });
+}
 function submitSearch() { queryInput.value?.blur(); resultHeading.value?.focus({ preventScroll:true }); }
 function selectLanguage(language) { state.language = language; }
 function systemChanged(event) { systemDark.value = event.matches; }
@@ -214,9 +231,12 @@ onUnmounted(() => {
           <svg v-if="isDark" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg>
           <svg v-else viewBox="0 0 24 24" aria-hidden="true"><path d="M20 15.5A8.8 8.8 0 0 1 8.5 4 9 9 0 1 0 20 15.5Z"/></svg>
         </button>
+        <button id="search-button" class="search-button" type="button" :aria-label="T.search" aria-haspopup="dialog" :aria-expanded="searchSheetOpen" :disabled="busy || failed" @click="openSearch">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></svg>
+        </button>
       </div>
     </header>
-    <v-dialog v-model="settingsOpen" activator="#language-button" class="language-sheet" max-width="480" scrollable :aria-label="T.languageSettings">
+    <v-dialog v-model="settingsOpen" activator="#language-button" class="language-sheet" max-width="480" scrollable :aria-label="T.languageSettings" @after-leave="settingsLeft">
       <v-card class="settings-dialog">
         <div class="sheet-handle" aria-hidden="true"></div>
         <v-card-title class="dialog-title">{{ T.languageSettings }}</v-card-title>
@@ -228,22 +248,24 @@ onUnmounted(() => {
       </v-card>
     </v-dialog>
 
-    <main id="main-content" ref="mainContent" class="content" tabindex="-1">
-      <div v-if="busy" class="state-message" role="status">{{ T.loading }}</div>
-      <div v-else-if="failed" class="state-message" role="alert"><p>{{ T.error }}</p><button class="plain-button" @click="load">{{ T.retry }}</button></div>
-      <template v-else>
-        <button v-if="state.selectedId" class="reader-back" type="button" @click="goBack">← {{ state.searchOpen ? T.backToResults : T.back }}</button>
-        <section v-else class="search-surface" :class="{ expanded:state.searchOpen }" :aria-label="T.search">
+    <v-dialog :model-value="searchSheetOpen" class="search-sheet" max-width="720" :aria-label="T.search" @update:model-value="sheetVisibility" @after-enter="sheetEntered" @after-leave="sheetLeft">
+      <v-card class="search-panel">
+        <div class="sheet-handle" aria-hidden="true"></div>
+        <div class="search-sheet-heading"><h2>{{ T.search }}</h2><div class="sheet-actions"><button id="search-language-button" class="language-shortcut" type="button" :aria-label="T.languageSettings" aria-haspopup="dialog" @click="settingsOpen = true">{{ state.language.toUpperCase() }}</button><button id="close-search" class="icon-button" type="button" :aria-label="T.closeSearch" @click="goBack">×</button></div></div>
+        <div v-if="busy" class="state-message" role="status">{{ T.loading }}</div>
+        <div v-else-if="failed" class="state-message" role="alert"><p>{{ T.error }}</p><button class="plain-button" @click="load">{{ T.retry }}</button></div>
+        <section v-else class="search-surface" :aria-label="T.search">
           <form class="search-bar" role="search" @submit.prevent="submitSearch">
             <label for="query" class="sr-only">{{ T.search }}</label>
             <span class="search-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></svg></span>
-            <input id="query" ref="queryInput" type="search" enterkeyhint="search" autocomplete="off" v-model="state.query" :placeholder="T.searchHint" @focus="openSearch" />
-            <button v-if="state.searchOpen" id="close-search" type="button" class="icon-button" :aria-label="T.closeSearch" @click="goBack">×</button>
+            <input id="query" ref="queryInput" type="search" enterkeyhint="search" autocomplete="off" v-model="state.query" :placeholder="T.searchHint" />
+            <button id="filter-toggle" class="filter-icon" type="button" :aria-label="T.filters + (hasActiveFilters ? ': ' + T.filtersActive : '')" :aria-expanded="state.filtersOpen" aria-controls="search-filters" @click="toggleFilters">
+              <svg data-icon="sliders-horizontal" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 4h-7M10 4H3M21 12h-9M8 12H3M21 20h-3M14 20H3M14 2v4M8 10v4M18 18v4"/></svg>
+              <span v-if="hasActiveFilters" class="filter-indicator" data-active-filters aria-hidden="true"></span>
+            </button>
           </form>
-          <div class="search-tools">
-            <button id="filter-toggle" type="button" :aria-expanded="state.filtersOpen" aria-controls="search-filters" @click="toggleFilters">{{ state.filtersOpen ? T.hideFilters : T.filters }} <span aria-hidden="true">{{ state.filtersOpen ? '−' : '+' }}</span></button>
-            <button v-if="hasActiveFilters" id="reset-search" type="button" @click="reset">{{ T.reset }}</button>
-          </div>
+          <div ref="searchScroller" id="search-scroll" class="search-scroll" @scroll.passive="onScroll">
+          <div v-if="hasActiveFilters" class="search-tools"><button id="reset-search" type="button" @click="reset">{{ T.reset }}</button></div>
           <form v-if="state.filtersOpen" id="search-filters" class="filters" @submit.prevent="submitSearch">
             <label class="field wide"><span>{{ T.visionary }}</span><select id="visionary" v-model="state.filters.visionary"><option value="">{{ T.allVisionaries }}</option><option v-for="person in people" :key="person" :value="person">{{ person === 'unattributed' ? T.unknown : T[person] }}</option></select></label>
             <label class="field wide"><span>{{ T.type }}</span><select id="message-type" v-model="state.filters.type"><option value="">{{ T.allTypes }}</option><option v-for="type in types" :key="type" :value="type">{{ T.messageTypes[type] }}</option></select></label>
@@ -262,14 +284,21 @@ onUnmounted(() => {
               <button v-if="search.ids.length > state.limit" id="show-more" class="more-button" @click="state.limit += 35">{{ T.showMore }} ↓</button>
             </template>
           </section>
+          </div>
         </section>
-        <template v-if="state.selectedId || !state.searchOpen">
+      </v-card>
+    </v-dialog>
+
+    <main id="main-content" ref="mainContent" class="content" tabindex="-1">
+      <div v-if="busy" class="state-message" role="status">{{ T.loading }}</div>
+      <div v-else-if="failed" class="state-message" role="alert"><p>{{ T.error }}</p><button class="plain-button" @click="load">{{ T.retry }}</button></div>
+      <template v-else>
+        <button v-if="state.selectedId" class="reader-back" type="button" @click="goBack">← {{ state.searchOpen ? T.backToResults : T.back }}</button>
           <MessageReader v-if="currentRow" :row="currentRow" :record="currentRecord" :date="formatDate(currentRow.date)" :latest="currentRow.id === latestRow?.id" :t="T" :language="state.language" :languages="availableLanguages" :archive-loaded="catalog.archives.has(state.language)" @language="selectLanguage" />
           <p v-else class="state-message" role="status">{{ T.notFound }}</p>
           <section v-if="!state.selectedId" class="recent" :aria-label="T.recent">
             <h2>{{ T.recent }}</h2><ResultCard v-for="row in recentRows" :key="row.id" :row="row" :t="T" :date="formatDate(row.metadata.date)" query="" :options="{}" @open="openMessage" />
           </section>
-        </template>
       </template>
     </main>
     <footer class="footer"><p>{{ T.footer }}</p><p>{{ T.notVerified }}</p></footer>

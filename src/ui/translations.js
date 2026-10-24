@@ -207,3 +207,6 @@ const messageTypes = {
   lv: { monthly:'Ikmēneša vēstījums', weekly:'Iknedēļas vēstījums', annual:'Ikgadējais vēstījums', special:'Īpašs vēstījums' }
 };
 for (const language of Object.keys(visionaryLabels)) Object.assign(translations[language], visionaryLabels[language], { messageTypes:messageTypes[language] });
+
+const activeFilterLabels = {ru:'Активные фильтры',be:'Актыўныя фільтры',uk:'Активні фільтри',hr:'Aktivni filtri',en:'Active filters',sk:'Aktívne filtre',lv:'Aktīvie filtri'};
+for (const [code, label] of Object.entries(activeFilterLabels)) translations[code].filtersActive = label;
