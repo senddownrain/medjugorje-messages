@@ -76,6 +76,7 @@ def choose(page, language, ui=None):
     expect(page.locator('.language-sheet.v-overlay--active')).to_have_count(0)
 
 def close_filters(page, method='button'):
+    expect(page.locator('.filter-sheet.v-overlay--active')).to_be_visible()
     if method == 'back': page.go_back()
     elif method == 'escape': page.keyboard.press('Escape')
     else: page.locator('#close-filters').click()

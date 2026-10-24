@@ -150,7 +150,7 @@ function readRoute() {
   const closingFilters = state.filtersOpen && !saved?.filtersOpen && parsed.searchOpen && !parsed.selectedId;
   const liveSearch = closingFilters ? snapshot() : null;
   restoring = true;
-  navigationVersion++;
+  navigationVersion++; filterClosePending = false;
   if (saved && hashFor(saved) === hashFor(parsed)) Object.assign(state, restoreReaderState(saved, state.language));
   else Object.assign(state, defaultState(state.language), parsed);
   if (liveSearch) { Object.assign(state, liveSearch, { filtersOpen:false }); replaceEntry(); }
@@ -205,10 +205,17 @@ function toggleFilters() {
   queryInput.value?.blur(); saveScroll(); state.filtersOpen = true;
   history.pushState({ readerV2:true, snapshot:snapshot(), filterSheet:true }, '', hashFor(state));
 }
+let filterClosePending = false;
 function closeFilters() {
+  if (!state.filtersOpen || filterClosePending) return;
+  filterClosePending = true;
   if (history.state?.filterSheet) history.back();
-  else state.filtersOpen = false;
+  else { state.filtersOpen = false; filterClosePending = false; }
   nextTick(() => document.querySelector('#filter-toggle')?.focus({ preventScroll:true }));
+}
+function filterKeydown(event) {
+  if (event.key !== 'Escape' || !state.filtersOpen) return;
+  event.preventDefault(); event.stopImmediatePropagation(); closeFilters();
 }
 function resizeViewport() {
   const viewport = window.visualViewport;
@@ -260,6 +267,7 @@ async function load() {
 }
 readRoute();
 onMounted(() => {
+  window.addEventListener('keydown', filterKeydown, true);
   darkSystem.addEventListener('change', systemChanged);
   window.addEventListener('online', networkChanged); window.addEventListener('offline', networkChanged);
   window.addEventListener('app-update-ready', foundUpdate);
@@ -274,6 +282,7 @@ onMounted(() => {
 onUnmounted(() => {
   window.visualViewport?.removeEventListener('resize', resizeViewport);
   window.visualViewport?.removeEventListener('scroll', resizeViewport);
+  window.removeEventListener('keydown', filterKeydown, true);
   loadVersion++; searchVersion++; workerSearch?.dispose();
   window.removeEventListener('online', networkChanged); window.removeEventListener('offline', networkChanged);
   window.removeEventListener('app-update-ready', foundUpdate);
