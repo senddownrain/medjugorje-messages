@@ -92,6 +92,25 @@ class AutomaticTests(unittest.TestCase):
   self.assertIsNone(identities['261025m']['visionary'])
   self.assertEqual(associate({'message_date':'2026-10-25'},identities),'261025m')
   with self.assertRaises(ValueError):associate({'message_date':'2026-09-25'},identities)
+ def test_late_publication_is_not_rejected_by_older_message_date(self):
+  # A translation published after automation began may belong to an older message.
+  initial=candidate('sk');initial['canonical_id']='260925m'
+  official={'260925m':OFFICIAL['test:1']}
+  stage(self.base,self.root/'initial',[initial],official,self.policies)
+  policies=deepcopy(self.policies)
+  for lang,p in policies.items():
+   p['blocker']='synthetic fixture only'
+   if lang!='en':p.update(enabled=False,origin=None)
+  policies['en']['not_before']='2026-10-25'
+  path=self.root/'late-policies.json';dump(path,{'languages':policies})
+  post={**POST,'published':'2026-10-25T12:00:00Z'}
+  with patch('scripts.automatic_updates.fetch_archive',return_value=b'<h2>September 25, 2026</h2>Monthly'), \
+       patch('scripts.automatic_updates.discover',return_value=[post]), \
+       patch('scripts.automatic_updates.get_page',return_value=HTML):
+   r=run(self.root/'late-publication',path,self.root/'initial',True)
+  self.assertEqual(r['added'],1)
+  self.assertEqual(r['gate']['new_canonical_ids'],0)
+  self.assertEqual(r['gate']['new_translations']['en'],1)
  def test_committed_unpublished_update_recovers_even_when_no_new_candidates(self):
   from scripts.release_recovery import data_hashes,publication_needed
   public={'source_sha256':data_hashes(self.base)}

@@ -75,6 +75,7 @@ def stage(baseline, destination, candidates, official, policies):
             old = next((r for r in archives[lang]['messages'] if r['id'] == key), None)
             if old:
                 if old['text_sha256'] != c['text_sha256']:
+                    event.update(previous_text_sha256=old['text_sha256'],candidate_text_sha256=c['text_sha256'])
                     raise ValueError('Source correction: existing translation is immutable')
                 event.update(status='skipped', reason='already_present')
                 events.append(event)
@@ -238,7 +239,9 @@ def run(output, policy_path, baseline, live=True, exercise=False):
                         item['snapshot_path']='snapshots/'+snapshot_name
                         item['snapshot_artifact']=(report['run_url']+' (authorized-source-snapshots)' if os.environ.get('SOURCE_REPOSITORY_PRIVATE')=='true' else 'runner_only; public audit retains fingerprints, not full source HTML')
                         summary['message_date']=item['message_date']
-                        if item['message_date'] < policy.get('not_before','2026-10-25'):
+                        summary['text_sha256']=item['text_sha256']
+                        summary['language_check']=item['language_check']
+                        if post['published'][:10] < policy.get('not_before','2026-10-25'):
                             summary.update(status='skipped',reason='before_automation_start')
                             report['candidates'].append(summary)
                             continue
