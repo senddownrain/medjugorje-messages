@@ -85,7 +85,8 @@ export async function buildMetadata() {
     };
   });
   if (new Set(messages.map(r => r.id)).size !== index.length) throw new Error('Duplicate metadata ID');
-  return { schema_version: 1, source_snapshot_status: summary.status,
+  const hasUpdates = LANGUAGES.some(l => archives[l].some(r => !baseline.languages[l].rows[r.id]));
+  return { schema_version: 1, source_snapshot_status: hasUpdates ? 'HISTORICAL_SNAPSHOT_PLUS_UNREVIEWED_SOURCE_IMPORTS' : summary.status,
     editorial_policy: 'Source candidates are pending until an explicit owner decision; no owner approvals inferred.',
     inputs, evidence, messages };
 }

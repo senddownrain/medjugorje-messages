@@ -28,14 +28,15 @@ def inspect_layout(raw):
             parts.insert(0,part);node=node.parent
         return ' > '.join(parts)
     quotes=[]
-    markers=('дорогие дети','drahé deti','dear children','дорогі діти','dārgie bērni','draga djeco','дарагія дзеці')
-    for node in soup.select('p,blockquote'):
+    markers=('дорогие дети','drahé deti','dear children','дорогі діти','dārgie bērni','draga djeco','дарагія дзеці','mīļie bērni')
+    for node in soup.select('p,blockquote,div'):
         text=node.get_text('\n',strip=True)
-        if len(text)>150 and any(m in text.casefold()[:80] for m in markers):
-            quotes.append(dict(selector=selector(node),parent_selector=selector(node.parent),
+        if 150<len(text)<15000 and any(m in text.casefold()[:80] for m in markers):
+            quotes.append(dict(selector=selector(node),parent_selector=selector(node.parent),tag=node.name,classes=node.get('class',[]),
                 chars=len(text),sha256=sha256(text.encode()),opening=text[:24],closing=text[-48:]))
     headings=[dict(tag=n.name,selector=selector(n),text=n.get_text(' ',strip=True)[:160]) for n in soup.select('h1,h2,h3') if len(n.get_text(' ',strip=True))<180]
-    return dict(html_language=soup.html.get('lang') if soup.html else None,headings=headings[:60],quote_candidates=quotes[:12])
+    alternates=[dict(url=n.get('href'),language=n.get('hreflang')) for n in soup.select('a[href],link[hreflang]') if n.get('href') and ('/hr/' in n.get('href') or n.get('hreflang') in ('be','hr'))]
+    return dict(alternate_sources=alternates[:12],html_language=soup.html.get('lang') if soup.html else None,headings=headings[:60],quote_candidates=quotes[:12])
 
 
 def probe(output, policies):
@@ -62,7 +63,16 @@ def probe(output, policies):
                 article=dict(url=post['url'],published_at=post['published'],source_id=post.get('guid') or post['url'])
                 entry['articles'].append(article)
                 try:
-                    raw=get_page(session,post['url'],policy['origin'])
+                    try:
+                        raw=get_page(session,post['url'],policy['origin'])
+                    except Exception as error:
+                        if lang=='en' and error_metadata(error).get('http_status')==404 and post['url'].endswith('/amp'):
+                            # Explicit normal WordPress canonical path, only after 404.
+                            # Never retry a 403/robots denial or change identities.
+                            normal=post['url'][:-3]
+                            article['canonical_path_probe']=normal
+                            raw=get_page(session,normal,policy['origin'])
+                        else:raise
                     name=lang+'-'+sha256(raw)[:16]+'.html'
                     (output/name).write_bytes(raw)
                     article.update(status='fetched',snapshot=name,raw_sha256=sha256(raw),bytes=len(raw),layout=inspect_layout(raw))

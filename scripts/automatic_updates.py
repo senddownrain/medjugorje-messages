@@ -87,6 +87,7 @@ def stage(baseline, destination, candidates, official, policies):
                            translations={l:dict(present=False, has_text=False) for l in LANGUAGES})
                 index['messages'].append(row)
             provenance = {k:c[k] for k in ('source_url','source_id','published_at','raw_sha256','text_sha256','editorial_status','technical_status','language_check')}
+            provenance.update({k:c[k] for k in ('snapshot_path','snapshot_artifact') if k in c})
             provenance.update(imported_at=datetime.now(timezone.utc).isoformat(), official_evidence=record['evidence_url'],
                               official_sha256=record['evidence_sha256'], policy_sha256=sha256(json.dumps(policies[lang], sort_keys=True).encode()))
             message = dict(id=key, date=row['date'], type=row['type'], visionary=row.get('visionary'), language=lang,
@@ -140,7 +141,7 @@ def run(output, policy_path, baseline, live=True):
             official_html = fetch_archive()
             observations = extract_observations(official_html)
             identities = identify_records(observations)
-            report['official'] = dict(status='accessible', identity_count=len(identities), raw_sha256=sha256(official_html.encode()), observations=[dict(date=o['date'], section_sha256=[sha256(s.encode()) for s in o['sections']]) for o in observations])
+            report['official'] = dict(status='accessible', identity_count=len(identities), html_sha256=sha256(official_html.encode()), observations=[dict(date=o['date'], section_sha256=[sha256(s.encode()) for s in o['sections']]) for o in observations])
         except Exception as error:
             report['official'] = dict(status='error', **error_metadata(error))
     candidates = []
@@ -159,7 +160,13 @@ def run(output, policy_path, baseline, live=True):
                 if authorized(policy):
                     try:
                         raw = get_page(session, post['url'], policy['origin'])
+                        snapshots=output/'snapshots'; snapshots.mkdir(exist_ok=True)
+                        snapshot_name=sha256(raw)+'.html'
+                        (snapshots/snapshot_name).write_bytes(raw)
+                        summary.update(raw_sha256=sha256(raw),snapshot_path='snapshots/'+snapshot_name)
                         item = parse_article(raw, policy, post)
+                        item['snapshot_path']='snapshots/'+snapshot_name
+                        item['snapshot_artifact']=report['run_url']+' (authorized-source-snapshots)'
                         summary['message_date']=item['message_date']
                         if item['message_date'] < policy.get('not_before','2026-10-25'):
                             summary.update(status='skipped',reason='before_automation_start')
@@ -178,7 +185,8 @@ def run(output, policy_path, baseline, live=True):
     staged = stage(baseline, output/'candidate', candidates, identities, policies)
     report.update(staged)
     report['finished_at'] = datetime.now(timezone.utc).isoformat()
-    report['status'] = 'blocked' if any(s.get('discovery_status')=='error' or not s['automatic_publication'] for s in report['sources'].values()) else 'validated'
+    restricted=any(s.get('discovery_status')=='error' or not s['automatic_publication'] for s in report['sources'].values())
+    report['status'] = ('validated_partial' if report['added'] else 'blocked') if restricted else 'validated'
     (output/'audit.json').write_text(json.dumps(report, ensure_ascii=False, indent=2)+'\n')
     lines = ['## Автоматическое обновление — '+report['status'], '',
              'Публикация: '+report['publication']+'. Добавлено переводов: '+str(report['added']), '',
@@ -189,6 +197,7 @@ def run(output, policy_path, baseline, live=True):
     (output/'summary.md').write_text('\n'.join(lines)+'\n')
     if os.environ.get('GITHUB_STEP_SUMMARY'):
         with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as f: f.write('\n'.join(lines)+'\n')
+    print(json.dumps(report,ensure_ascii=False,indent=2)) # Metadata only; never source bodies.
     return report
 
 

@@ -107,7 +107,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: authorized-source-snapshots
-          path: work/fulltext-probe
+          path: |
+            work/fulltext-probe
+            work/automatic-updates/snapshots
           retention-days: 7
       - name: Validated candidate (trusted main only)
         if: success() && github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
