@@ -71,7 +71,7 @@ Manifest содержит ID новых импортированных пере�
 
 ## Что нужно до production
 
-Production имеет три независимых условия: готовность в `reports/updates/readiness.json`, repository variable `AUTOMATIC_MESSAGES_PRODUCTION=true`, запуск на main. `workflow_dispatch publish=true` не обходит проверки. После единовременного включения расписание 06:35/18:35 UTC работает без владельца; недоступный язык остаётся заблокированным.
+Production имеет три независимых условия: готовность в `reports/updates/readiness.json`, repository variable `AUTOMATIC_MESSAGES_PRODUCTION=true`, запуск на main. `workflow_dispatch publish=true` не обходит проверки. После единовременного включения расписание 06:35/18:35 UTC работает без владельца; старые scheduled review-watchers уступают ему обнаружение и уведомления, не создавая параллельных запросов ручного утверждения. Их PR-тесты и явный manual review остаются доступны; недоступный язык остаётся заблокированным.
 
 Осталось проверить обновление **установленной Android PWA** и первый настоящий commit/deploy/public verification. Публичный release в этой задаче не выполнялся. Неподтверждённые языки не требуют включения для выпуска работающих независимых языков.
 

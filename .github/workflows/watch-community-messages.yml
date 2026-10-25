@@ -23,6 +23,9 @@ concurrency:
   cancel-in-progress: false
 jobs:
   check:
+    # Full-text production owns scheduled detection and error notifications.
+    # Keep legacy tests and explicitly requested manual review available.
+    if: vars.AUTOMATIC_MESSAGES_PRODUCTION != 'true' || github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 12
     outputs:
