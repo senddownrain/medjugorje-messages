@@ -5,6 +5,7 @@ on:
       - 'scripts/automatic*'
       - 'scripts/probe_fulltext_sources.py'
       - 'scripts/official_identity.py'
+      - 'scripts/release_recovery.py'
       - 'requirements.txt'
       - 'scripts/update-integrity.mjs'
       - 'scripts/check_automatic_readiness.py'
@@ -120,6 +121,7 @@ jobs:
             work/pwa-updates.json
             work/new-messages
           retention-days: 30
+          overwrite: true
       - name: Source inspection metadata (no full HTML)
         if: always()
         uses: actions/upload-artifact@v4
@@ -127,6 +129,7 @@ jobs:
           name: source-inspection-metadata
           path: work/fulltext-probe/report.json
           retention-days: 30
+          overwrite: true
       - name: Raw source fixtures (private repositories only)
         if: always() && github.event.repository.private == true
         uses: actions/upload-artifact@v4
@@ -136,6 +139,7 @@ jobs:
             work/fulltext-probe
             work/automatic-updates/snapshots
           retention-days: 7
+          overwrite: true
       - name: Validated candidate (trusted main only)
         if: success() && github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         uses: actions/upload-artifact@v4
@@ -145,11 +149,12 @@ jobs:
             work/automatic-updates/candidate
             derived/search-metadata.json
           retention-days: 2
+          overwrite: true
   commit:
     needs: validate
     if: >-
       github.ref == 'refs/heads/main' && github.event_name != 'pull_request' &&
-      needs.validate.outputs.ready == 'true' && needs.validate.outputs.added != '0' &&
+      needs.validate.outputs.ready == 'true' &&
       vars.AUTOMATIC_MESSAGES_PRODUCTION == 'true' &&
       (github.event_name == 'schedule' || inputs.publish == true)
     runs-on: ubuntu-latest
@@ -157,6 +162,7 @@ jobs:
       contents: write
     outputs:
       sha: ${{ steps.commit.outputs.sha }}
+      publish_needed: ${{ steps.publication.outputs.publish_needed }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
@@ -180,10 +186,16 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add data derived/search-metadata.json
-          git commit -m 'data: append validated independent message translations'
-          git push origin HEAD:main
+          if ! git diff --cached --quiet; then
+            git commit -m 'data: append validated independent message translations'
+            git push origin HEAD:main
+          fi
           echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+      - name: Recover an unpublished commit; skip an unchanged public database
+        id: publication
+        run: python -m scripts.release_recovery
   build-release:
+    if: needs.commit.outputs.publish_needed == 'true'
     needs: commit
     runs-on: ubuntu-latest
     steps:
@@ -315,3 +327,4 @@ jobs:
           name: automatic-update-result
           path: work/final-audit.json
           retention-days: 30
+          overwrite: true

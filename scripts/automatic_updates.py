@@ -262,8 +262,12 @@ def run(output, policy_path, baseline, live=True, exercise=False):
             (output/'audit.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
             raise
     report['finished_at'] = datetime.now(timezone.utc).isoformat()
-    restricted=any(s.get('discovery_status')=='error' or not s['automatic_publication'] for s in report['sources'].values())
-    report['status'] = ('validated_partial' if report['added'] else 'blocked') if restricted else 'validated'
+    restricted=(any(s.get('discovery_status')=='error' or not s['automatic_publication'] for s in report['sources'].values())
+                or any(e.get('status')=='blocked' for e in report['events'])
+                or any(c.get('status')=='blocked' for c in report['candidates'])
+                or report.get('official',{}).get('status')=='error' or bool(report.get('official',{}).get('errors')))
+    source_ok=any(s['automatic_publication'] and s.get('discovery_status')=='accessible' for s in report['sources'].values())
+    report['status'] = ('validated_partial' if source_ok else 'blocked') if restricted else 'validated'
     (output/'audit.json').write_text(json.dumps(report, ensure_ascii=False, indent=2)+'\n')
     lines = ['## Автоматическое обновление — '+report['status'], '',
              'Публикация: '+report['publication']+'. Добавлено переводов: '+str(report['added']), '',

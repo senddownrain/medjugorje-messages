@@ -14,7 +14,19 @@ function setting(key, fallback) { try { return localStorage.getItem(key) || fall
 function save(key, value) { try { localStorage.setItem(key, value); } catch { /* private mode */ } }
 const newMessages = ref(restoreNewMessages(setting(NEW_MESSAGES_KEY, '')));
 function persistNew(value) { newMessages.value = value; save(NEW_MESSAGES_KEY, JSON.stringify(value)); }
-function markRead(id) { if (id) persistNew(readMessage(newMessages.value, state.language, id)); }
+function markRead(id, language = state.language) { if (id) persistNew(readMessage(newMessages.value, language, id)); }
+async function observeSnapshot(value, language) {
+  let previous = newMessages.value;
+  if (!previous.initialized && typeof caches !== 'undefined') {
+    try {
+      const cache = await caches.open('message-manifest-schema-1');
+      const response = await cache.match(`${baseUrl}data/latest-for-${language}.json`) || await cache.match(`${baseUrl}data/latest.json`);
+      const saved = response && await response.json();
+      if (saved?.schema_version === 1) previous = observeArrivals(previous, saved.arrivals);
+    } catch { /* A first installation or unavailable cache gets a quiet baseline. */ }
+  }
+  persistNew(observeArrivals(newMessages.value.initialized ? newMessages.value : previous, value.arrivals));
+}
 const isUnread = id => isNewMessage(newMessages.value, state.language, id);
 const validLanguage = value => languages.some(l => l.code === value);
 const readingLanguage = setting('medjugorje-language', 'ru');
@@ -262,12 +274,13 @@ async function load() {
     const value = await readData(loadedManifest.latest[language].file);
     if (value.data_version !== loadedManifest.data_version || value.language !== language) throw new Error('Incompatible latest data');
     latest.value = { ...latest.value, [language]:value };
-    persistNew(observeArrivals(newMessages.value, loadedManifest.arrivals));
+    await observeSnapshot(loadedManifest, language);
     navigator.serviceWorker?.ready.then(registration => {
       registration.active?.postMessage({ type:'COMMIT_MANIFEST', manifest:JSON.parse(JSON.stringify(loadedManifest)), language, latest:value });
     }).catch(() => {});
-    if (state.selectedId) { await ensureAdvanced(language); if (catalog.value?.archives.get(language)?.has(state.selectedId)) markRead(state.selectedId); }
+    if (state.selectedId) await ensureAdvanced(language);
     if (version !== loadVersion || language !== state.language) return;
+    if (state.selectedId && catalog.value?.archives.get(language)?.has(state.selectedId)) markRead(state.selectedId, language);
     busy.value = false;
     await nextTick(); performance.mark('latest-visible');
     searchNow();

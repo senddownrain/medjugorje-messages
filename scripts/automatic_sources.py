@@ -136,6 +136,9 @@ def error_metadata(error):
     response = getattr(error, 'response', None)
     if response is not None:
         return dict(error_type=type(error).__name__, layer='origin_http', http_status=response.status_code)
+    if isinstance(error, PermissionError):
+        match=re.search(r'HTTP (\d{3})',str(error))
+        if match:return dict(error_type='PermissionError',layer='origin_http',http_status=int(match[1]))
     if isinstance(error, SourceBlocked):
         match = re.search(r'HTTP (\d{3})', str(error))
         return dict(error_type='SourceBlocked', layer='origin_http' if match else 'validation',

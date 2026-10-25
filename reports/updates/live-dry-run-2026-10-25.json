@@ -1,5 +1,5 @@
 {
-  "started_at": "2026-10-25T22:23:04.597885+00:00",
+  "started_at": "2026-10-25T22:36:00.138392+00:00",
   "status": "validated_partial",
   "sources": {
     "ru": {
@@ -22,10 +22,11 @@
       "detected": 1
     },
     "hr": {
-      "status": "blocked",
-      "reason": "Official Croatian archive found; current body/date selectors require live confirmation",
-      "automatic_publication": false,
-      "discovery_status": "not_enabled"
+      "status": "enabled",
+      "reason": "Live full-text/independent HR language check pending; source publication time explicitly unknown",
+      "automatic_publication": true,
+      "discovery_status": "accessible",
+      "detected": 1
     },
     "en": {
       "status": "enabled",
@@ -55,8 +56,8 @@
       "source_id": "https://svetmariji.ru/?p=54878",
       "source_url": "https://svetmariji.ru/poslanie-bogorodiczy-czariczy-mira-ot-25-oktyabrya-2026-goda/",
       "published_at": "2026-10-25T18:40:43+00:00",
-      "raw_sha256": "03f6037322421eb02fb747966b0643991596f32c8d89ee7e2c890ce214a74d80",
-      "snapshot_path": "snapshots/03f6037322421eb02fb747966b0643991596f32c8d89ee7e2c890ce214a74d80.html",
+      "raw_sha256": "eab39025c58a873a3aa2adf14fd0e5f1a02a042ee23b35f1856cd80a44bac1d9",
+      "snapshot_path": "snapshots/eab39025c58a873a3aa2adf14fd0e5f1a02a042ee23b35f1856cd80a44bac1d9.html",
       "message_date": "2026-10-25",
       "status": "fetched"
     },
@@ -65,9 +66,20 @@
       "source_id": "https://svitlomariji.com.ua/?p=54359",
       "source_url": "https://svitlomariji.com.ua/poslannya-bogoroditsi/misyachni-poslannya/2026/poslannya-bogorodyczi-czaryczi-myru-25-zhovtnya-2026-roku-cherez-vizionerku-mariyu-lunetti/",
       "published_at": "2026-10-25T19:31:52+00:00",
-      "raw_sha256": "75a015b3688fbbe34e2ff239d38588d0030a7a6df650a1af5d1c0da3fb0c4bef",
-      "snapshot_path": "snapshots/75a015b3688fbbe34e2ff239d38588d0030a7a6df650a1af5d1c0da3fb0c4bef.html",
+      "raw_sha256": "c5eb1931c65341fd4e09cd74c8bdea3f708c102aef4de206ef7296f259d78ffc",
+      "snapshot_path": "snapshots/c5eb1931c65341fd4e09cd74c8bdea3f708c102aef4de206ef7296f259d78ffc.html",
       "message_date": "2026-10-25",
+      "status": "fetched"
+    },
+    {
+      "language": "hr",
+      "source_id": "archive-date:2026-10-25:monthly:hr",
+      "source_url": "https://www.medjugorje.hr/hr/our-lady-messages-archive",
+      "published_at": null,
+      "publication_uncertainty": "publication_time_not_exposed_by_source",
+      "message_date": "2026-10-25",
+      "text_sha256": "338d9c991aa1ee84b3ea00b399f5f2ed9d16940aec278ca672d9188420972d4e",
+      "raw_sha256": "52a9dffe4b10c86f489e850551a0787b325ac609e3d8c5bd0ae1629057a1898a",
       "status": "fetched"
     },
     {
@@ -86,8 +98,8 @@
       "source_id": "https://svetlomariino.sk/?p=44293",
       "source_url": "https://svetlomariino.sk/posolstvo-panny-marie-kralovnej-pokoja-25-oktobra-2026-cez-vizionarku-mariju-lunetti/",
       "published_at": "2026-10-25T18:36:50+00:00",
-      "raw_sha256": "8752c9e6738d0a2d3671792e697d40db7fdf872507d368e566a4c94e67fc543d",
-      "snapshot_path": "snapshots/8752c9e6738d0a2d3671792e697d40db7fdf872507d368e566a4c94e67fc543d.html",
+      "raw_sha256": "7bce87ec0ab222e5b213031e8b333f9994a591c59bf68f624f6b1b2935724d5b",
+      "snapshot_path": "snapshots/7bce87ec0ab222e5b213031e8b333f9994a591c59bf68f624f6b1b2935724d5b.html",
       "message_date": "2026-10-25",
       "status": "fetched"
     },
@@ -96,18 +108,19 @@
       "source_id": "https://medjugorje.lv/?p=11964",
       "source_url": "https://medjugorje.lv/2026/09/dievmates-miera-karalienes-vestijums-marijai-pavlovicai-luneti-2026-gada-25-septembri/",
       "published_at": "2026-09-27T09:43:27+00:00",
-      "raw_sha256": "a2501a6c64b8a64ecfe82d0da52009130caad7c54a25f0e9f825bf8ae4e165bd",
-      "snapshot_path": "snapshots/a2501a6c64b8a64ecfe82d0da52009130caad7c54a25f0e9f825bf8ae4e165bd.html",
+      "raw_sha256": "751dbfe2f73f2fa3a8f1cd83e37e3a2dc512a6340e9e51a58aaa973f2abf6279",
+      "snapshot_path": "snapshots/751dbfe2f73f2fa3a8f1cd83e37e3a2dc512a6340e9e51a58aaa973f2abf6279.html",
       "message_date": "2026-09-25",
       "status": "skipped",
       "reason": "before_automation_start"
     }
   ],
-  "run_url": "https://github.com/senddownrain/medjugorje-messages/actions/runs/40239822215",
-  "base_commit": "9b6d0de6a3b7f11e14a9265c4f31489e49f69d72",
+  "run_url": "https://github.com/senddownrain/medjugorje-messages/actions/runs/40240839793",
+  "base_commit": "55ff673f9927a4ec436fbe49789b43f1638b9630",
   "publication": "disabled",
   "official": {
     "status": "accessible",
+    "errors": [],
     "identity_count": 10,
     "html_sha256": "74ff7ed0fcc5ea9028441d9b14ed812f93b333f0756cd1c9f66c995b09aade85",
     "observations": [
@@ -181,7 +194,7 @@
       "ru": 1,
       "be": 0,
       "uk": 1,
-      "hr": 0,
+      "hr": 1,
       "en": 1,
       "sk": 1,
       "lv": 0
@@ -205,6 +218,13 @@
       "reason": "validated_unreviewed"
     },
     {
+      "language": "hr",
+      "id": "261025m",
+      "source_url": "https://www.medjugorje.hr/hr/our-lady-messages-archive",
+      "status": "added",
+      "reason": "validated_unreviewed"
+    },
+    {
       "language": "en",
       "id": "261025m",
       "source_url": "https://www.medjugorje.hr/en/our-lady-messages-archive",
@@ -219,23 +239,24 @@
       "reason": "validated_unreviewed"
     }
   ],
-  "added": 4,
+  "added": 5,
   "replay_checks": {
     "status": "PASS",
     "repeat_added": 0,
     "repeat_bytes_unchanged": true,
-    "independently_added": 4,
+    "independently_added": 5,
     "languages": [
       "ru",
       "uk",
+      "hr",
       "en",
       "sk"
     ],
     "source_correction": "blocked_database_unchanged",
     "baseline_unchanged": true
   },
-  "finished_at": "2026-10-25T22:23:31.100408+00:00",
+  "finished_at": "2026-10-25T22:36:29.852507+00:00",
   "ci_validation": "PASS",
-  "ci_run_url": "https://github.com/senddownrain/medjugorje-messages/actions/runs/40239822215",
-  "raw_snapshot_retention": "Raw HTML inspection artifacts removed from public repository; fingerprints and source URLs retained."
+  "ci_run_url": "https://github.com/senddownrain/medjugorje-messages/actions/runs/40240839793",
+  "raw_snapshot_retention": "Public artifacts contain metadata and fingerprints only; raw HTML inspection artifacts removed."
 }

@@ -92,6 +92,16 @@ class AutomaticTests(unittest.TestCase):
   self.assertIsNone(identities['261025m']['visionary'])
   self.assertEqual(associate({'message_date':'2026-10-25'},identities),'261025m')
   with self.assertRaises(ValueError):associate({'message_date':'2026-09-25'},identities)
+ def test_committed_unpublished_update_recovers_even_when_no_new_candidates(self):
+  from scripts.release_recovery import data_hashes,publication_needed
+  public={'source_sha256':data_hashes(self.base)}
+  self.assertFalse(publication_needed(self.base,public))
+  self.stage([candidate()]);committed=self.root/'out'
+  self.assertTrue(publication_needed(committed,public))
+  repeated=self.stage([candidate()],committed,'recovered');self.assertEqual(repeated['added'],0)
+  self.assertTrue(publication_needed(self.root/'recovered',public))
+  public={'source_sha256':data_hashes(self.root/'recovered')}
+  self.assertFalse(publication_needed(self.root/'recovered',public))
  def test_invalid_official_date_is_isolated_without_inventing_a_date(self):
   from scripts.watch_official_updates import extract_observations
   errors=[]

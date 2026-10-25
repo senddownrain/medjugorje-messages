@@ -1,6 +1,6 @@
 {
   "scope": "localhost production Chromium, not a physical Android install",
-  "python_tests": 138,
+  "python_tests": 139,
   "python_status": "PASS",
   "node_tests": 22,
   "node_status": "PASS",
@@ -13,6 +13,8 @@
   "service_worker_update_offline": "PASS",
   "actionlint": "PASS",
   "physical_android": "NOT TESTED",
-  "live_october_25_fulltext": "PASS: RU UK EN SK; real repeats/independent additions/source-correction replay PASS, Actions 40239822215",
-  "production": "DISABLED; first real deployment and physical Android test not performed"
+  "live_october_25_fulltext": "PASS: RU UK HR EN SK; real repeats/independent additions/source-correction replay PASS, Actions 40240839793",
+  "production": "DISABLED; first real deployment and physical Android test not performed",
+  "recovery_after_committed_unpublished_data": "PASS: publication remains required with zero new imports, skipped after matching public data hashes",
+  "legacy_installed_pwa_unread_migration": "PASS in production Chromium via cached previous-visit manifest; physical Android NOT TESTED"
 }

@@ -36,8 +36,13 @@ with tempfile.TemporaryDirectory() as temp:
    page.wait_for_function('Boolean(navigator.serviceWorker.controller)')
    checks.append('PASS first visit: no archive marked new')
    ru=manifest['latest']['ru']['id'];sk=manifest['latest']['sk']['id']
+   page.wait_for_function("async()=>Boolean(await(await caches.open('message-manifest-schema-1')).match('/medjugorje-messages/data/latest-for-ru.json'))")
+   # Simulate an installed release from before unread tracking existed. Its
+   # committed SW manifest is the previous-visit baseline.
+   page.evaluate("localStorage.removeItem('medjugorje-new-messages-v1')")
    manifest['arrivals']={'ru':[ru]};manifest_path.write_text(json.dumps(manifest))
    page.reload();expect(page.locator('.reading .new-badge')).to_have_text('Новое')
+   checks.append('PASS installed legacy release without unread state migrates from cached previous-visit manifest')
    page.wait_for_function("async()=>Boolean(await(await caches.open('message-manifest-schema-1')).match('/medjugorje-messages/data/latest.json'))")
    for theme in ('light','dark'):
     for width in (320,390):
