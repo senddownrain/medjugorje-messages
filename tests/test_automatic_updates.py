@@ -92,6 +92,11 @@ class AutomaticTests(unittest.TestCase):
   self.assertIsNone(identities['261025m']['visionary'])
   self.assertEqual(associate({'message_date':'2026-10-25'},identities),'261025m')
   with self.assertRaises(ValueError):associate({'message_date':'2026-09-25'},identities)
+ def test_decorative_heading_cannot_replace_explicit_article_heading(self):
+  raw=HTML.replace(b'<h1>',b'<h1 class="article-title">').replace(b'<main',b'<h1>Decorative popup</h1><main')
+  with self.assertRaises(SourceBlocked):parse_article(raw,POLICY,POST)
+  parsed=parse_article(raw,{**POLICY,'date_selector':'.article-title'},POST)
+  self.assertEqual(parsed['message_date'],'2026-09-25')
  def test_wrong_body_language_cannot_pass_correct_html_metadata(self):
   from scripts.automatic_sources import check_language
   with self.assertRaises(SourceBlocked):check_language(TEXT,'sk')
