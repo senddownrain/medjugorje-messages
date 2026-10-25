@@ -20,6 +20,7 @@ export async function buildMetadata() {
   const proposals = json('reports/stage-a/proposals.json');
   if (summary.status !== 'VERIFIED_SOURCE_SNAPSHOT_COVERAGE' || sources.status !== summary.status ||
       thematic.status !== summary.status || thematic.violation_count !== 0) throw new Error('Stage A coverage is not verified');
+  if (json('data/index.json').verified !== false) throw new Error('Automatic updates cannot approve union index');
   const baseline = JSON.parse(await readFile(new URL('research/update-integrity-baseline.json', root)));
   validateUpdateIntegrity(baseline, Object.fromEntries(LANGUAGES.map(l => [l, json(`data/${l}.json`)])), json('data/index.json').messages);
   const index = json('data/index.json').messages;
@@ -53,10 +54,10 @@ export async function buildMetadata() {
   const fact = (value, source_status, editorial_status, refs) => ({ value, source_status, editorial_status, evidence: refs });
   const messages = index.map((r, n) => {
     const ref = `index:${r.id}`;
-    const lang = LANGUAGES.find(l => maps[l].has(r.id));
+    const isUpdate = !baseline.index[r.id];
+    const lang = LANGUAGES.find(l => maps[l].has(r.id) && (isUpdate || baseline.languages[l].rows[r.id]));
     const { row: original, position } = maps[lang].get(r.id);
     const snapshot = sources.sources.find(s => s.language === lang);
-    const isUpdate = !baseline.index[r.id];
     evidence[ref] = { kind: isUpdate ? 'automatic_source_import_unreviewed' : 'audited_import_record', artifact: 'data/index.json', pointer: `/messages/${n}`,
       language: lang, language_artifact: `data/${lang}.json`, language_pointer: `/messages/${position}`,
       source_url: original.source_url, source_id: original.source_id,

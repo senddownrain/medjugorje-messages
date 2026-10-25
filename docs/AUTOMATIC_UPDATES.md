@@ -58,6 +58,6 @@ GitHub → репозиторий → Actions → **Autonomous message updates**
 
 ## Проверки и Android
 
-Локально: 129 Python tests PASS, 19 Node tests PASS (до добавления отдельных тестов seal/health notifier), check:data/check:search-metadata/build PASS, search Worker browser PASS, mobile release browser PASS, новый бейдж 320/390 light/dark PASS, production SW upgrade/offline PASS, actionlint PASS. Восемь исходных JSON неизменны. Точные результаты — `reports/updates/` и CI текущего PR.
+Локально: 129 Python tests PASS, 22 Node tests PASS (включая seal/health notifier), check:data/check:search-metadata/build PASS, search Worker browser PASS, mobile release browser PASS, новый бейдж 320/390 light/dark PASS, production SW upgrade/offline PASS, actionlint PASS. Восемь исходных JSON неизменны. Точные результаты — `reports/updates/` и CI текущего PR.
 
 На физическом Android **NOT TESTED**. После разрешённого выпуска: открыть установленную PWA, сохранить RU и SK, закрыть; после нового тестового выпуска открыть онлайн и принять обновление штатной кнопкой; проверить новый текст и бейдж, открыть послание; затем авиарежим/полный перезапуск, проверить сохранённый текст и отсутствие снятого бейджа. Поздний SK перевод должен стать новым независимо от прочитанного RU. Ни desktop Chromium, ни зелёный Actions не подтверждают установку Android.

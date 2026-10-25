@@ -2,7 +2,7 @@
   "scope": "localhost production Chromium, not a physical Android install",
   "python_tests": 129,
   "python_status": "PASS",
-  "node_tests": 19,
+  "node_tests": 22,
   "node_status": "PASS",
   "data_integrity": "PASS; all eight data JSON files unchanged",
   "metadata_reproducibility": "PASS",
