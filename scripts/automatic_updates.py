@@ -214,7 +214,7 @@ def run(output, policy_path, baseline, live=True, exercise=False):
                         try:
                             item['canonical_id']=associate(item,identities)
                             item['snapshot_path']='snapshots/'+name
-                            item['snapshot_artifact']=report['run_url']+' (authorized-source-snapshots)'
+                            item['snapshot_artifact']=(report['run_url']+' (authorized-source-snapshots)' if os.environ.get('SOURCE_REPOSITORY_PRIVATE')=='true' else 'runner_only; public audit retains fingerprints, not full source HTML')
                             candidates.append(item);summary['status']='fetched'
                         except ValueError:
                             summary.update(status='blocked',reason='no_unique_official_identity')
@@ -235,7 +235,7 @@ def run(output, policy_path, baseline, live=True, exercise=False):
                         item = parse_article(raw, policy, post)
                         item['observed_at']=report['started_at']
                         item['snapshot_path']='snapshots/'+snapshot_name
-                        item['snapshot_artifact']=report['run_url']+' (authorized-source-snapshots)'
+                        item['snapshot_artifact']=(report['run_url']+' (authorized-source-snapshots)' if os.environ.get('SOURCE_REPOSITORY_PRIVATE')=='true' else 'runner_only; public audit retains fingerprints, not full source HTML')
                         summary['message_date']=item['message_date']
                         if item['message_date'] < policy.get('not_before','2026-10-25'):
                             summary.update(status='skipped',reason='before_automation_start')

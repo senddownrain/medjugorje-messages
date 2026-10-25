@@ -26,6 +26,22 @@ concurrency:
   group: automatic-updates-${{ github.ref }}
   cancel-in-progress: false
 jobs:
+  cleanup-public-html:
+    if: >-
+      github.event.repository.private == false &&
+      (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: Remove full-page inspection artifacts from this public repository
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const artifacts=await github.paginate(github.rest.actions.listArtifactsForRepo,{...context.repo,per_page:100});
+            const raw=artifacts.filter(a=>a.name==='authorized-source-snapshots' && !a.expired);
+            for (const artifact of raw) await github.rest.actions.deleteArtifact({...context.repo,artifact_id:artifact.id});
+            await core.summary.addRaw(`Removed ${raw.length} raw HTML inspection artifacts. Public audit retains metadata and fingerprints only.`).write();
   validate:
     runs-on: ubuntu-latest
     timeout-minutes: 25
@@ -48,6 +64,8 @@ jobs:
       - name: Authorized source inspection (no publication, no body logs)
         run: python -m scripts.probe_fulltext_sources
       - name: Discovery and isolated staging (no publication)
+        env:
+          SOURCE_REPOSITORY_PRIVATE: ${{ github.event.repository.private }}
         run: python -m scripts.automatic_updates --exercise-replays
       - id: readiness
         run: python -m scripts.check_automatic_readiness
@@ -102,8 +120,15 @@ jobs:
             work/pwa-updates.json
             work/new-messages
           retention-days: 30
-      - name: Private authorized source fixtures (no texts in logs)
+      - name: Source inspection metadata (no full HTML)
         if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: source-inspection-metadata
+          path: work/fulltext-probe/report.json
+          retention-days: 30
+      - name: Raw source fixtures (private repositories only)
+        if: always() && github.event.repository.private == true
         uses: actions/upload-artifact@v4
         with:
           name: authorized-source-snapshots
