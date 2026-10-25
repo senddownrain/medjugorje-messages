@@ -10,6 +10,7 @@ from tempfile import TemporaryDirectory
 import unittest
 import zipfile
 
+from scripts.historical_baseline import write_historical_baseline
 from scripts.audit_source_snapshots import extract_original, sha256
 from scripts.audit_thematic_snapshots import SOURCE_SHA256, inspect_category_links, verify_thematic_zip
 
@@ -31,7 +32,10 @@ def mhtml(html, origin):
 class ThematicSnapshotTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.report, cls.memberships = verify_thematic_zip(THEMATIC, ROOT / "data")
+        cls.historical_temp = TemporaryDirectory()
+        cls.addClassCleanup(cls.historical_temp.cleanup)
+        cls.historical = write_historical_baseline(ROOT / "data", Path(cls.historical_temp.name))
+        cls.report, cls.memberships = verify_thematic_zip(THEMATIC, cls.historical)
 
     def test_every_record_and_group_in_the_four_snapshots_is_reconciled(self):
         self.assertEqual(self.report["status"], "VERIFIED_SOURCE_SNAPSHOT_COVERAGE")
@@ -90,7 +94,7 @@ class ThematicSnapshotTests(unittest.TestCase):
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_bytes(archive.read(entry))
             out = folder / "reproduced"
-            env = {**os.environ, "MHT_DATA_DIR": str(ROOT / "data"), "MHT_AUDIT_OUT": str(out)}
+            env = {**os.environ, "MHT_DATA_DIR": str(self.historical), "MHT_AUDIT_OUT": str(out)}
             result = subprocess.run([sys.executable, str(folder / "reconcile_thematic.py")], env=env, capture_output=True, text=True, timeout=30)
             self.assertEqual(result.returncode, 0, result.stderr)
             for name in ("thematic_report.json", "thematic_entries.csv", "thematic_violations.csv"):

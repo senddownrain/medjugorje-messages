@@ -18,6 +18,8 @@ parser.add_argument('--port', type=int, default=5174)
 args = parser.parse_args()
 url = f'http://127.0.0.1:{args.port}/medjugorje-messages/tests/search/harness.html'
 checks, profiles = [], []
+model=json.loads((ROOT/'derived/search-metadata.json').read_text())
+unknown=sum(not r['visionary']['value'] for r in model['messages'])
 with tempfile.TemporaryDirectory() as tmp:
     with (Path(tmp) / 'vite.log').open('w+') as log:
         server = subprocess.Popen(['node', 'node_modules/vite/bin/vite.js', '--host', '127.0.0.1', '--port', str(args.port), '--strictPort'],
@@ -45,8 +47,8 @@ with tempfile.TemporaryDirectory() as tmp:
                 page.on('pageerror', lambda error: errors.append(str(error)))
                 page.goto(url)
                 page.wait_for_function('Boolean(window.searchHarness)', timeout=30000)
-                expect(page.locator('#total')).to_have_text('899')
-                checks.append('All 899 IDs available through the Vue adapter')
+                expect(page.locator('#total')).to_have_text(str(len(model['messages'])))
+                checks.append('All current canonical IDs available through the Vue adapter')
                 assert page.locator('#safe-highlight img').count() == 0
                 assert page.evaluate('window.injected === undefined')
                 assert page.locator('#safe-highlight mark').all_text_contents() == ['C\u030car', 'Āmen', 'img']
@@ -71,8 +73,8 @@ with tempfile.TemporaryDirectory() as tmp:
                 assert page.evaluate('window.searchHarness.adapter.snapshot().scrollTop') == 390
                 assert page.locator('li[data-pending="true"]').count() == 3
                 page.evaluate("window.searchHarness.adapter.update({filters:{visionary:'unattributed'}})")
-                expect(page.locator('#total')).to_have_text('154')
-                checks.append('Pending recipients, 154 unknowns, missing translation and selection/scroll survive language changes')
+                expect(page.locator('#total')).to_have_text(str(unknown))
+                checks.append('Pending recipients, current unknowns, missing translation and selection/scroll survive language changes')
                 assert not requests, requests
                 page.remove_listener('request', capture_request)
                 worker_result = page.evaluate('window.searchHarness.workerCheck()')

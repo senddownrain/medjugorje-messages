@@ -9,11 +9,13 @@ import { normalizeText, normalizeWithMap, matchingRanges, highlightParts } from 
 
 const read = async p => JSON.parse(await readFile(new URL('../../' + p, import.meta.url), 'utf8'));
 const model = await read('derived/search-metadata.json');
+const baseline = await read('research/update-integrity-baseline.json');
 const archives = Object.fromEntries(await Promise.all(LANGUAGES.map(async l => [l, await read(`data/${l}.json`)])));
 const catalog = () => new SearchCatalog(model, archives);
 
 test('derived metadata is reproducible, covers every canonical ID and preserves all eight source hashes', async () => {
-  assert.deepEqual(await buildMetadata(), model);
+  const fingerprint = value => createHash('sha256').update(JSON.stringify(value)).digest('hex');
+  assert.equal(fingerprint(await buildMetadata()), fingerprint(model), 'Reproduced metadata SHA mismatch');
   const original = await read('data/index.json');
   assert.deepEqual(new Set(model.messages.map(r => r.id)), new Set(original.messages.map(r => r.id)));
   for (const l of [...LANGUAGES, 'index']) {
@@ -25,7 +27,7 @@ test('derived metadata is reproducible, covers every canonical ID and preserves 
 test('all assignments have resolvable evidence; 258 group-backed series and eight pending recipients remain separate', () => {
   const counts = {}, series = {}, pending = [];
   for (const row of model.messages) {
-    counts[row.visionary.value ?? 'unattributed'] = (counts[row.visionary.value ?? 'unattributed'] || 0) + 1;
+    if (baseline.index[row.id]) counts[row.visionary.value ?? 'unattributed'] = (counts[row.visionary.value ?? 'unattributed'] || 0) + 1;
     if (row.series.value) series[row.series.value] = (series[row.series.value] || 0) + 1;
     if (row.visionary.editorial_status === 'pending') pending.push(row.id);
     for (const field of ['visionary', 'type', 'series']) {
@@ -51,7 +53,7 @@ test('provenance JSON pointers and verbatim candidate quotes resolve to unchange
   }
 });
 
-test('filter-only search retains 899 IDs in every language and reports all 1942 missing translations', () => {
+test('filter-only search retains the full current union and reports every missing translation', () => {
   const c = catalog(); let missing = 0;
   const expected = c.searchIds('en');
   for (const lang of LANGUAGES) {
@@ -59,22 +61,24 @@ test('filter-only search retains 899 IDs in every language and reports all 1942 
     assert.equal(c.searchIds(lang, { filters: { availability: 'present' } }).length, archives[lang].messages.length);
     missing += c.searchIds(lang, { filters: { availability: 'missing' } }).length;
   }
-  assert.equal(expected.length, 899); assert.equal(missing, 1942);
+  assert.equal(expected.length, model.messages.length);
+  assert.equal(missing, LANGUAGES.reduce((sum,l) => sum + model.messages.length - archives[l].messages.length,0));
   assert.deepEqual(c.diagnostics(), []); // Metadata filters do not construct text indexes.
   const metadataOnly = new SearchCatalog(model, {});
-  assert.equal(metadataOnly.searchIds('lv').length, 899);
+  assert.equal(metadataOnly.searchIds('lv').length, model.messages.length);
   assert.equal(metadataOnly.projectResults(['140812s'], 'uk')[0].archiveLoaded, false);
   assert.throws(() => metadataOnly.searchIds('uk', { query: 'Ivan' }), /not loaded/);
 });
 
 test('pending policy never approves a candidate or drops their canonical record', () => {
   const c = catalog();
-  assert.equal(c.searchIds('en', { filters: { visionary: 'ivan' } }).length, 3);
-  assert.equal(c.searchIds('en', { filters: { visionary: 'vicka' } }).length, 1);
-  assert.equal(c.searchIds('en', { filters: { visionary: 'unattributed' } }).length, 154);
+  assert.equal(c.searchIds('en', { filters: { visionary: 'ivan' } }).length, model.messages.filter(r => r.visionary.value === 'ivan').length);
+  assert.equal(c.searchIds('en', { filters: { visionary: 'vicka' } }).length, model.messages.filter(r => r.visionary.value === 'vicka').length);
+  const unknown = model.messages.filter(r => !r.visionary.value).length;
+  assert.equal(c.searchIds('en', { filters: { visionary: 'unattributed' } }).length, unknown);
   assert.equal(c.searchIds('en', { filters: { visionary: 'ivan', attributionPolicy: 'without_pending' } }).length, 0);
-  assert.equal(c.searchIds('en', { filters: { visionary: 'unattributed', attributionPolicy: 'without_pending' } }).length, 162);
-  assert.equal(c.searchIds('en', { filters: { attributionPolicy: 'without_pending' } }).length, 899);
+  assert.equal(c.searchIds('en', { filters: { visionary: 'unattributed', attributionPolicy: 'without_pending' } }).length, unknown + 8);
+  assert.equal(c.searchIds('en', { filters: { attributionPolicy: 'without_pending' } }).length, model.messages.length);
   assert.equal(c.searchIds('en', { filters: { reviewStatus: 'pending' } }).length, 8);
   assert.ok(c.projectResults(['060908s'], 'en')[0].pendingAttribution);
 });

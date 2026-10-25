@@ -61,7 +61,8 @@ export async function buildMetadata() {
     evidence[ref] = { kind: isUpdate ? 'automatic_source_import_unreviewed' : 'audited_import_record', artifact: 'data/index.json', pointer: `/messages/${n}`,
       language: lang, language_artifact: `data/${lang}.json`, language_pointer: `/messages/${position}`,
       source_url: original.source_url, source_id: original.source_id,
-      source_sha256: isUpdate ? original.provenance?.raw_sha256 : snapshot.source_sha256, heading_position: original.source_position,
+      source_sha256: isUpdate ? original.provenance?.raw_sha256 : snapshot.source_sha256,
+      ...(original.source_position !== undefined ? { heading_position:original.source_position } : {}),
       ...(isUpdate ? { provenance:original.provenance } : {}) };
     const groups = memberships.get(r.id) || [];
     const series = [...new Set(groups.map(g => evidence[g].series))];

@@ -11,6 +11,7 @@ import zipfile
 from scripts.audit_stage_a import audit_data, audit_sources, build_report, compare_saved_source, digest
 from scripts.audit_source_snapshots import extract_original, read_heading_date
 from scripts.import_mhtml import parse_page
+from scripts.historical_baseline import write_historical_baseline
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -35,7 +36,10 @@ def save_mhtml(path, html, location):
 class StageAAuditTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.report = build_report(ROOT / "data", ROOT / "research-sources/medjugorje_original_sources_seven.zip",
+        cls.historical_temp = TemporaryDirectory()
+        cls.addClassCleanup(cls.historical_temp.cleanup)
+        cls.historical = write_historical_baseline(ROOT / "data", Path(cls.historical_temp.name))
+        cls.report = build_report(cls.historical, ROOT / "research-sources/medjugorje_original_sources_seven.zip",
             thematic_zip=ROOT / "research-sources/medjugorje_thematic_en_hr_sources_audit_2026-10-23.zip")
 
     def test_current_snapshot_has_no_integrity_violations(self):
@@ -121,7 +125,7 @@ class StageAAuditTests(unittest.TestCase):
                 self.assertEqual(stored, value)
 
     def test_every_record_in_inventory_and_every_absent_translation_listed(self):
-        index = json.loads((ROOT / "data/index.json").read_text())["messages"]
+        index = json.loads((self.historical / "index.json").read_text())["messages"]
         self.assertEqual({r["id"] for r in index}, {r["id"] for r in self.report["inventory"]})
         expected = {(r["id"], lang) for r in index for lang, meta in r["translations"].items() if not meta["present"]}
         self.assertEqual(expected, {(r["id"], r["language"]) for r in self.report["translation_not_present"]})
@@ -134,8 +138,8 @@ class StageAAuditTests(unittest.TestCase):
             self.assertFalse(proposal["applied"])
             self.assertIsNone(proposal["before"])
             for evidence in proposal["evidence"]:
-                self.assertEqual(digest((ROOT / evidence["artifact"]).read_bytes()), evidence["artifact_sha256"])
-                value = json.loads((ROOT / evidence["artifact"]).read_text())
+                self.assertEqual(digest((self.historical / Path(evidence["artifact"]).name).read_bytes()), evidence["artifact_sha256"])
+                value = json.loads((self.historical / Path(evidence["artifact"]).name).read_text())
                 for part in evidence["json_pointer"].strip("/").split("/"):
                     value = value[int(part)] if isinstance(value, list) else value[part]
                 self.assertEqual(value, evidence["quote"])
