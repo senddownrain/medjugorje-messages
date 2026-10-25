@@ -4,6 +4,8 @@ on:
     paths:
       - 'scripts/automatic*'
       - 'scripts/probe_fulltext_sources.py'
+      - 'scripts/official_identity.py'
+      - 'requirements.txt'
       - 'scripts/update-integrity.mjs'
       - 'scripts/check_automatic_readiness.py'
       - 'scripts/notify-automatic-updates.cjs'

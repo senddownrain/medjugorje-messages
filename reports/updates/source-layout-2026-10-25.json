@@ -1,0 +1,130 @@
+{
+  "run_url": "https://github.com/senddownrain/medjugorje-messages/actions/runs/40237673660",
+  "official": {
+    "status": "fetched",
+    "url": "https://www.medjugorje.hr/en/our-lady-messages-archive",
+    "sha256": "74ff7ed0fcc5ea9028441d9b14ed812f93b333f0756cd1c9f66c995b09aade85",
+    "dates": [
+      "October 25, 2026",
+      "September 25, 2026",
+      "August 25, 2026",
+      "July 25, 2026",
+      "June 25, 2026",
+      "May 25, 2026",
+      "April 25, 2026",
+      "March 25, 2026",
+      "February 25, 2026",
+      "January 25, 2026"
+    ]
+  },
+  "sources": {
+    "ru": {
+      "status": "discovered",
+      "articles": [
+        {
+          "url": "https://svetmariji.ru/poslanie-bogorodiczy-czariczy-mira-ot-25-oktyabrya-2026-goda/",
+          "published_at": "2026-10-25T18:40:43+00:00",
+          "source_id": "https://svetmariji.ru/?p=54878",
+          "status": "fetched",
+          "raw_sha256": "fd0b1e0ccb4f0a19f4237a58b21bcb42453d81ea29ffc0434618e1fae37340d0",
+          "html_language": "ru-RU",
+          "quote_candidates": [
+            {
+              "selector": "#post-54878 > div > div > p",
+              "chars": 466,
+              "sha256": "40462008222ca4e544ee0ce1d867b121578ae6db5f9659a7889b5b4f364b8cbb"
+            }
+          ]
+        }
+      ]
+    },
+    "be": {
+      "status": "no_current_source",
+      "articles": []
+    },
+    "uk": {
+      "status": "discovered",
+      "articles": [
+        {
+          "url": "https://svitlomariji.com.ua/poslannya-bogoroditsi/misyachni-poslannya/2026/poslannya-bogorodyczi-czaryczi-myru-25-zhovtnya-2026-roku-cherez-vizionerku-mariyu-lunetti/",
+          "published_at": "2026-10-25T19:31:52+00:00",
+          "source_id": "https://svitlomariji.com.ua/?p=54359",
+          "status": "fetched",
+          "raw_sha256": "b2aba0f7cb74b1eaa4a3f5f0b4d14179a9d4e9c76ab8fdbc87f1d8c35d23dbb3",
+          "html_language": "uk",
+          "quote_candidates": [
+            {
+              "selector": "#post-54359 > div > div > p",
+              "chars": 496,
+              "sha256": "109883c7bc40e2177ae50df10be469a0f6b2e30d11f52daf5283e24c051bae74"
+            }
+          ]
+        }
+      ]
+    },
+    "hr": {
+      "status": "no_current_source",
+      "articles": []
+    },
+    "en": {
+      "status": "discovered",
+      "articles": [
+        {
+          "url": "https://thelightofmary.com/message-of-the-mother-of-god/monthly-messages/2026/message-from-the-queen-of-peace-september-25-2026/amp",
+          "published_at": "2026-09-27T18:19:24+00:00",
+          "source_id": "https://thelightofmary.com/?p=39948",
+          "status": "blocked",
+          "http_status": 404
+        },
+        {
+          "url": "https://thelightofmary.com/message-of-the-mother-of-god/monthly-messages/2026/message-from-the-queen-of-peace-august-25-2026/amp",
+          "published_at": "2026-08-26T08:57:04+00:00",
+          "source_id": "https://thelightofmary.com/?p=39915",
+          "status": "blocked",
+          "http_status": 404
+        },
+        {
+          "url": "https://thelightofmary.com/message-of-the-mother-of-god/monthly-messages/2026/message-from-the-queen-of-peace-july-25-2026/amp",
+          "published_at": "2026-07-27T10:03:48+00:00",
+          "source_id": "https://thelightofmary.com/?p=39884",
+          "status": "blocked",
+          "http_status": 404
+        }
+      ]
+    },
+    "sk": {
+      "status": "discovered",
+      "articles": [
+        {
+          "url": "https://svetlomariino.sk/posolstvo-panny-marie-kralovnej-pokoja-25-oktobra-2026-cez-vizionarku-mariju-lunetti/",
+          "published_at": "2026-10-25T18:36:50+00:00",
+          "source_id": "https://svetlomariino.sk/?p=44293",
+          "status": "fetched",
+          "raw_sha256": "a7ef3884928381e72a647e7aff211898a3c66d47c559f46cec46d8e1d7c846c8",
+          "html_language": "sk-SK",
+          "quote_candidates": [
+            {
+              "selector": "#post-44293 > div > div > p",
+              "chars": 478,
+              "sha256": "cc321a858716cbd5d0187c89731160318250b7be349095faf549c37832017aea"
+            }
+          ]
+        }
+      ]
+    },
+    "lv": {
+      "status": "discovered",
+      "articles": [
+        {
+          "url": "https://medjugorje.lv/2026/09/dievmates-miera-karalienes-vestijums-marijai-pavlovicai-luneti-2026-gada-25-septembri/",
+          "published_at": "2026-09-27T09:43:27+00:00",
+          "source_id": "https://medjugorje.lv/?p=11964",
+          "status": "fetched",
+          "raw_sha256": "957ef2e493a5b7b93435cb30bfd16d0958e441c15cb5ad230c1367bd8ded4f16",
+          "html_language": "lv",
+          "quote_candidates": []
+        }
+      ]
+    }
+  }
+}

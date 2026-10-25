@@ -15,6 +15,7 @@ from scripts.check_append_only_updates import LANGUAGES, gate, load_archives
 from scripts.update_candidate_gate import sha256, iso_date, https_origin, iso_instant, HEX256
 from scripts.automatic_sources import authorized, discover, get_page, parse_article, new_session, error_metadata
 from scripts.watch_official_updates import fetch_archive, extract_observations
+from scripts.official_identity import identify_records, associate
 
 
 def validate_candidate(c, official, policy):
@@ -79,19 +80,21 @@ def stage(baseline, destination, candidates, official, policies):
                 if r['text_sha256'] == c['text_sha256'] or r.get('source_url') == c['source_url'] or r.get('source_id') == c['source_id']:
                     raise ValueError('Duplicate text or source identity')
             row = next((r for r in index['messages'] if r['id'] == key), None)
-            if row and (row['date'] != record['date'] or row['type'] != record['type'] or row.get('visionary') != record.get('visionary')):
+            if row and (row['date'] != record['date'] or row['type'] != record['type'] or (record.get('visionary') is not None and row.get('visionary') != record.get('visionary'))):
                 raise ValueError('Canonical attribution conflict')
             if not row:
                 row = dict(id=key, date=record['date'], type=record['type'], visionary=record.get('visionary'),
                            translations={l:dict(present=False, has_text=False) for l in LANGUAGES})
                 index['messages'].append(row)
-            provenance = {k:c[k] for k in ('source_url','source_id','published_at','raw_sha256','text_sha256','editorial_status','technical_status')}
+            provenance = {k:c[k] for k in ('source_url','source_id','published_at','raw_sha256','text_sha256','editorial_status','technical_status','language_check')}
             provenance.update(imported_at=datetime.now(timezone.utc).isoformat(), official_evidence=record['evidence_url'],
                               official_sha256=record['evidence_sha256'], policy_sha256=sha256(json.dumps(policies[lang], sort_keys=True).encode()))
             message = dict(id=key, date=row['date'], type=row['type'], visionary=row.get('visionary'), language=lang,
-                           title='', text=c['text'], text_sha256=c['text_sha256'], segments=[dict(kind='message', text=c['text'])],
+                           title=c.get('title',''), text=c['text'], text_sha256=c['text_sha256'], segments=[dict(kind='message', text=c['text'])],
                            status='contains_message', source_url=c['source_url'], source_id=c['source_id'], verified=False,
                            provenance=provenance)
+            if c.get('context_text'):
+                message['segments'].append(dict(kind='context',text=c['context_text']))
             archives[lang]['messages'].append(message)
             row['translations'][lang] = {k:message[k] for k in ('title','status','source_url','source_id','text_sha256')}
             row['translations'][lang].update(present=True, has_text=True)
@@ -131,10 +134,13 @@ def run(output, policy_path, baseline, live=True):
                   run_url=os.environ.get('GITHUB_SERVER_URL','https://github.com')+'/'+os.environ.get('GITHUB_REPOSITORY','senddownrain/medjugorje-messages')+'/actions/runs/'+os.environ.get('GITHUB_RUN_ID','local'),
                   base_commit=os.environ.get('GITHUB_SHA'), publication='disabled')
     # Never put official full sections or RSS summaries/titles into audit artifacts.
+    identities = {}
     if live:
         try:
-            observations = extract_observations(fetch_archive())
-            report['official'] = dict(status='accessible', observations=[dict(date=o['date'], section_sha256=[sha256(s.encode()) for s in o['sections']]) for o in observations])
+            official_html = fetch_archive()
+            observations = extract_observations(official_html)
+            identities = identify_records(observations)
+            report['official'] = dict(status='accessible', identity_count=len(identities), raw_sha256=sha256(official_html.encode()), observations=[dict(date=o['date'], section_sha256=[sha256(s.encode()) for s in o['sections']]) for o in observations])
         except Exception as error:
             report['official'] = dict(status='error', **error_metadata(error))
     candidates = []
@@ -154,12 +160,12 @@ def run(output, policy_path, baseline, live=True):
                     try:
                         raw = get_page(session, post['url'], policy['origin'])
                         item = parse_article(raw, policy, post)
-                        # No guessing canonical ID from publication date. Reviewed
-                        # mapping is mandatory until an official identity adapter exists.
-                        mapping = policy.get('source_id_map', {}).get(item['source_id'])
-                        if not mapping:
-                            raise ValueError('Official identity mapping unavailable')
-                        item['canonical_id'] = mapping
+                        summary['message_date']=item['message_date']
+                        if item['message_date'] < policy.get('not_before','2026-10-25'):
+                            summary.update(status='skipped',reason='before_automation_start')
+                            report['candidates'].append(summary)
+                            continue
+                        item['canonical_id'] = associate(item, identities)
                         candidates.append(item)
                         summary['status'] = 'fetched'
                     except Exception as error:
@@ -169,12 +175,6 @@ def run(output, policy_path, baseline, live=True):
                 report['candidates'].append(summary)
         except Exception as error:
             entry.update(discovery_status='error', **error_metadata(error))
-    identities_path = Path('research/official-update-identities.json')
-    identities = json.loads(identities_path.read_text())['records'] if identities_path.exists() else {}
-    # A saved identity is usable only while its official section fingerprint is
-    # present in this run. Corrections require a fresh explicit identity review.
-    observed = {h for o in report.get('official', {}).get('observations', []) for h in o['section_sha256']}
-    identities = {key:value for key,value in identities.items() if value.get('evidence_sha256') in observed}
     staged = stage(baseline, output/'candidate', candidates, identities, policies)
     report.update(staged)
     report['finished_at'] = datetime.now(timezone.utc).isoformat()

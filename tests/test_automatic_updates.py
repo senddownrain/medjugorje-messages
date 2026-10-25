@@ -11,6 +11,7 @@ from scripts.automatic_updates import stage, run
 from scripts.check_automatic_readiness import ready
 from scripts.check_append_only_updates import LANGUAGES
 
+TEXT_SK='TEST FIXTURE ONLY: '+('Toto je iba skúšobný text softvérovej aplikácie. Používateľ môže otvoriť zoznam nových záznamov a skontrolovať jazyk správy. '*5)+'End of test.'
 TEXT='TEST FIXTURE ONLY: '+('Synthetic parser words. '*9)+'End of test.'
 HASH=lambda t:hashlib.sha256(t.encode()).hexdigest()
 POLICY=dict(enabled=True,language='en',origin='https://example.org/',access_evidence='test-only',
@@ -25,6 +26,7 @@ OFFICIAL={'test:1':dict(date='2026-09-25',type='monthly',visionary=None,status='
 def candidate(lang='en'):
  p={**POLICY,'language':lang}
  raw=HTML.replace(b'lang="en"',('lang="'+lang+'"').encode())
+ if lang=='sk': raw=raw.replace(TEXT.encode(),TEXT_SK.encode())
  return {**parse_article(raw,p,POST),'canonical_id':'test:1'}
 
 
@@ -81,6 +83,18 @@ class AutomaticTests(unittest.TestCase):
   for raw in [HTML.replace(b'End of test.',b'...'),HTML.replace(b'2026-09-25',b'2026-02-30'),
               HTML.replace(b'lang="en"',b'lang="sk"'),HTML.replace(b'</html>',b'<main class="quote">Duplicate</main></html>')]:
    with self.assertRaises((ValueError,SourceBlocked)):parse_article(raw,POLICY,POST)
+ def test_official_identity_requires_literal_source_type_and_unique_section(self):
+  from scripts.official_identity import identify_records,associate
+  rows=[dict(date='2026-10-25',sections=['Monthly']),dict(date='2026-09-25',sections=['Monthly','Monthly']),
+        dict(date='2026-08-25',sections=['Unclear']),dict(date='2026-07-24',sections=['Monthly'])]
+  identities=identify_records(rows)
+  self.assertEqual(set(identities),{'261025m','260724m'}) # Type is explicit even on a day other than 25.
+  self.assertIsNone(identities['261025m']['visionary'])
+  self.assertEqual(associate({'message_date':'2026-10-25'},identities),'261025m')
+  with self.assertRaises(ValueError):associate({'message_date':'2026-09-25'},identities)
+ def test_wrong_body_language_cannot_pass_correct_html_metadata(self):
+  from scripts.automatic_sources import check_language
+  with self.assertRaises(SourceBlocked):check_language(TEXT,'sk')
  def test_403_robots_and_redirect_never_bypassed(self):
   for robots_status,article_status in [(403,200),(200,403),(200,302)]:
    session=Mock();robots=Mock(status_code=robots_status,text='User-agent: *\nAllow: /')
