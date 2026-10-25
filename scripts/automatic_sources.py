@@ -95,6 +95,13 @@ def parse_article(raw, policy, post):
     if len(bodies) != 1 or len(dates) != 1:
         raise SourceBlocked('Ambiguous full text or message date')
     heading = dates[0].get_text(' ', strip=True)
+    if policy.get('monthly_only'):
+        scope=heading+' '+urlsplit(post['url']).path+' '+' '.join(post.get('categories',[]))
+        # Explicit annual/special labels or a different named recipient must
+        # never be associated with the monthly record merely by matching date.
+        excluded=r'ежегодн|щорічн|особ(?:ое|ые|ого)|спеціальн|posebn|īpaš|výročn|každoročn|mimoriadn|\bannual\b|\bspecial\b|godišnj|ikgadēj|мирьян|мір.?ян|иванк|іванк|яков|яків|mirjan|mirjam|ivank|jakov|jakub|\b(?:иван|іван|ivan)(?:а|у|a|u)?\b'
+        if re.search(excluded,scope,re.I):
+            raise SourceBlocked('Source attribution outside validated monthly scope')
     stamp=message_date_from_heading(heading,policy)
     text = bodies[0].get_text('\n', strip=True)
     context=''

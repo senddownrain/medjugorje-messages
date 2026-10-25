@@ -30,7 +30,8 @@
         "декабря"
       ],
       "context_suffix": "(С одобрения Церкви)",
-      "not_before": "2026-10-25"
+      "not_before": "2026-10-25",
+      "monthly_only": true
     },
     "be": {
       "language": "be",
@@ -44,7 +45,8 @@
       "date_pattern": null,
       "opening": null,
       "closing": null,
-      "blocker": "Нет подтверждённого актуального источника белорусского перевода"
+      "blocker": "Нет подтверждённого актуального источника белорусского перевода",
+      "monthly_only": true
     },
     "uk": {
       "language": "uk",
@@ -74,7 +76,8 @@
         "грудня"
       ],
       "context_suffix": "(Із церковним погодженням).",
-      "not_before": "2026-10-25"
+      "not_before": "2026-10-25",
+      "monthly_only": true
     },
     "hr": {
       "language": "hr",
@@ -113,7 +116,8 @@
         "observed": "en",
         "expected": "hr",
         "evidence": "https://github.com/senddownrain/medjugorje-messages/actions/runs/40239822215: localized HR headings/body in /hr/ route, root template lang=en; independent text-language check remains required"
-      }
+      },
+      "monthly_only": true
     },
     "en": {
       "language": "en",
@@ -147,7 +151,8 @@
       "context_suffix": "(With Ecclesiastical approval)",
       "monthly_label": "Monthly",
       "allow_unknown_publication": true,
-      "not_before": "2026-10-25"
+      "not_before": "2026-10-25",
+      "monthly_only": true
     },
     "sk": {
       "language": "sk",
@@ -177,7 +182,8 @@
         "decembra"
       ],
       "context_suffix": "(s cirkevným schválením)",
-      "not_before": "2026-10-25"
+      "not_before": "2026-10-25",
+      "monthly_only": true
     },
     "lv": {
       "language": "lv",
@@ -207,7 +213,8 @@
         "decembrī"
       ],
       "context_suffix": "(Ar Baznīcas apstiprinājumu)",
-      "not_before": "2026-10-25"
+      "not_before": "2026-10-25",
+      "monthly_only": true
     }
   }
 }

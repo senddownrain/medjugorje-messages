@@ -1,6 +1,6 @@
 {
   "scope": "localhost production Chromium, not a physical Android install",
-  "python_tests": 140,
+  "python_tests": 141,
   "python_status": "PASS",
   "node_tests": 22,
   "node_status": "PASS",
@@ -17,5 +17,6 @@
   "production": "DISABLED; first real deployment and physical Android test not performed",
   "recovery_after_committed_unpublished_data": "PASS: publication remains required with zero new imports, skipped after matching public data hashes",
   "legacy_installed_pwa_unread_migration": "PASS in production Chromium via cached previous-visit manifest; physical Android NOT TESTED",
-  "older_message_late_publication": "PASS: a newly published translation of an older indexed message is appended independently"
+  "older_message_late_publication": "PASS: a newly published translation of an older indexed message is appended independently",
+  "monthly_attribution_scope": "PASS: explicit annual/special titles or other named recipients cannot match a monthly record by date alone"
 }

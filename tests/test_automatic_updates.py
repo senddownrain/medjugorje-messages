@@ -92,6 +92,11 @@ class AutomaticTests(unittest.TestCase):
   self.assertIsNone(identities['261025m']['visionary'])
   self.assertEqual(associate({'message_date':'2026-10-25'},identities),'261025m')
   with self.assertRaises(ValueError):associate({'message_date':'2026-09-25'},identities)
+ def test_annual_or_other_recipient_cannot_match_monthly_by_date_alone(self):
+  for title in ('Annual message 2026-09-25','Message to Mirjana 2026-09-25'):
+   raw=HTML.replace(b'2026-09-25',title.encode())
+   with self.assertRaisesRegex(SourceBlocked,'monthly scope'):
+    parse_article(raw,{**POLICY,'monthly_only':True},POST)
  def test_late_publication_is_not_rejected_by_older_message_date(self):
   # A translation published after automation began may belong to an older message.
   initial=candidate('sk');initial['canonical_id']='260925m'
