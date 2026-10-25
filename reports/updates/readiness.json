@@ -1,0 +1,12 @@
+{
+  "production_enabled": false,
+  "live_end_to_end_passed": false,
+  "official_identity_adapter_validated": false,
+  "android_installed_pwa_tested": false,
+  "blockers": [
+    "Current full-text source fixtures and access unconfirmed; community publication permission confirmed by owner 2026-10-25",
+    "Official record identity adapter not validated against October 25 2026 publication",
+    "No successful live full-text end-to-end run",
+    "Installed Android PWA update not tested on a device"
+  ]
+}

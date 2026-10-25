@@ -6,11 +6,16 @@ import { languages, translations } from './ui/translations.js';
 import { defaultState, emptyFilters, hashFor, route, searchOptions, restoreReaderState } from './ui/reader-state.js';
 import ResultCard from './ui/ResultCard.vue';
 import MessageReader from './ui/MessageReader.vue';
+import { NEW_MESSAGES_KEY, restoreNewMessages, observeArrivals, isNewMessage, readMessage, newLabels } from './ui/new-messages.js';
 
 const baseUrl = import.meta.env.BASE_URL;
 
 function setting(key, fallback) { try { return localStorage.getItem(key) || fallback; } catch { return fallback; } }
 function save(key, value) { try { localStorage.setItem(key, value); } catch { /* private mode */ } }
+const newMessages = ref(restoreNewMessages(setting(NEW_MESSAGES_KEY, '')));
+function persistNew(value) { newMessages.value = value; save(NEW_MESSAGES_KEY, JSON.stringify(value)); }
+function markRead(id) { if (id) persistNew(readMessage(newMessages.value, state.language, id)); }
+const isUnread = id => isNewMessage(newMessages.value, state.language, id);
 const validLanguage = value => languages.some(l => l.code === value);
 const readingLanguage = setting('medjugorje-language', 'ru');
 const state = reactive(defaultState(validLanguage(readingLanguage) ? readingLanguage : 'ru'));
@@ -182,6 +187,7 @@ async function openSearch() {
 }
 function openMessage(id) {
   if (!catalog.value?.byId.has(id)) return;
+  markRead(id);
   state.focusId = id; saveScroll();
   state.selectedId = id; state.scrollTop = 0;
   history.pushState({ readerV2:true, snapshot:snapshot(), returnReader:true }, '', hashFor(state));
@@ -256,10 +262,11 @@ async function load() {
     const value = await readData(loadedManifest.latest[language].file);
     if (value.data_version !== loadedManifest.data_version || value.language !== language) throw new Error('Incompatible latest data');
     latest.value = { ...latest.value, [language]:value };
+    persistNew(observeArrivals(newMessages.value, loadedManifest.arrivals));
     navigator.serviceWorker?.ready.then(registration => {
       registration.active?.postMessage({ type:'COMMIT_MANIFEST', manifest:JSON.parse(JSON.stringify(loadedManifest)), language, latest:value });
     }).catch(() => {});
-    if (state.selectedId) await ensureAdvanced(language);
+    if (state.selectedId) { await ensureAdvanced(language); if (catalog.value?.archives.get(language)?.has(state.selectedId)) markRead(state.selectedId); }
     if (version !== loadVersion || language !== state.language) return;
     busy.value = false;
     await nextTick(); performance.mark('latest-visible');
@@ -374,14 +381,14 @@ onUnmounted(() => {
             <template v-else>
               <p v-if="!search.ids.length" class="state-message" role="status">{{ T.noResults }}</p>
               <div v-else class="results-list">
-                <ResultCard v-for="row in visibleRows" :key="row.id" :row="row" :t="T" :date="formatDate(row.metadata.date)" :query="state.query" :options="options" @open="openMessage" />
+                <ResultCard v-for="row in visibleRows" :key="row.id" :row="row" :t="T" :date="formatDate(row.metadata.date)" :query="state.query" :options="options" :is-new="isUnread(row.id)" :new-label="newLabels[uiLang]" @open="openMessage" />
               </div>
               <button v-if="search.ids.length > state.limit" id="show-more" class="more-button" @click="state.limit += 35">{{ T.showMore }} ↓</button>
             </template>
           </section>
         </section>
         <template v-if="state.selectedId || !state.searchOpen">
-          <MessageReader v-if="currentRow" :row="currentRow" :record="currentRecord" :date="formatDate(currentRow.date)" :latest="currentRow.id === latestRow?.id" :t="T" :language="state.language" :languages="availableLanguages" :archive-loaded="Boolean(latest[state.language]) || Boolean(catalog?.archives.has(state.language))" @language="selectLanguage" />
+          <MessageReader v-if="currentRow" :row="currentRow" :record="currentRecord" :date="formatDate(currentRow.date)" :latest="currentRow.id === latestRow?.id" :is-new="isUnread(currentRow.id)" :new-label="newLabels[uiLang]" @read="markRead(currentRow.id)" :t="T" :language="state.language" :languages="availableLanguages" :archive-loaded="Boolean(latest[state.language]) || Boolean(catalog?.archives.has(state.language))" @language="selectLanguage" />
           <p v-else class="state-message" role="status">{{ T.notFound }}</p>
           <section v-if="!state.selectedId" class="recent" :aria-label="T.recent">
             <button class="more-button" id="open-archive" @click="openSearch">{{ T.recent }} ↓</button>

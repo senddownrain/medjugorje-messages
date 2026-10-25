@@ -138,3 +138,8 @@ mark { background:var(--mark); color:var(--ink); border-radius:2px; padding:0; }
 .filter-sheet .settings-dialog .v-card-text { overflow-y:auto; }
 .filter-sheet .v-card-actions { justify-content:space-between; padding-bottom:calc(15px + env(safe-area-inset-bottom,0px)); }
 @media(max-width:350px) { .top-actions { gap:4px; } .brand-copy strong { font-size:17px; } .brand-copy > span { font-size:8px; } .topbar { width:calc(100% - 24px); gap:5px; } }
+
+.new-badge { display:inline-flex; align-items:center; flex-shrink:0; margin-inline-start:.55rem; padding:.12rem .4rem; border:1px solid #9cb9c7; border-radius:.4rem; color:#345b70; background:#eef5f8; font-family:inherit; font-size:.66rem; font-weight:600; line-height:1.4; vertical-align:middle; letter-spacing:.015em; }
+[data-theme="dark"] .new-badge { color:#c0dce9; background:#243943; border-color:#587789; }
+.new-badge-button { margin:.25rem 0 .65rem; cursor:pointer; min-height:32px; }
+.new-badge-button:focus-visible { outline:2px solid currentColor; outline-offset:3px; }

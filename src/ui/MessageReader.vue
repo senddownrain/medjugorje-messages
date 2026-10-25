@@ -1,13 +1,14 @@
 <script setup>
-defineProps({ row: Object, record: Object, t: Object, date: String, latest: Boolean,
+defineProps({ row: Object, record: Object, t: Object, date: String, latest: Boolean, isNew: Boolean, newLabel: String,
   language: String, languages: Array, archiveLoaded: Boolean });
-defineEmits(['language']);
+defineEmits(['language', 'read']);
 </script>
 
 <template>
   <article class="reading" :data-message-id="row.id">
     <p v-if="latest" class="reading-kicker">{{ t.latestMessage }}</p>
     <h1>{{ date }}</h1>
+    <button v-if="isNew" type="button" class="new-badge new-badge-button" @click="$emit('read')">{{ newLabel }}</button>
     <p class="reading-person">{{ t[row.visionary.value] || t.unknown }}</p>
     <p v-if="row.visionary.editorial_status === 'pending'" class="pending-label">{{ t.pending }}</p>
     <p v-if="row.type.source_status === 'source_confirmed' && t.messageTypes[row.type.value]" class="reading-type">{{ t.messageTypes[row.type.value] }}</p>
