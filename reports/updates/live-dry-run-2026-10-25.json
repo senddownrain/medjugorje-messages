@@ -1,0 +1,241 @@
+{
+  "started_at": "2026-10-25T22:23:04.597885+00:00",
+  "status": "validated_partial",
+  "sources": {
+    "ru": {
+      "status": "enabled",
+      "reason": "Configured for live dry-run; production requires successful end-to-end and Android gates",
+      "automatic_publication": true,
+      "discovery_status": "accessible",
+      "detected": 1
+    },
+    "be": {
+      "status": "blocked",
+      "reason": "No confirmed current full-text source",
+      "automatic_publication": false
+    },
+    "uk": {
+      "status": "enabled",
+      "reason": "Configured for live dry-run; production requires successful end-to-end and Android gates",
+      "automatic_publication": true,
+      "discovery_status": "accessible",
+      "detected": 1
+    },
+    "hr": {
+      "status": "blocked",
+      "reason": "Official Croatian archive found; current body/date selectors require live confirmation",
+      "automatic_publication": false,
+      "discovery_status": "not_enabled"
+    },
+    "en": {
+      "status": "enabled",
+      "reason": "Configured for live dry-run; official publication timestamp explicitly unknown",
+      "automatic_publication": true,
+      "discovery_status": "accessible",
+      "detected": 1
+    },
+    "sk": {
+      "status": "enabled",
+      "reason": "Configured for live dry-run; production requires successful end-to-end and Android gates",
+      "automatic_publication": true,
+      "discovery_status": "accessible",
+      "detected": 1
+    },
+    "lv": {
+      "status": "enabled",
+      "reason": "Current fixture confirmed; no October 25 Latvian text observed yet",
+      "automatic_publication": true,
+      "discovery_status": "accessible",
+      "detected": 1
+    }
+  },
+  "candidates": [
+    {
+      "language": "ru",
+      "source_id": "https://svetmariji.ru/?p=54878",
+      "source_url": "https://svetmariji.ru/poslanie-bogorodiczy-czariczy-mira-ot-25-oktyabrya-2026-goda/",
+      "published_at": "2026-10-25T18:40:43+00:00",
+      "raw_sha256": "03f6037322421eb02fb747966b0643991596f32c8d89ee7e2c890ce214a74d80",
+      "snapshot_path": "snapshots/03f6037322421eb02fb747966b0643991596f32c8d89ee7e2c890ce214a74d80.html",
+      "message_date": "2026-10-25",
+      "status": "fetched"
+    },
+    {
+      "language": "uk",
+      "source_id": "https://svitlomariji.com.ua/?p=54359",
+      "source_url": "https://svitlomariji.com.ua/poslannya-bogoroditsi/misyachni-poslannya/2026/poslannya-bogorodyczi-czaryczi-myru-25-zhovtnya-2026-roku-cherez-vizionerku-mariyu-lunetti/",
+      "published_at": "2026-10-25T19:31:52+00:00",
+      "raw_sha256": "75a015b3688fbbe34e2ff239d38588d0030a7a6df650a1af5d1c0da3fb0c4bef",
+      "snapshot_path": "snapshots/75a015b3688fbbe34e2ff239d38588d0030a7a6df650a1af5d1c0da3fb0c4bef.html",
+      "message_date": "2026-10-25",
+      "status": "fetched"
+    },
+    {
+      "language": "en",
+      "source_id": "archive-date:2026-10-25:monthly:en",
+      "source_url": "https://www.medjugorje.hr/en/our-lady-messages-archive",
+      "published_at": null,
+      "publication_uncertainty": "publication_time_not_exposed_by_source",
+      "message_date": "2026-10-25",
+      "text_sha256": "084d75e5389701782a9e4a092697f3cc9e7146a415d5d4c0ad270a69c6443490",
+      "raw_sha256": "74ff7ed0fcc5ea9028441d9b14ed812f93b333f0756cd1c9f66c995b09aade85",
+      "status": "fetched"
+    },
+    {
+      "language": "sk",
+      "source_id": "https://svetlomariino.sk/?p=44293",
+      "source_url": "https://svetlomariino.sk/posolstvo-panny-marie-kralovnej-pokoja-25-oktobra-2026-cez-vizionarku-mariju-lunetti/",
+      "published_at": "2026-10-25T18:36:50+00:00",
+      "raw_sha256": "8752c9e6738d0a2d3671792e697d40db7fdf872507d368e566a4c94e67fc543d",
+      "snapshot_path": "snapshots/8752c9e6738d0a2d3671792e697d40db7fdf872507d368e566a4c94e67fc543d.html",
+      "message_date": "2026-10-25",
+      "status": "fetched"
+    },
+    {
+      "language": "lv",
+      "source_id": "https://medjugorje.lv/?p=11964",
+      "source_url": "https://medjugorje.lv/2026/09/dievmates-miera-karalienes-vestijums-marijai-pavlovicai-luneti-2026-gada-25-septembri/",
+      "published_at": "2026-09-27T09:43:27+00:00",
+      "raw_sha256": "a2501a6c64b8a64ecfe82d0da52009130caad7c54a25f0e9f825bf8ae4e165bd",
+      "snapshot_path": "snapshots/a2501a6c64b8a64ecfe82d0da52009130caad7c54a25f0e9f825bf8ae4e165bd.html",
+      "message_date": "2026-09-25",
+      "status": "skipped",
+      "reason": "before_automation_start"
+    }
+  ],
+  "run_url": "https://github.com/senddownrain/medjugorje-messages/actions/runs/40239822215",
+  "base_commit": "9b6d0de6a3b7f11e14a9265c4f31489e49f69d72",
+  "publication": "disabled",
+  "official": {
+    "status": "accessible",
+    "identity_count": 10,
+    "html_sha256": "74ff7ed0fcc5ea9028441d9b14ed812f93b333f0756cd1c9f66c995b09aade85",
+    "observations": [
+      {
+        "date": "2026-10-25",
+        "section_sha256": [
+          "9b11f6b707d2a03e0265465f32520bc1bc213de121de958539662d0ec1453fcb"
+        ]
+      },
+      {
+        "date": "2026-09-25",
+        "section_sha256": [
+          "9b11f6b707d2a03e0265465f32520bc1bc213de121de958539662d0ec1453fcb"
+        ]
+      },
+      {
+        "date": "2026-08-25",
+        "section_sha256": [
+          "9b11f6b707d2a03e0265465f32520bc1bc213de121de958539662d0ec1453fcb"
+        ]
+      },
+      {
+        "date": "2026-07-25",
+        "section_sha256": [
+          "9b11f6b707d2a03e0265465f32520bc1bc213de121de958539662d0ec1453fcb"
+        ]
+      },
+      {
+        "date": "2026-06-25",
+        "section_sha256": [
+          "9b11f6b707d2a03e0265465f32520bc1bc213de121de958539662d0ec1453fcb"
+        ]
+      },
+      {
+        "date": "2026-05-25",
+        "section_sha256": [
+          "9b11f6b707d2a03e0265465f32520bc1bc213de121de958539662d0ec1453fcb"
+        ]
+      },
+      {
+        "date": "2026-04-25",
+        "section_sha256": [
+          "9b11f6b707d2a03e0265465f32520bc1bc213de121de958539662d0ec1453fcb"
+        ]
+      },
+      {
+        "date": "2026-03-25",
+        "section_sha256": [
+          "9b11f6b707d2a03e0265465f32520bc1bc213de121de958539662d0ec1453fcb"
+        ]
+      },
+      {
+        "date": "2026-02-25",
+        "section_sha256": [
+          "9b11f6b707d2a03e0265465f32520bc1bc213de121de958539662d0ec1453fcb"
+        ]
+      },
+      {
+        "date": "2026-01-25",
+        "section_sha256": [
+          "9b11f6b707d2a03e0265465f32520bc1bc213de121de958539662d0ec1453fcb"
+        ]
+      }
+    ],
+    "cached_identity_count": 0
+  },
+  "gate": {
+    "status": "APPEND_ONLY_PASS",
+    "new_canonical_ids": 1,
+    "new_translations": {
+      "ru": 1,
+      "be": 0,
+      "uk": 1,
+      "hr": 0,
+      "en": 1,
+      "sk": 1,
+      "lv": 0
+    },
+    "can_merge": false,
+    "can_publish": false
+  },
+  "events": [
+    {
+      "language": "ru",
+      "id": "261025m",
+      "source_url": "https://svetmariji.ru/poslanie-bogorodiczy-czariczy-mira-ot-25-oktyabrya-2026-goda/",
+      "status": "added",
+      "reason": "validated_unreviewed"
+    },
+    {
+      "language": "uk",
+      "id": "261025m",
+      "source_url": "https://svitlomariji.com.ua/poslannya-bogoroditsi/misyachni-poslannya/2026/poslannya-bogorodyczi-czaryczi-myru-25-zhovtnya-2026-roku-cherez-vizionerku-mariyu-lunetti/",
+      "status": "added",
+      "reason": "validated_unreviewed"
+    },
+    {
+      "language": "en",
+      "id": "261025m",
+      "source_url": "https://www.medjugorje.hr/en/our-lady-messages-archive",
+      "status": "added",
+      "reason": "validated_unreviewed"
+    },
+    {
+      "language": "sk",
+      "id": "261025m",
+      "source_url": "https://svetlomariino.sk/posolstvo-panny-marie-kralovnej-pokoja-25-oktobra-2026-cez-vizionarku-mariju-lunetti/",
+      "status": "added",
+      "reason": "validated_unreviewed"
+    }
+  ],
+  "added": 4,
+  "replay_checks": {
+    "status": "PASS",
+    "repeat_added": 0,
+    "repeat_bytes_unchanged": true,
+    "independently_added": 4,
+    "languages": [
+      "ru",
+      "uk",
+      "en",
+      "sk"
+    ],
+    "source_correction": "blocked_database_unchanged",
+    "baseline_unchanged": true
+  },
+  "finished_at": "2026-10-25T22:23:31.100408+00:00",
+  "ci_validation": "PASS",
+  "ci_run_url": "https://github.com/senddownrain/medjugorje-messages/actions/runs/40239822215",
+  "raw_snapshot_retention": "Raw HTML inspection artifacts removed from public repository; fingerprints and source URLs retained."
+}

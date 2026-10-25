@@ -1,6 +1,6 @@
 {
   "scope": "localhost production Chromium, not a physical Android install",
-  "python_tests": 129,
+  "python_tests": 138,
   "python_status": "PASS",
   "node_tests": 22,
   "node_status": "PASS",
@@ -13,6 +13,6 @@
   "service_worker_update_offline": "PASS",
   "actionlint": "PASS",
   "physical_android": "NOT TESTED",
-  "live_october_25_fulltext": "BLOCKED: proxy CONNECT policy",
-  "production": "DISABLED"
+  "live_october_25_fulltext": "PASS: RU UK EN SK; real repeats/independent additions/source-correction replay PASS, Actions 40239822215",
+  "production": "DISABLED; first real deployment and physical Android test not performed"
 }

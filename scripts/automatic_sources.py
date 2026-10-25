@@ -54,7 +54,9 @@ def language_model():
 def check_language(text,expected):
     language,confidence=language_model().classify(text)
     if language!=expected or confidence<0.90:
-        raise SourceBlocked('Text language mismatch or low confidence')
+        error=SourceBlocked('Text language mismatch or low confidence')
+        error.language_check=dict(expected=expected,detected=language,confidence=float(confidence))
+        raise error
     return dict(language=language,confidence=float(confidence),model='langid-1.1.6')
 
 
@@ -137,5 +139,6 @@ def error_metadata(error):
     if isinstance(error, SourceBlocked):
         match = re.search(r'HTTP (\d{3})', str(error))
         return dict(error_type='SourceBlocked', layer='origin_http' if match else 'validation',
+                    **({'language_check':error.language_check} if hasattr(error,'language_check') else {}),
                     **({'http_status':int(match[1])} if match else {'code':str(error)}))
     return dict(error_type=type(error).__name__, layer='network_or_parser')

@@ -43,7 +43,7 @@ def compare(official_dates, index):
         }
     }
 
-def extract_observations(html):
+def extract_observations(html, *, errors=None):
     soup = BeautifulSoup(html, "html.parser")
     for unsafe in soup.select('script, style, noscript'):
         unsafe.decompose()
@@ -52,7 +52,13 @@ def extract_observations(html):
         title = " ".join(heading.get_text(" ", strip=True).split())
         if not DATE_RE.fullmatch(title):
             continue
-        date = datetime.strptime(title, "%B %d, %Y").date().isoformat()
+        try:
+            date = datetime.strptime(title, "%B %d, %Y").date().isoformat()
+        except ValueError:
+            if errors is None:
+                raise
+            errors.append({"heading":title,"code":"invalid_official_message_date"})
+            continue
         body = []
         for sibling in heading.next_siblings:
             if getattr(sibling, 'name', None) == 'h2':

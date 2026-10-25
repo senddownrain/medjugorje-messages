@@ -42,8 +42,14 @@ def parse_official_archive(raw,policy,observed_at,errors=None):
     from scripts.automatic_sources import parse_article,SourceBlocked,message_date_from_heading,error_metadata
     soup=BeautifulSoup(raw,'html.parser')
     language=(soup.html.get('lang','') if soup.html else '').split('-')[0]
+    observed_language=language
     if language!=policy['language']:
-        raise SourceBlocked('Official archive language mismatch')
+        from urllib.parse import urlsplit
+        override=policy.get('html_locale_override',{})
+        if (override.get('observed')!=language or override.get('expected')!=policy['language']
+            or not override.get('evidence') or urlsplit(policy['source_url']).path.split('/')[1]!=policy['language']):
+            raise SourceBlocked('Official archive language mismatch')
+        language=policy['language']
     results=[]
     found_typed=False
     if errors is None: errors=[]
@@ -64,6 +70,8 @@ def parse_official_archive(raw,policy,observed_at,errors=None):
             isolated=('<html lang="'+language+'"><body>'+str(card)+'</body></html>').encode()
             item=parse_article(isolated,{**policy,'date_selector':'h2'},
                                dict(url=policy['source_url'],guid='official-card:'+title,published=None))
+            item['language_check'].update(html_language=observed_language,source_route_language=language)
+            if observed_language!=language:item['language_check']['html_locale_override']=policy['html_locale_override']
             item['raw_sha256']=sha256(raw)
             item['source_id']='archive-date:'+item['message_date']+':monthly:'+language
             item['observed_at']=observed_at

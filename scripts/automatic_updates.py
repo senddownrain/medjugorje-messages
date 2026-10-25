@@ -178,9 +178,10 @@ def run(output, policy_path, baseline, live=True, exercise=False):
     if live:
         try:
             official_html = fetch_archive(raw=True)
-            observations = extract_observations(official_html)
+            official_errors=[]
+            observations = extract_observations(official_html,errors=official_errors)
             identities = identify_records(observations)
-            report['official'] = dict(status='accessible', identity_count=len(identities), html_sha256=sha256(official_html), observations=[dict(date=o['date'], section_sha256=[sha256(s.encode()) for s in o['sections']]) for o in observations])
+            report['official'] = dict(status='accessible', errors=official_errors, identity_count=len(identities), html_sha256=sha256(official_html), observations=[dict(date=o['date'], section_sha256=[sha256(s.encode()) for s in o['sections']]) for o in observations])
         except Exception as error:
             report['official'] = dict(status='error', **error_metadata(error))
     prior=cached_identities(baseline,observations,identities)

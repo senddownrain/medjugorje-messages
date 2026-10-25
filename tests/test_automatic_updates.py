@@ -92,6 +92,20 @@ class AutomaticTests(unittest.TestCase):
   self.assertIsNone(identities['261025m']['visionary'])
   self.assertEqual(associate({'message_date':'2026-10-25'},identities),'261025m')
   with self.assertRaises(ValueError):associate({'message_date':'2026-09-25'},identities)
+ def test_invalid_official_date_is_isolated_without_inventing_a_date(self):
+  from scripts.watch_official_updates import extract_observations
+  errors=[]
+  rows=extract_observations('<h2>February 30, 2026</h2>Monthly<h2>October 25, 2026</h2>Monthly',errors=errors)
+  self.assertEqual([r['date'] for r in rows],['2026-10-25'])
+  self.assertEqual(len(errors),1)
+ def test_reviewed_html_locale_override_still_rejects_wrong_body_language(self):
+  from scripts.official_identity import parse_official_archive
+  raw=('<html lang="en"><section><div><h2>2026-09-25</h2>Monthly</div><div class="quote">'+TEXT+'</div></section></html>').encode()
+  policy={**POLICY,'language':'hr','source_url':'https://example.org/hr/archive','monthly_label':'Monthly',
+          'allow_unknown_publication':True,'not_before':'2026-09-25',
+          'html_locale_override':{'observed':'en','expected':'hr','evidence':'synthetic test only'}}
+  errors=[];items=parse_official_archive(raw,policy,'2026-10-25T12:00:00Z',errors)
+  self.assertEqual(items,[]);self.assertEqual(errors[0]['language_check']['detected'],'en')
  def test_shared_official_archive_url_allows_distinct_confirmed_records(self):
   first=candidate();second=candidate();second.update(canonical_id='test:2',message_date='2026-09-26',source_id='post:2')
   second['text']+=' Another distinct fixture.';second['text_sha256']=HASH(second['text'])
