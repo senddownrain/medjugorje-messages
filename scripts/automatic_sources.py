@@ -58,6 +58,20 @@ def check_language(text,expected):
     return dict(language=language,confidence=float(confidence),model='langid-1.1.6')
 
 
+def message_date_from_heading(heading,policy):
+    matches = list(re.finditer(policy['date_pattern'], heading, flags=re.I))
+    if len(matches) != 1:
+        raise SourceBlocked('Missing or ambiguous explicit message date')
+    parts = matches[0].groupdict()
+    month=parts['month']
+    if policy.get('month_names'):
+        month=policy['month_names'].index(month.casefold())+1
+    stamp = date(int(parts['year']), int(month), int(parts['day'])).isoformat()
+    if stamp > date.today().isoformat():
+        raise SourceBlocked('Future message date')
+    return stamp
+
+
 def parse_article(raw, policy, post):
     """Preserve quote punctuation; reject ambiguous bodies/dates and excerpt markers."""
     soup = BeautifulSoup(raw, 'html.parser')
@@ -79,17 +93,7 @@ def parse_article(raw, policy, post):
     if len(bodies) != 1 or len(dates) != 1:
         raise SourceBlocked('Ambiguous full text or message date')
     heading = dates[0].get_text(' ', strip=True)
-    matches = list(re.finditer(policy['date_pattern'], heading))
-    if len(matches) != 1:
-        raise SourceBlocked('Missing or ambiguous explicit message date')
-    parts = matches[0].groupdict()
-    # Source-specific numeric regex must supply named year/month/day. No date inferred from pubDate.
-    month=parts['month']
-    if policy.get('month_names'):
-        month=policy['month_names'].index(month.casefold())+1
-    stamp = date(int(parts['year']), int(month), int(parts['day'])).isoformat()
-    if stamp > date.today().isoformat():
-        raise SourceBlocked('Future message date')
+    stamp=message_date_from_heading(heading,policy)
     text = bodies[0].get_text('\n', strip=True)
     context=''
     if policy.get('context_suffix'):
@@ -102,8 +106,9 @@ def parse_article(raw, policy, post):
     if len(text) < 100 or len(text) > 15000 or re.search(r'\[\s*…\s*\]|read more|читать далее|čítaj viac', text, re.I):
         raise SourceBlocked('Incomplete or implausible full text')
     language_check=check_language(text,policy['language'])
-    iso_instant(post['published'], 'published_at')
-    return dict(language=policy['language'], message_date=stamp, published_at=post['published'],
+    iso_instant(post['published'], 'published_at', nullable=policy.get('allow_unknown_publication') is True)
+    uncertainty='publication_time_not_exposed_by_source' if post['published'] is None else None
+    return dict(language=policy['language'], message_date=stamp, published_at=post['published'], publication_uncertainty=uncertainty,
                 source_id=post.get('guid') or post['url'], source_url=post['url'], text=text, language_check=language_check,
                 text_sha256=sha256(text.encode()), raw_sha256=sha256(raw),
                 title=heading, context_text=context, editorial_status='source_import_unreviewed', verified=False,

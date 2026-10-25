@@ -22,7 +22,7 @@ export function validateUpdateIntegrity(baseline, archives, index) {
     for (const row of archive.messages) if (!seals.rows[row.id]) {
       const p = row.provenance;
       if (row.verified !== false || p?.technical_status !== 'validated' || p?.editorial_status !== 'source_import_unreviewed' ||
-          !p.official_evidence || !/^[a-f0-9]{64}$/.test(p.official_sha256 || '') || !p.source_url || !p.source_id || !p.published_at ||
+          !p.official_evidence || !/^[a-f0-9]{64}$/.test(p.official_sha256 || '') || !p.source_url || !p.source_id || (!p.published_at && p.publication_uncertainty !== 'publication_time_not_exposed_by_source') ||
           !/^[a-f0-9]{64}$/.test(p.raw_sha256 || '') || !/^[a-f0-9]{64}$/.test(p.policy_sha256 || '')) fail('new translation lacks provenance: ' + row.id);
       const meta = indexed.get(row.id);
       const hash = createHash('sha256').update(row.text || '').digest('hex');

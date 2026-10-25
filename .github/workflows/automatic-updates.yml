@@ -48,7 +48,7 @@ jobs:
       - name: Authorized source inspection (no publication, no body logs)
         run: python -m scripts.probe_fulltext_sources
       - name: Discovery and isolated staging (no publication)
-        run: python -m scripts.automatic_updates
+        run: python -m scripts.automatic_updates --exercise-replays
       - id: readiness
         run: python -m scripts.check_automatic_readiness
       - id: result
@@ -265,9 +265,28 @@ jobs:
       - uses: actions/github-script@v7
         env:
           VALIDATION: ${{ needs.validate.result }}
-          PUBLICATION: ${{ needs.verify-public.result }}
+          PUBLICATION: ${{ (contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')) && 'failure' || needs.verify-public.result }}
+          RELEASE_SHA: ${{ needs.commit.outputs.sha }}
+          PUBLIC_CHECK: ${{ needs.verify-public.result }}
         with:
           script: |
+            const fs = require('node:fs');
+            const path = 'work/audit/automatic-updates/audit.json';
+            const audit = JSON.parse(fs.readFileSync(path,'utf8'));
+            audit.publication = process.env.PUBLICATION;
+            audit.release_commit = process.env.RELEASE_SHA || null;
+            audit.commit_url = audit.release_commit ? `https://github.com/${context.repo.owner}/${context.repo.repo}/commit/${audit.release_commit}` : null;
+            audit.publication_url = process.env.PUBLIC_CHECK === 'success' ? 'https://senddownrain.github.io/medjugorje-messages/' : null;
+            audit.run_url ||= `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            fs.writeFileSync('work/final-audit.json',JSON.stringify(audit,null,2)+'\n');
+            await core.summary.addHeading('Итог обновления').addRaw(`Проверки: ${process.env.VALIDATION}. Публикация: ${audit.publication}.\n`).addLink('Workflow',audit.run_url).write();
             await require('./scripts/notify-automatic-updates.cjs')({github,context,
-              audit:'work/audit/automatic-updates/audit.json', validation:process.env.VALIDATION,
+              audit:'work/final-audit.json', validation:process.env.VALIDATION,
               publication:process.env.PUBLICATION});
+      - name: Final publication result (metadata only)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: automatic-update-result
+          path: work/final-audit.json
+          retention-days: 30

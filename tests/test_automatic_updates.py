@@ -92,6 +92,38 @@ class AutomaticTests(unittest.TestCase):
   self.assertIsNone(identities['261025m']['visionary'])
   self.assertEqual(associate({'message_date':'2026-10-25'},identities),'261025m')
   with self.assertRaises(ValueError):associate({'message_date':'2026-09-25'},identities)
+ def test_shared_official_archive_url_allows_distinct_confirmed_records(self):
+  first=candidate();second=candidate();second.update(canonical_id='test:2',message_date='2026-09-26',source_id='post:2')
+  second['text']+=' Another distinct fixture.';second['text_sha256']=HASH(second['text'])
+  official={**OFFICIAL,'test:2':{**OFFICIAL['test:1'],'date':'2026-09-26'}}
+  self.policies['en']['source_kind']='official_archive'
+  r=stage(self.base,self.root/'shared',[first,second],official,self.policies)
+  self.assertEqual(r['added'],2)
+ def test_cached_official_record_survives_archive_window_but_not_ambiguity(self):
+  from scripts.official_identity import cached_identities
+  official=deepcopy(OFFICIAL);official['test:1']['identity_rule']='unique_official_date_and_literal_Monthly_label'
+  stage(self.base,self.root/'cached',[candidate()],official,self.policies)
+  self.assertIn('test:1',cached_identities(self.root/'cached',[],{}))
+  self.assertEqual(cached_identities(self.root/'cached',[{'date':'2026-09-25','sections':['Monthly','Monthly']}],{}),{})
+ def test_integration_replay_of_two_languages_and_source_correction(self):
+  from scripts.automatic_updates import exercise_replays
+  candidates=[candidate(),candidate('sk')]
+  for item in candidates:item['observed_at']='2026-10-25T12:00:00Z'
+  self.stage(candidates)
+  r=exercise_replays(self.base,self.root/'out',self.root,candidates,OFFICIAL,self.policies)
+  self.assertEqual(r['status'],'PASS');self.assertEqual(r['repeat_added'],0)
+  self.assertEqual(r['independently_added'],2)
+  self.assertEqual(r['source_correction'],'blocked_database_unchanged')
+ def test_official_fulltext_has_unknown_publication_time_and_isolates_bad_cards(self):
+  from scripts.official_identity import parse_official_archive
+  card=lambda day,body:f'<section><div><h2>{day}</h2><span>Monthly</span></div><div class="quote">{body}</div></section>'
+  raw=('<html lang="en">'+card('2026-09-25',TEXT)+card('2026-09-26','excerpt')+'</html>').encode()
+  policy={**POLICY,'source_url':POST['url'],'monthly_label':'Monthly','allow_unknown_publication':True,'not_before':'2026-09-25'}
+  errors=[];items=parse_official_archive(raw,policy,'2026-09-27T12:00:00Z',errors)
+  self.assertEqual(len(items),1);self.assertEqual(len(errors),1)
+  self.assertIsNone(items[0]['published_at'])
+  self.assertEqual(items[0]['publication_uncertainty'],'publication_time_not_exposed_by_source')
+  self.assertEqual(items[0]['raw_sha256'],hashlib.sha256(raw).hexdigest())
  def test_decorative_heading_cannot_replace_explicit_article_heading(self):
   raw=HTML.replace(b'<h1>',b'<h1 class="article-title">').replace(b'<main',b'<h1>Decorative popup</h1><main')
   with self.assertRaises(SourceBlocked):parse_article(raw,POLICY,POST)

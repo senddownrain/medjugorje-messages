@@ -42,8 +42,9 @@ def inspect_layout(raw):
 def probe(output, policies):
     output.mkdir(parents=True,exist_ok=True)
     report=dict(checked_at=datetime.now(timezone.utc).isoformat(), mode='authorized_read_only', official={}, sources={})
+    html=None
     try:
-        html=fetch_archive().encode('utf-8')
+        html=fetch_archive(raw=True)
         (output/'official.html').write_bytes(html)
         report['official']=dict(status='fetched',url=URL,sha256=sha256(html),snapshot='official.html',layout=inspect_layout(html))
     except Exception as error:
@@ -54,6 +55,12 @@ def probe(output, policies):
             report['sources'][lang]=dict(status='no_current_source');continue
         entry=dict(status='checking',articles=[]);report['sources'][lang]=entry
         try:
+            if policy.get('source_kind')=='official_archive':
+                raw=html if lang=='en' else get_page(session,policy['source_url'],policy['origin'])
+                if raw is None: raise ValueError('Official archive unavailable')
+                name=lang+'-'+sha256(raw)[:16]+'.html';(output/name).write_bytes(raw)
+                entry.update(status='fetched',articles=[dict(url=policy['source_url'],status='fetched',snapshot=name,raw_sha256=sha256(raw),layout=inspect_layout(raw))])
+                continue
             posts=discover(session,policy)
             # Include the newest candidate even before today's message appears;
             # a previous real page is necessary to validate parser structure.

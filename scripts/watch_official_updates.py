@@ -65,7 +65,7 @@ def extract_observations(html):
         raise ValueError("Official archive has no recognizable date headings")
     return [{'date':date, 'sections':sections} for date, sections in sorted(groups.items(), reverse=True)]
 
-def fetch_archive():
+def fetch_archive(*, raw=False):
     session = requests.Session()
     session.headers["User-Agent"] = USER_AGENT
     robots_response = session.get("https://www.medjugorje.hr/robots.txt", timeout=15, allow_redirects=False)
@@ -85,7 +85,7 @@ def fetch_archive():
     response.raise_for_status()
     if "html" not in response.headers.get("content-type", "").lower():
         raise ValueError("Unexpected source content type")
-    return response.text
+    return response.content if raw else response.text
 
 def main():
     p = argparse.ArgumentParser()
