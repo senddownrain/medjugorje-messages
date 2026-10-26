@@ -1,6 +1,5 @@
 {
   "schema_version": 1,
-  "production_enabled": false,
   "languages": {
     "ru": {
       "language": "ru",
@@ -31,7 +30,23 @@
       ],
       "context_suffix": "(С одобрения Церкви)",
       "not_before": "2026-10-25",
-      "monthly_only": true
+      "monthly_only": true,
+      "url_month_names": [
+        "yanvarya",
+        "fevralya",
+        "marta",
+        "aprelya",
+        "maya",
+        "iyunya",
+        "iyulya",
+        "avgusta",
+        "sentyabrya",
+        "oktyabrya",
+        "noyabrya",
+        "dekabrya"
+      ],
+      "url_date_pattern": "(?P<day>\\d{1,2})-(?P<month>yanvarya|fevralya|marta|aprelya|maya|iyunya|iyulya|avgusta|sentyabrya|oktyabrya|noyabrya|dekabrya)-(?P<year>\\d{4})\\b",
+      "allow_missing_current_feed_translations": true
     },
     "be": {
       "language": "be",
@@ -77,7 +92,23 @@
       ],
       "context_suffix": "(Із церковним погодженням).",
       "not_before": "2026-10-25",
-      "monthly_only": true
+      "monthly_only": true,
+      "url_month_names": [
+        "sichnya",
+        "lyutogo",
+        "bereznya",
+        "kvitnya",
+        "travnya",
+        "chervnya",
+        "lypnya",
+        "serpnya",
+        "veresnya",
+        "zhovtnya",
+        "lystopada",
+        "grudnya"
+      ],
+      "url_date_pattern": "(?P<day>\\d{1,2})-(?P<month>sichnya|lyutogo|bereznya|kvitnya|travnya|chervnya|lypnya|serpnya|veresnya|zhovtnya|lystopada|grudnya)-(?P<year>\\d{4})\\b",
+      "allow_missing_current_feed_translations": true
     },
     "hr": {
       "language": "hr",
@@ -183,7 +214,23 @@
       ],
       "context_suffix": "(s cirkevným schválením)",
       "not_before": "2026-10-25",
-      "monthly_only": true
+      "monthly_only": true,
+      "url_month_names": [
+        "januara",
+        "februara",
+        "marca",
+        "aprila",
+        "maja",
+        "juna",
+        "jula",
+        "augusta",
+        "septembra",
+        "oktobra",
+        "novembra",
+        "decembra"
+      ],
+      "url_date_pattern": "(?P<day>\\d{1,2})-(?P<month>januara|februara|marca|aprila|maja|juna|jula|augusta|septembra|oktobra|novembra|decembra)-(?P<year>\\d{4})\\b",
+      "allow_missing_current_feed_translations": true
     },
     "lv": {
       "language": "lv",
@@ -214,7 +261,23 @@
       ],
       "context_suffix": "(Ar Baznīcas apstiprinājumu)",
       "not_before": "2026-10-25",
-      "monthly_only": true
+      "monthly_only": true,
+      "url_month_names": [
+        "janvari",
+        "februari",
+        "marta",
+        "aprili",
+        "maija",
+        "junija",
+        "julija",
+        "augusta",
+        "septembri",
+        "oktobri",
+        "novembri",
+        "decembri"
+      ],
+      "url_date_pattern": "(?P<year>\\d{4})-gada-(?P<day>\\d{1,2})-(?P<month>janvari|februari|marta|aprili|maija|junija|julija|augusta|septembri|oktobri|novembri|decembri)\\b",
+      "allow_missing_current_feed_translations": true
     }
   }
 }

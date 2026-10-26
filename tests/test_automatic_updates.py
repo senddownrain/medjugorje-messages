@@ -76,7 +76,7 @@ class AutomaticTests(unittest.TestCase):
   self.assertEqual(before,{p.name:p.read_bytes() for p in self.base.iterdir()})
   self.assertEqual(self.stage([candidate()])['added'],1)
  def test_bad_hash_approval_and_short_text_rejected(self):
-  for field,value in [('text_sha256','b'*64),('verified',True),('text','excerpt')]:
+  for field,value in [('text_sha256','b'*64),('verified',True),('text','excerpt'),('source_id',['invalid'])]:
    c=candidate();c[field]=value
    r=self.stage([c],name=field);self.assertEqual(r['added'],0)
  def test_parser_rejects_incomplete_date_language_and_multiple_quotes(self):
@@ -92,6 +92,60 @@ class AutomaticTests(unittest.TestCase):
   self.assertIsNone(identities['261025m']['visionary'])
   self.assertEqual(associate({'message_date':'2026-10-25'},identities),'261025m')
   with self.assertRaises(ValueError):associate({'message_date':'2026-09-25'},identities)
+ def test_current_feed_can_fill_missing_older_translation_without_historical_index_backfill(self):
+  initial=candidate('sk');initial['canonical_id']='260925m'
+  stage(self.base,self.root/'known-message',[initial],{'260925m':OFFICIAL['test:1']},self.policies)
+  policies=deepcopy(self.policies)
+  for lang,p in policies.items():
+   p['blocker']='test only'
+   if lang!='en':p.update(enabled=False,origin=None)
+  policies['en'].update(not_before='2026-10-25',allow_missing_current_feed_translations=True)
+  path=self.root/'current-feed-policies.json';dump(path,{'languages':policies})
+  for name,baseline,expected in [('missing-known',self.root/'known-message',1),('unknown-history',self.base,0)]:
+   with patch('scripts.automatic_updates.fetch_archive',return_value=b'<h2>September 25, 2026</h2>Monthly'), \
+        patch('scripts.automatic_updates.discover',return_value=[POST]), \
+        patch('scripts.automatic_updates.get_page',return_value=HTML):
+    r=run(self.root/name,path,baseline,True)
+   self.assertEqual(r['added'],expected);self.assertEqual(r['gate']['new_canonical_ids'],0)
+ def test_monthly_alias_cannot_duplicate_an_existing_same_date_record(self):
+  self.stage([candidate()]);base=self.root/'out'
+  c=candidate();c.update(canonical_id='alias',source_id='post:alias',source_url='https://example.org/alias')
+  c['text']+=' A different claim.';c['text_sha256']=HASH(c['text'])
+  r=stage(base,self.root/'alias',[c],{'alias':OFFICIAL['test:1']},self.policies)
+  self.assertEqual(r['added'],0);self.assertIn('canonical ID',r['events'][0]['reason'])
+ def test_url_message_date_must_match_but_publication_directory_is_separate(self):
+  wrong={**POST,'url':'https://example.org/message/2026-09-26/'}
+  policy={**POLICY,'url_date_pattern':POLICY['date_pattern']}
+  with self.assertRaisesRegex(SourceBlocked,'URL message date'):
+   parse_article(HTML,policy,wrong)
+  words='janvari februari marta aprili maija junija julija augusta septembri oktobri novembri decembri'.split()
+  pattern=r'(?P<year>\d{4})-gada-(?P<day>\d{1,2})-(?P<month>'+('|'.join(words))+r')\b'
+  post={**POST,'url':'https://example.org/2026/10/message-2026-gada-25-septembri/','published':'2026-10-25T12:00:00Z'}
+  parsed=parse_article(HTML,{**POLICY,'url_date_pattern':pattern,'url_month_names':words},post)
+  self.assertEqual(parsed['url_message_date'],'2026-09-25')
+ def test_fatal_staging_failure_keeps_metadata_audit_and_original_database(self):
+  policies=self.root/'policies.json'
+  dump(policies,{'languages':{l:{**p,'enabled':False,'origin':None,'blocker':'test blocked'} for l,p in self.policies.items()}})
+  before={p.name:p.read_bytes() for p in self.base.iterdir()}
+  with patch('scripts.automatic_updates.stage',side_effect=ValueError('injected integrity failure')):
+   with self.assertRaises(ValueError):run(self.root/'fatal-audit',policies,self.base,False)
+  audit=json.loads((self.root/'fatal-audit'/'audit.json').read_text())
+  self.assertEqual(audit['status'],'failed');self.assertTrue(audit['started_at'])
+  self.assertEqual(set(audit['sources']),set(LANGUAGES))
+  self.assertEqual(before,{p.name:p.read_bytes() for p in self.base.iterdir()})
+ def test_conflicting_same_translation_blocks_both_without_blocking_other_language(self):
+  first=candidate();second=candidate();second.update(source_id='post:2',source_url='https://example.org/message/2')
+  second['text']+=' Conflicting publication.';second['text_sha256']=HASH(second['text'])
+  r=self.stage([first,second,candidate('sk')])
+  self.assertEqual(r['added'],1);self.assertEqual(r['gate']['new_translations']['en'],0)
+  self.assertEqual(r['gate']['new_translations']['sk'],1)
+  self.assertEqual([e['status'] for e in r['events']],['blocked','blocked','added'])
+ def test_one_source_identity_cannot_create_two_different_messages(self):
+  first=candidate();second=candidate();second.update(canonical_id='test:2',message_date='2026-09-26')
+  second['text']+=' A distinct claim for the same source.';second['text_sha256']=HASH(second['text'])
+  official={**OFFICIAL,'test:2':{**OFFICIAL['test:1'],'date':'2026-09-26'}}
+  r=stage(self.base,self.root/'source-conflict',[first,second],official,self.policies)
+  self.assertEqual(r['added'],0);self.assertTrue(all(e['status']=='blocked' for e in r['events']))
  def test_annual_or_other_recipient_cannot_match_monthly_by_date_alone(self):
   for title in ('Annual message 2026-09-25','Message to Mirjana 2026-09-25'):
    raw=HTML.replace(b'2026-09-25',title.encode())

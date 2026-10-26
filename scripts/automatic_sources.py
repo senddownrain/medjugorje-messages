@@ -6,7 +6,7 @@ before a policy can enable an adapter. RSS is discovery only.
 from datetime import date
 from functools import lru_cache
 import re
-from urllib.parse import urlsplit, parse_qs
+from urllib.parse import urlsplit, parse_qs, unquote
 from urllib.robotparser import RobotFileParser
 import requests
 from bs4 import BeautifulSoup
@@ -103,6 +103,15 @@ def parse_article(raw, policy, post):
         if re.search(excluded,scope,re.I):
             raise SourceBlocked('Source attribution outside validated monthly scope')
     stamp=message_date_from_heading(heading,policy)
+    url_stamp=None
+    if policy.get('url_date_pattern'):
+        path=unquote(urlsplit(post['url']).path)
+        if re.search(policy['url_date_pattern'],path,re.I):
+            url_stamp=message_date_from_heading(path,dict(date_pattern=policy['url_date_pattern'],month_names=policy.get('url_month_names')))
+            if url_stamp!=stamp:
+                error=SourceBlocked('URL message date differs from source heading')
+                error.date_check=dict(heading_date=stamp,url_message_date=url_stamp)
+                raise error
     text = bodies[0].get_text('\n', strip=True)
     context=''
     if policy.get('context_suffix'):
@@ -117,7 +126,7 @@ def parse_article(raw, policy, post):
     language_check=check_language(text,policy['language'])
     iso_instant(post['published'], 'published_at', nullable=policy.get('allow_unknown_publication') is True)
     uncertainty='publication_time_not_exposed_by_source' if post['published'] is None else None
-    return dict(language=policy['language'], message_date=stamp, published_at=post['published'], publication_uncertainty=uncertainty,
+    return dict(language=policy['language'], message_date=stamp, url_message_date=url_stamp, published_at=post['published'], publication_uncertainty=uncertainty,
                 source_id=post.get('guid') or post['url'], source_url=post['url'], text=text, language_check=language_check,
                 text_sha256=sha256(text.encode()), raw_sha256=sha256(raw),
                 title=heading, context_text=context, editorial_status='source_import_unreviewed', verified=False,
@@ -150,5 +159,6 @@ def error_metadata(error):
         match = re.search(r'HTTP (\d{3})', str(error))
         return dict(error_type='SourceBlocked', layer='origin_http' if match else 'validation',
                     **({'language_check':error.language_check} if hasattr(error,'language_check') else {}),
+                    **({'date_check':error.date_check} if hasattr(error,'date_check') else {}),
                     **({'http_status':int(match[1])} if match else {'code':str(error)}))
     return dict(error_type=type(error).__name__, layer='network_or_parser')

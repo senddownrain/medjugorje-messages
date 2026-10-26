@@ -13,7 +13,7 @@ from urllib.parse import urlsplit
 import shutil
 import tempfile
 from scripts.check_append_only_updates import LANGUAGES, gate, load_archives
-from scripts.update_candidate_gate import sha256, iso_date, https_origin, iso_instant, HEX256
+from scripts.update_candidate_gate import sha256, iso_date, https_origin, iso_instant, HEX256, IDENTIFIER
 from scripts.automatic_sources import authorized, discover, get_page, parse_article, new_session, error_metadata
 from scripts.watch_official_updates import fetch_archive, extract_observations
 from scripts.official_identity import identify_records, associate, parse_official_archive, cached_identities
@@ -21,6 +21,10 @@ from scripts.official_identity import identify_records, associate, parse_officia
 
 def validate_candidate(c, official, policy):
     lang, key = c['language'], c['canonical_id']
+    if not isinstance(key,str) or not IDENTIFIER.fullmatch(key):
+        raise ValueError('Invalid canonical identity')
+    if not isinstance(c.get('source_id'),str) or not IDENTIFIER.fullmatch(c['source_id']):
+        raise ValueError('Invalid stable source identity')
     if lang not in LANGUAGES or not authorized(policy) or policy['language'] != lang:
         raise ValueError('Source not authorized for automatic publication')
     if https_origin(c['source_url']) != https_origin(policy['origin']):
@@ -53,6 +57,31 @@ def validate_candidate(c, official, policy):
     return record
 
 
+def candidate_conflicts(candidates,official,policies):
+    groups={}
+    for c in candidates:
+        try:
+            lang=c['language'];key=c['canonical_id']
+            validate_candidate(c,official,policies.get(lang,{}))
+            identity=(lang,key)
+            signature=(c['text_sha256'],c['source_id'],c['source_url'],c['published_at'])
+            groups.setdefault(('translation',identity),[]).append((identity,signature))
+            origin=urlsplit(c['source_url']).hostname
+            for label,value in (('source_id',(origin,c['source_id'])),('text',c['text_sha256'])):
+                groups.setdefault((label,lang,value),[]).append((identity,key))
+            if policies[lang].get('source_kind')!='official_archive':
+                groups.setdefault(('url',lang,c['source_url']),[]).append((identity,key))
+        except (ValueError,KeyError,TypeError):
+            # Malformed candidates are rejected separately; they cannot poison
+            # otherwise valid candidates or an independent language.
+            continue
+    blocked=set()
+    for rows in groups.values():
+        if len({signature for _,signature in rows})>1:
+            blocked.update(identity for identity,_ in rows)
+    return blocked
+
+
 def stage(baseline, destination, candidates, official, policies):
     """Commit the complete candidate directory only after append-only validation.
 
@@ -62,21 +91,24 @@ def stage(baseline, destination, candidates, official, policies):
     archives, index = load_archives(baseline)
     events = []
     seen = set()
+    conflicted=candidate_conflicts(candidates,official,policies)
     for c in candidates:
         lang, key = c.get('language'), c.get('canonical_id')
-        event = dict(language=lang, id=key, source_url=c.get('source_url'))
+        event = dict(language=lang, id=key, message_date=c.get('message_date'), source_url=c.get('source_url'))
         previous = deepcopy((archives, index))
         try:
             record = validate_candidate(c, official, policies.get(lang, {}))
             identity = (lang, key)
+            if identity in conflicted:
+                raise ValueError('Conflicting publications for the same translation or source identity')
             if identity in seen:
                 raise ValueError('Duplicate candidate identity')
-            seen.add(identity)
             old = next((r for r in archives[lang]['messages'] if r['id'] == key), None)
             if old:
                 if old['text_sha256'] != c['text_sha256']:
                     event.update(previous_text_sha256=old['text_sha256'],candidate_text_sha256=c['text_sha256'])
                     raise ValueError('Source correction: existing translation is immutable')
+                seen.add(identity)
                 event.update(status='skipped', reason='already_present')
                 events.append(event)
                 continue
@@ -89,11 +121,13 @@ def stage(baseline, destination, candidates, official, policies):
             if row and (row['date'] != record['date'] or row['type'] != record['type'] or (record.get('visionary') is not None and row.get('visionary') != record.get('visionary'))):
                 raise ValueError('Canonical attribution conflict')
             if not row:
+                if record['type']=='monthly' and any(r['date']==record['date'] and r['type']=='monthly' for r in index['messages']):
+                    raise ValueError('Existing monthly record has a different canonical ID; review the alias')
                 row = dict(id=key, date=record['date'], type=record['type'], visionary=record.get('visionary'),
                            translations={l:dict(present=False, has_text=False) for l in LANGUAGES})
                 index['messages'].append(row)
             provenance = {k:c[k] for k in ('source_url','source_id','published_at','raw_sha256','text_sha256','editorial_status','technical_status','language_check')}
-            provenance.update({k:c[k] for k in ('snapshot_path','snapshot_artifact','publication_uncertainty') if k in c})
+            provenance.update({k:c[k] for k in ('snapshot_path','snapshot_artifact','publication_uncertainty','url_message_date') if k in c})
             provenance.update(imported_at=c.get('observed_at') or datetime.now(timezone.utc).isoformat(), official_evidence=record['evidence_url'],
                               official_sha256=record['evidence_sha256'], official_record=record, policy_sha256=sha256(json.dumps(policies[lang], sort_keys=True).encode()))
             message = dict(id=key, date=row['date'], type=row['type'], visionary=row.get('visionary'), language=lang,
@@ -105,6 +139,7 @@ def stage(baseline, destination, candidates, official, policies):
             archives[lang]['messages'].append(message)
             row['translations'][lang] = {k:message[k] for k in ('title','status','source_url','source_id','text_sha256')}
             row['translations'][lang].update(present=True, has_text=True)
+            seen.add(identity)
             event.update(status='added', reason='validated_unreviewed')
         except (ValueError, KeyError, TypeError) as error:
             archives, index = previous
@@ -144,11 +179,13 @@ def exercise_replays(baseline, candidate, output, candidates, official, policies
     if not same(candidate,output/'repeat'):
         raise ValueError('Repeat run changed existing database bytes')
     current=baseline;incremental_added=0
-    for n,item in enumerate(candidates):
+    conflicted=candidate_conflicts(candidates,official,policies)
+    replayable=[c for c in candidates if (c.get('language'),c.get('canonical_id')) not in conflicted]
+    for n,item in enumerate(replayable):
         target=output/('independent-'+str(n))
         event=stage(current,target,[item],official,policies)
         incremental_added+=event['added'];current=target
-    if candidates and not same(current,candidate):
+    if replayable and not same(current,candidate):
         raise ValueError('Independent language replay changed candidate database')
     correction='not_available'
     added_candidates=[c for c in candidates if any(r['id']==c['canonical_id'] for r in json.loads((candidate/(c['language']+'.json')).read_text())['messages'])]
@@ -188,6 +225,9 @@ def run(output, policy_path, baseline, live=True, exercise=False):
     prior=cached_identities(baseline,observations,identities)
     identities.update(prior)
     report.setdefault('official',{})['cached_identity_count']=len(prior)
+    baseline_archives,baseline_index=load_archives(baseline)
+    present={l:{r['id'] for r in a['messages']} for l,a in baseline_archives.items()}
+    imported={l:{r['id'] for r in a['messages'] if r.get('provenance',{}).get('imported_at')} for l,a in baseline_archives.items()}
     candidates = []
     session = new_session()
     for lang, policy in policies.items():
@@ -242,9 +282,14 @@ def run(output, policy_path, baseline, live=True, exercise=False):
                         summary['text_sha256']=item['text_sha256']
                         summary['language_check']=item['language_check']
                         if post['published'][:10] < policy.get('not_before','2026-10-25'):
-                            summary.update(status='skipped',reason='before_automation_start')
-                            report['candidates'].append(summary)
-                            continue
+                            known=[r['id'] for r in baseline_index['messages'] if r['date']==item['message_date'] and r['type']=='monthly']
+                            eligible=(len(known)==1 and (known[0] in imported[lang] or
+                                      (policy.get('allow_missing_current_feed_translations') is True and known[0] not in present[lang])))
+                            if not eligible:
+                                summary.update(status='skipped',reason='before_automation_start_not_missing_known_translation')
+                                report['candidates'].append(summary)
+                                continue
+                            summary['admission']='missing_current_feed_translation_or_previously_imported'
                         item['canonical_id'] = associate(item, identities)
                         candidates.append(item)
                         summary['status'] = 'fetched'
@@ -255,7 +300,14 @@ def run(output, policy_path, baseline, live=True, exercise=False):
                 report['candidates'].append(summary)
         except Exception as error:
             entry.update(discovery_status='error', **error_metadata(error))
-    staged = stage(baseline, output/'candidate', candidates, identities, policies)
+    report['phase']='append_only_staging'
+    (output/'audit.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
+    try:
+        staged = stage(baseline, output/'candidate', candidates, identities, policies)
+    except Exception as error:
+        report.update(status='failed',fatal_error=error_metadata(error),finished_at=datetime.now(timezone.utc).isoformat())
+        (output/'audit.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
+        raise
     report.update(staged)
     if exercise:
         try:
@@ -264,6 +316,7 @@ def run(output, policy_path, baseline, live=True, exercise=False):
             report.update(status='replay_failed',replay_error=type(error).__name__)
             (output/'audit.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
             raise
+    report['phase']='validated'
     report['finished_at'] = datetime.now(timezone.utc).isoformat()
     restricted=(any(s.get('discovery_status')=='error' or not s['automatic_publication'] for s in report['sources'].values())
                 or any(e.get('status')=='blocked' for e in report['events'])
@@ -275,7 +328,24 @@ def run(output, policy_path, baseline, live=True, exercise=False):
     lines = ['## Автоматическое обновление — '+report['status'], '',
              'Публикация: '+report['publication']+'. Добавлено переводов: '+str(report['added']), '',
              '| Язык | Обнаружение | Ограничение |', '|---|---|---|']
-    lines += ['| '+l+' | '+s.get('discovery_status','not_configured')+' | '+s['reason']+' |' for l,s in report['sources'].items()]
+    lines += ['| '+l+' | '+s.get('discovery_status','not_configured')+' | '+('HTTP '+str(s['http_status']) if s.get('http_status') else s.get('code') or s.get('error_type') or s['reason'])+' |' for l,s in report['sources'].items()]
+    # Phone-first detail: audit JSON keeps the complete metadata, Summary shows
+    # compact message/language outcomes and failures without any message bodies.
+    clean=lambda value:str(value or '—').replace('|','\\|').replace('\n',' ')
+    if report['events']:
+        lines += ['', '| Язык | Дата послания | Результат | Причина |', '|---|---|---|---|']
+        labels={'added':'Добавлено','skipped':'Без изменений','blocked':'Заблокировано'}
+        for event in report['events'][:30]:
+            lines.append('| '+' | '.join(clean(v) for v in (event['language'],event.get('message_date'),labels[event['status']],event['reason']))+' |')
+    failed=[c for c in report['candidates'] if c.get('status')=='blocked']
+    if failed:
+        lines += ['', 'Ошибки кандидатов (полная диагностика в audit.json):']
+        for c in failed[:20]:
+            lines.append('- '+clean(c['language'])+'; дата послания: '+clean(c.get('message_date'))+'; '+clean(c.get('code') or c.get('reason') or c.get('error_type')))
+    replay=report.get('replay_checks')
+    if replay:
+        lines += ['', 'Повторы/независимые языки: '+replay['status']+'; повторных добавлений: '+str(replay['repeat_added'])+
+                  '; независимо добавлено: '+str(replay['independently_added'])+'; исправление старого текста: '+replay['source_correction']+'.']
     lines += ['', 'Кандидатов: '+str(len(report['candidates'])), '[Workflow]('+report['run_url']+')', '',
               'Полные тексты отсутствуют в журнале. HTTP/парсинг/проверки: см. audit.json.']
     (output/'summary.md').write_text('\n'.join(lines)+'\n')
