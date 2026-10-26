@@ -1,0 +1,12 @@
+{
+  "production_enabled": false,
+  "live_end_to_end_passed": true,
+  "official_identity_adapter_validated": true,
+  "android_installed_pwa_tested": false,
+  "blockers": [
+    "Installed physical Android PWA update not tested",
+    "Production commit/deploy/public verification intentionally not run",
+    "BE current authorized full-text endpoint not confirmed; annual/special identities not supported; LV October translation not observed"
+  ],
+  "validated_scope": "Unambiguous official monthly records; real RU UK HR EN SK October 25 2026 end-to-end plus independent/repeat/correction replays, Actions 40240839793"
+}

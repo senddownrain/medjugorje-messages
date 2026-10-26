@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "checks": [
+    "PASS first visit: no archive marked new",
+    "PASS installed legacy release without unread state migrates from cached previous-visit manifest",
+    "PASS home/list badge: light/dark at 320/390px, no horizontal overflow",
+    "PASS badge survives offline restart with cached manifest",
+    "PASS explicit open marks selected translation read; survives offline restart",
+    "PASS late SK translation is independent of already read RU"
+  ],
+  "android_device": "NOT TESTED",
+  "fixtures": "Arrival metadata only; source archive unchanged"
+}

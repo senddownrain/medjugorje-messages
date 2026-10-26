@@ -4,7 +4,7 @@
 Build and maintain a calm, lightweight Marian-themed Vue 3 + Vuetify 3 PWA to read the messages of Our Lady of Medjugorje in seven languages. Work in **Russian** when reporting to the project owner, who generally reviews changes from an Android phone.
 
 ## Canonical repository and state
-- Repository: `senddownrain/medjugorje-messages` (PRIVATE).
+- Repository: `senddownrain/medjugorje-messages` (PUBLIC, API-confirmed 2026-10-25).
 - Default branch `main` contains both the application and imported seven-language JSON archive.
 - Message languages: `ru`, `be`, `uk`, `hr`, `en`, `sk`, `lv`.
 - User-facing **interface language and message text language are independent** preferences.
@@ -32,14 +32,14 @@ For an interactive preview (when a preview port can be forwarded): `npm run dev`
 4. Distinct messages on the same day must remain separate; source URL/date mismatches require a report, not silently dropping records.
 5. Check translations and historical archive rights/source credits before any public release.
 6. `www.medjugorje.ws` and `text.medjugorje.ws` returned HTTP 403 from GitHub Actions. Do not evade restrictions; use owner-supplied archives or authorized feeds.
-7. RU/UK/SK/LV/EN community RSS watches are **metadata only**, not approved text feeds. The official site watcher is a date signal, not seven-language completeness.
+7. Existing RSS/date watchers remain metadata only. Owner authorized automatic source-attributed publication of new translations in all seven languages on 2026-10-25 without per-message approval. Full-text automation is separate: read docs/AUTOMATIC_UPDATES.md and research/automatic-source-policies.json, respect readiness gates, and keep unavailable languages blocked. Do not infer seven-language completeness or editorial verification from technical PASS.
 8. No credentials, tokens, private keys or local `.env` in commits or user-facing logs.
 
 ## Development workflow
 - Read the relevant import/update docs under `docs/`.
 - Make **one feature branch and one PR per coherent task**. Do not commit unrelated changes.
 - Run tests and build; confirm `npm run check:data` for edits affecting data or reader. Fix failures before asking for merge.
-- No public hosting, Pages, Firestore updates or production deployment without explicit owner approval. The GitHub repository should remain private.
+- Existing Pages automation is authorized within this task after end-to-end/readiness gates; production remains disabled pending recorded checks. Do not request the already recorded translation/publication authorization again. New infrastructure or Firestore changes need explicit scope. Repository is public: no complete third-party HTML in public artifacts or full protected source text in audit logs.
 - Test both light/dark and compact phone widths around 320/390px; keep Vuetify styling extremely subtle: pale Marian blue and a little gold, legible typography, generous whitespace.
 - Include in the final report: files changed, tests (pass/fail/not run), exact PR link, how to inspect from Android, outstanding risks.
 - When code can't be visually tested, state **NOT TESTED**. Do not claim a successful preview based only on build passing.

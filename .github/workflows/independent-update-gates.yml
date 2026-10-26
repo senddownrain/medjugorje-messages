@@ -1,0 +1,41 @@
+name: Independent update safety gates (read only)
+on:
+  pull_request:
+    paths:
+      - 'scripts/check_append_only_updates.py'
+      - 'scripts/update_candidate_gate.py'
+      - 'research/update_source_registry.json'
+      - 'tests/test_independent_updates.py'
+      - '.github/workflows/independent-update-gates.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  safety:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test independent source and append-only gates
+        run: python -m unittest discover -s tests -p 'test_independent_updates.py' -v
+      - name: Regression — existing seven-language data remains valid
+        run: python -m scripts.check_append_only_updates --baseline data --candidate data
+      - name: Existing archive integrity
+        run: node scripts/check-data.mjs
+      - name: Verify append-only against actual PR base
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          git fetch --no-tags --depth=1 origin "$BASE_SHA"
+          git worktree add --detach work/append-only-baseline "$BASE_SHA"
+          python -m scripts.check_append_only_updates --baseline work/append-only-baseline/data --candidate data
+      - name: Summary
+        if: success()
+        run: |
+          echo '## Independent update integrity' >> "$GITHUB_STEP_SUMMARY"
+          echo 'PASS: seven-language source registry, hash-checked manual staging and strict append-only tests.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'This job has read-only permissions and verifies immutable archives against the PR base. Release gates are separate.' >> "$GITHUB_STEP_SUMMARY"

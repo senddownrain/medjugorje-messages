@@ -18,10 +18,11 @@ await rm(dest, { recursive:true, force:true });
 await mkdir(new URL(version + '/', dest), { recursive:true });
 const manifest = { schema_version:1, data_version:version,
   editorial_policy:metadata.editorial_policy, source_snapshot_status:metadata.source_snapshot_status,
-  metadata:`${version}/metadata.json`, latest:{} };
+  metadata:`${version}/metadata.json`, latest:{}, arrivals:{} };
 await writeFile(new URL(manifest.metadata, dest), inputs[0]);
 for (const [n, language] of languages.entries()) {
   const archive = JSON.parse(inputs[n + 1]);
+  manifest.arrivals[language] = archive.messages.filter(r => r.provenance?.imported_at).map(r => r.id);
   const row = rows.find(r => r.availability[language] === 'with_text');
   const record = archive.messages.find(r => r.id === row?.id);
   if (!row || !record?.text) throw new Error('No latest text: ' + language);

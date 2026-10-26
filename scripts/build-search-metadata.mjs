@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import { readFile, mkdir, writeFile } from 'node:fs/promises';
 import { pathToFileURL } from 'node:url';
+import { validateUpdateIntegrity } from './update-integrity.mjs';
 
 export const LANGUAGES = ['ru', 'be', 'uk', 'hr', 'en', 'sk', 'lv'];
 const root = new URL('../', import.meta.url);
@@ -19,9 +20,9 @@ export async function buildMetadata() {
   const proposals = json('reports/stage-a/proposals.json');
   if (summary.status !== 'VERIFIED_SOURCE_SNAPSHOT_COVERAGE' || sources.status !== summary.status ||
       thematic.status !== summary.status || thematic.violation_count !== 0) throw new Error('Stage A coverage is not verified');
-  for (const l of [...LANGUAGES, 'index']) {
-    if (inputs[`data/${l}.json`] !== summary.file_sha256[`${l}.json`]) throw new Error(`Unaudited input: ${l}`);
-  }
+  if (json('data/index.json').verified !== false) throw new Error('Automatic updates cannot approve union index');
+  const baseline = JSON.parse(await readFile(new URL('research/update-integrity-baseline.json', root)));
+  validateUpdateIntegrity(baseline, Object.fromEntries(LANGUAGES.map(l => [l, json(`data/${l}.json`)])), json('data/index.json').messages);
   const index = json('data/index.json').messages;
   const indexIds = new Set(index.map(r => r.id));
   const archives = Object.fromEntries(LANGUAGES.map(l => [l, json(`data/${l}.json`).messages]));
@@ -53,13 +54,16 @@ export async function buildMetadata() {
   const fact = (value, source_status, editorial_status, refs) => ({ value, source_status, editorial_status, evidence: refs });
   const messages = index.map((r, n) => {
     const ref = `index:${r.id}`;
-    const lang = LANGUAGES.find(l => maps[l].has(r.id));
+    const isUpdate = !baseline.index[r.id];
+    const lang = LANGUAGES.find(l => maps[l].has(r.id) && (isUpdate || baseline.languages[l].rows[r.id]));
     const { row: original, position } = maps[lang].get(r.id);
     const snapshot = sources.sources.find(s => s.language === lang);
-    evidence[ref] = { kind: 'audited_import_record', artifact: 'data/index.json', pointer: `/messages/${n}`,
+    evidence[ref] = { kind: isUpdate ? 'automatic_source_import_unreviewed' : 'audited_import_record', artifact: 'data/index.json', pointer: `/messages/${n}`,
       language: lang, language_artifact: `data/${lang}.json`, language_pointer: `/messages/${position}`,
       source_url: original.source_url, source_id: original.source_id,
-      source_sha256: snapshot.source_sha256, heading_position: original.source_position };
+      source_sha256: isUpdate ? original.provenance?.raw_sha256 : snapshot.source_sha256,
+      ...(original.source_position !== undefined ? { heading_position:original.source_position } : {}),
+      ...(isUpdate ? { provenance:original.provenance } : {}) };
     const groups = memberships.get(r.id) || [];
     const series = [...new Set(groups.map(g => evidence[g].series))];
     if (series.length > 1 || series.includes(null)) throw new Error(`Conflicting source groups: ${r.id}`);
@@ -69,7 +73,7 @@ export async function buildMetadata() {
     if (groups.some(g => evidence[g].recipient !== person)) throw new Error(`Conflicting recipient: ${r.id}`);
     return {
       id: r.id, date: r.date,
-      type: fact(r.type, 'source_confirmed', 'unreviewed', [ref]),
+      type: fact(r.type, isUpdate ? 'official_identity_mapping' : 'source_confirmed', 'unreviewed', [ref]),
       visionary: fact(person, candidate || groups.length ? 'source_confirmed' : person ? 'legacy_import' : 'unattributed',
         candidate ? 'pending' : 'unreviewed', candidate ? [candidate.ref, ...groups] : [ref, ...groups]),
       series: fact(series[0] || null, groups.length ? 'source_confirmed' : 'unknown', 'unreviewed', groups.length ? groups : [ref]),
@@ -81,7 +85,8 @@ export async function buildMetadata() {
     };
   });
   if (new Set(messages.map(r => r.id)).size !== index.length) throw new Error('Duplicate metadata ID');
-  return { schema_version: 1, source_snapshot_status: summary.status,
+  const hasUpdates = LANGUAGES.some(l => archives[l].some(r => !baseline.languages[l].rows[r.id]));
+  return { schema_version: 1, source_snapshot_status: hasUpdates ? 'HISTORICAL_SNAPSHOT_PLUS_UNREVIEWED_SOURCE_IMPORTS' : summary.status,
     editorial_policy: 'Source candidates are pending until an explicit owner decision; no owner approvals inferred.',
     inputs, evidence, messages };
 }

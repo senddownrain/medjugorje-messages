@@ -51,7 +51,11 @@ jobs:
   deploy:
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     needs: test-build
+    concurrency:
+      group: pages-production-deploy
+      cancel-in-progress: false
     permissions:
+      contents: read
       pages: write
       id-token: write
     environment:
@@ -61,6 +65,12 @@ jobs:
     outputs:
       page_url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: Reject a stale deployment after main advanced
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const head = await github.rest.repos.getBranch({...context.repo, branch:'main'});
+            if (head.data.commit.sha !== context.sha) core.setFailed('Main advanced; this artifact must not replace a newer release.');
       - uses: actions/configure-pages@v5
       - name: Publish tested artifact
         id: deployment

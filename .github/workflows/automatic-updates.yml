@@ -1,0 +1,330 @@
+name: Autonomous message updates
+on:
+  pull_request:
+    paths:
+      - 'scripts/automatic*'
+      - 'scripts/probe_fulltext_sources.py'
+      - 'scripts/official_identity.py'
+      - 'scripts/release_recovery.py'
+      - 'requirements.txt'
+      - 'scripts/update-integrity.mjs'
+      - 'scripts/check_automatic_readiness.py'
+      - 'scripts/notify-automatic-updates.cjs'
+      - 'tests/test_automatic_updates.py'
+      - 'research/automatic-source-policies.json'
+      - '.github/workflows/automatic-updates.yml'
+  workflow_dispatch:
+    inputs:
+      publish:
+        type: boolean
+        default: false
+        description: 'Request production release (readiness gates still mandatory)'
+  schedule:
+    - cron: '35 6,18 * * *'
+permissions:
+  contents: read
+concurrency:
+  group: automatic-updates-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  cleanup-public-html:
+    if: >-
+      github.event.repository.private == false && github.event_name == 'pull_request' &&
+      github.event.pull_request.number == 31 && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: Remove full-page inspection artifacts from this public repository
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const artifacts=await github.paginate(github.rest.actions.listArtifactsForRepo,{...context.repo,per_page:100});
+            const raw=artifacts.filter(a=>a.name==='authorized-source-snapshots' && !a.expired);
+            for (const artifact of raw) await github.rest.actions.deleteArtifact({...context.repo,artifact_id:artifact.id});
+            await core.summary.addRaw(`Removed ${raw.length} raw HTML inspection artifacts. Public audit retains metadata and fingerprints only.`).write();
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    outputs:
+      ready: ${{ steps.readiness.outputs.ready }}
+      added: ${{ steps.result.outputs.added }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: npm ci --no-audit --no-fund
+      - run: python -m pip install -r requirements.txt playwright
+      - run: python -m playwright install --with-deps chromium
+      - run: python -m unittest discover -s tests -v
+      - name: Authorized source inspection (no publication, no body logs)
+        run: python -m scripts.probe_fulltext_sources
+      - name: Discovery and isolated staging (no publication)
+        env:
+          SOURCE_REPOSITORY_PRIVATE: ${{ github.event.repository.private }}
+        run: python -m scripts.automatic_updates --exercise-replays
+      - id: readiness
+        run: python -m scripts.check_automatic_readiness
+      - id: result
+        run: |
+          python - <<'PY'
+          import json, os
+          r=json.load(open('work/automatic-updates/audit.json'))
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f: f.write('added='+str(r['added'])+'\n')
+          PY
+      - name: Append-only gate against pristine checkout
+        run: python -m scripts.check_append_only_updates --baseline data --candidate work/automatic-updates/candidate
+      - name: Test the staged database in disposable runner workspace
+        id: staged_tests
+        run: |
+          cp work/automatic-updates/candidate/*.json data/
+          npm run build:search-metadata
+          npm run check:data
+          npm run check:search-metadata
+          npm run test:search
+          python -m unittest discover -s tests -v
+          npm run test:search:browser
+          npm run build
+          python scripts/check-dist.py
+          npm run test:ui:browser -- --output work/release-browser
+          npm run test:startup -- --output work/pwa-updates.json
+          python scripts/check-new-messages-browser.py --output work/new-messages
+      - name: Record final validation outcome
+        if: always()
+        env:
+          TEST_RESULT: ${{ steps.staged_tests.outcome }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          p=Path('work/automatic-updates/audit.json')
+          report=json.loads(p.read_text()) if p.exists() else {'status':'failed_before_audit','sources':{}}
+          report['validation_result']=os.environ['TEST_RESULT'] or 'not_run'
+          p.parent.mkdir(parents=True,exist_ok=True)
+          p.write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
+          with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f: f.write('\nValidation: '+report['validation_result']+'; publication remains gated.\n')
+          PY
+      - name: Metadata-only audit and browser proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: automatic-update-audit
+          path: |
+            work/automatic-updates/audit.json
+            work/automatic-updates/summary.md
+            work/release-browser
+            work/pwa-updates.json
+            work/new-messages
+          retention-days: 30
+          overwrite: true
+      - name: Source inspection metadata (no full HTML)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: source-inspection-metadata
+          path: work/fulltext-probe/report.json
+          retention-days: 30
+          overwrite: true
+      - name: Raw source fixtures (private repositories only)
+        if: always() && github.event.repository.private == true
+        uses: actions/upload-artifact@v4
+        with:
+          name: authorized-source-snapshots
+          path: |
+            work/fulltext-probe
+            work/automatic-updates/snapshots
+          retention-days: 7
+          overwrite: true
+      - name: Validated candidate (trusted main only)
+        if: success() && github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: automatic-update-candidate
+          path: |
+            work/automatic-updates/candidate
+            derived/search-metadata.json
+          retention-days: 2
+          overwrite: true
+  commit:
+    needs: validate
+    if: >-
+      github.ref == 'refs/heads/main' && github.event_name != 'pull_request' &&
+      needs.validate.outputs.ready == 'true' &&
+      vars.AUTOMATIC_MESSAGES_PRODUCTION == 'true' &&
+      (github.event_name == 'schedule' || inputs.publish == true)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      sha: ${{ steps.commit.outputs.sha }}
+      publish_needed: ${{ steps.publication.outputs.publish_needed }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: automatic-update-candidate
+          path: work/validated
+      - uses: actions/download-artifact@v4
+        with:
+          name: automatic-update-audit
+          path: work/audit
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Recheck append-only against original commit
+        run: python -m scripts.check_append_only_updates --baseline data --candidate work/validated/work/automatic-updates/candidate
+      - id: commit
+        name: Commit only tested data; reject concurrent main changes
+        run: |
+          cp work/validated/work/automatic-updates/candidate/*.json data/
+          cp work/validated/derived/search-metadata.json derived/search-metadata.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data derived/search-metadata.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'data: append validated independent message translations'
+            git push origin HEAD:main
+          fi
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+      - name: Recover an unpublished commit; skip an unchanged public database
+        id: publication
+        run: python -m scripts.release_recovery
+  build-release:
+    if: needs.commit.outputs.publish_needed == 'true'
+    needs: commit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.commit.outputs.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm run check:data && npm run check:search-metadata && npm run build
+        env:
+          GITHUB_SHA: ${{ needs.commit.outputs.sha }}
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+  deploy:
+    needs: [commit, build-release]
+    runs-on: ubuntu-latest
+    concurrency:
+      group: pages-production-deploy
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Reject a stale deployment after main advanced
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const head = await github.rest.repos.getBranch({...context.repo, branch:'main'});
+            if (head.data.commit.sha !== '${{ needs.commit.outputs.sha }}') core.setFailed('Main advanced; this artifact must not replace a newer release.');
+      - uses: actions/configure-pages@v5
+      - id: deployment
+        uses: actions/deploy-pages@v4
+  verify-public:
+    needs: [commit, deploy]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.commit.outputs.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install playwright
+      - run: python -m playwright install --with-deps chromium
+      - run: python scripts/check-release-browser.py --url https://senddownrain.github.io/medjugorje-messages/ --expected-sha "$EXPECTED_SHA" --output work/public-release
+        env:
+          EXPECTED_SHA: ${{ needs.commit.outputs.sha }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: automatic-public-release-proof
+          path: work/public-release
+  record-success:
+    needs: [commit, verify-public]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: automatic-update-audit
+          path: work/audit
+      - uses: actions/github-script@v7
+        env:
+          RELEASE_SHA: ${{ needs.commit.outputs.sha }}
+        with:
+          script: |
+            const fs = require('node:fs');
+            const audit = JSON.parse(fs.readFileSync('work/audit/automatic-updates/audit.json','utf8'));
+            const path = 'reports/updates/latest-successes.json';
+            const old = await github.rest.repos.getContent({...context.repo,path,ref:'main'});
+            const items = JSON.parse(Buffer.from(old.data.content,'base64').toString('utf8'));
+            const entry = {deployed_at:new Date().toISOString(),status:'published_and_checked',
+              commit:process.env.RELEASE_SHA,commit_url:`https://github.com/${context.repo.owner}/${context.repo.repo}/commit/${process.env.RELEASE_SHA}`,
+              run_url:audit.run_url,publication_url:'https://senddownrain.github.io/medjugorje-messages/',
+              added:audit.added,events:audit.events};
+            if (!items.some(i => i.commit === entry.commit)) {
+              items.unshift(entry);
+              await github.rest.repos.createOrUpdateFileContents({...context.repo,path,branch:'main',sha:old.data.sha,
+                message:'audit: record successful automatic publication',
+                content:Buffer.from(JSON.stringify(items.slice(0,20),null,2)+'\n').toString('base64')});
+            }
+  notify:
+    if: always() && github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: [validate, commit, build-release, deploy, verify-public, record-success]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: automatic-update-audit
+          path: work/audit
+      - uses: actions/github-script@v7
+        env:
+          VALIDATION: ${{ needs.validate.result }}
+          PUBLICATION: ${{ (contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')) && 'failure' || needs.verify-public.result }}
+          RELEASE_SHA: ${{ needs.commit.outputs.sha }}
+          PUBLIC_CHECK: ${{ needs.verify-public.result }}
+        with:
+          script: |
+            const fs = require('node:fs');
+            const path = 'work/audit/automatic-updates/audit.json';
+            const audit = JSON.parse(fs.readFileSync(path,'utf8'));
+            audit.publication = process.env.PUBLICATION;
+            audit.release_commit = process.env.RELEASE_SHA || null;
+            audit.commit_url = audit.release_commit ? `https://github.com/${context.repo.owner}/${context.repo.repo}/commit/${audit.release_commit}` : null;
+            audit.publication_url = process.env.PUBLIC_CHECK === 'success' ? 'https://senddownrain.github.io/medjugorje-messages/' : null;
+            audit.run_url ||= `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            fs.writeFileSync('work/final-audit.json',JSON.stringify(audit,null,2)+'\n');
+            await core.summary.addHeading('Итог обновления').addRaw(`Проверки: ${process.env.VALIDATION}. Публикация: ${audit.publication}.\n`).addLink('Workflow',audit.run_url).write();
+            await require('./scripts/notify-automatic-updates.cjs')({github,context,
+              audit:'work/final-audit.json', validation:process.env.VALIDATION,
+              publication:process.env.PUBLICATION});
+      - name: Final publication result (metadata only)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: automatic-update-result
+          path: work/final-audit.json
+          retention-days: 30
+          overwrite: true

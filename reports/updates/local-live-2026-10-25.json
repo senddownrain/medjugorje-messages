@@ -1,0 +1,89 @@
+{
+  "started_at": "2026-10-25T21:44:56.647824+00:00",
+  "status": "blocked",
+  "sources": {
+    "ru": {
+      "status": "blocked",
+      "reason": "Full-text access, quote boundaries, message-date parser and real-page fixtures unconfirmed",
+      "automatic_publication": false,
+      "discovery_status": "error",
+      "error_type": "ProxyError",
+      "layer": "proxy_connect",
+      "code": "CONNECT_BLOCKED"
+    },
+    "be": {
+      "status": "blocked",
+      "reason": "No confirmed current full-text source",
+      "automatic_publication": false
+    },
+    "uk": {
+      "status": "blocked",
+      "reason": "Full-text access, quote boundaries, message-date parser and real-page fixtures unconfirmed",
+      "automatic_publication": false,
+      "discovery_status": "error",
+      "error_type": "ProxyError",
+      "layer": "proxy_connect",
+      "code": "CONNECT_BLOCKED"
+    },
+    "hr": {
+      "status": "blocked",
+      "reason": "No confirmed current full-text source",
+      "automatic_publication": false
+    },
+    "en": {
+      "status": "blocked",
+      "reason": "Full-text access, quote boundaries, message-date parser and real-page fixtures unconfirmed",
+      "automatic_publication": false,
+      "discovery_status": "error",
+      "error_type": "ProxyError",
+      "layer": "proxy_connect",
+      "code": "CONNECT_BLOCKED"
+    },
+    "sk": {
+      "status": "blocked",
+      "reason": "Full-text access, quote boundaries, message-date parser and real-page fixtures unconfirmed",
+      "automatic_publication": false,
+      "discovery_status": "error",
+      "error_type": "ProxyError",
+      "layer": "proxy_connect",
+      "code": "CONNECT_BLOCKED"
+    },
+    "lv": {
+      "status": "blocked",
+      "reason": "Full-text access, quote boundaries, message-date parser and real-page fixtures unconfirmed",
+      "automatic_publication": false,
+      "discovery_status": "error",
+      "error_type": "ProxyError",
+      "layer": "proxy_connect",
+      "code": "CONNECT_BLOCKED"
+    }
+  },
+  "candidates": [],
+  "run_url": "https://github.com/senddownrain/medjugorje-messages/actions/runs/local",
+  "base_commit": null,
+  "publication": "disabled",
+  "official": {
+    "status": "error",
+    "error_type": "ProxyError",
+    "layer": "proxy_connect",
+    "code": "CONNECT_BLOCKED"
+  },
+  "gate": {
+    "status": "APPEND_ONLY_PASS",
+    "new_canonical_ids": 0,
+    "new_translations": {
+      "ru": 0,
+      "be": 0,
+      "uk": 0,
+      "hr": 0,
+      "en": 0,
+      "sk": 0,
+      "lv": 0
+    },
+    "can_merge": false,
+    "can_publish": false
+  },
+  "events": [],
+  "added": 0,
+  "finished_at": "2026-10-25T21:44:57.308436+00:00"
+}
